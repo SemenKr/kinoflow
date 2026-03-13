@@ -5,7 +5,7 @@ import { CategoryMoviesPage } from '@/pages/CategoryMoviesPage/CategoryMoviesPag
 import { FilteredMoviesPage } from '@/pages/FilteredMoviesPage/FilteredMoviesPage'
 import { SearchPage } from '@/pages/SearchPage/SearchPage'
 import { FavoritesPage } from '@/pages/FavoritesPage/FavoritesPage'
-import { ROUTES } from '@/shared/constats'
+import { ROUTES } from '@/shared/constants'
 import { createBrowserRouter } from 'react-router-dom'
 
 export const router = createBrowserRouter([

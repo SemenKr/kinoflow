@@ -15,36 +15,41 @@ const makeSvg = (path: string, color: string) =>
 
 const ThemeSwitch = styled(Switch)(({ theme }) => {
   const isDark = theme.palette.mode === 'dark'
-  const sunColor = isDark ? '#ffe082' : '#ffb300'
-  const moonColor = isDark ? '#90caf9' : '#ffffff'
+  const sunColor = theme.palette.secondary.main
+  const moonColor = theme.palette.primary.main
 
   return {
-    width: 62,
-    height: 34,
-    padding: 7,
+    width: 52,
+    height: 28,
+    padding: 0,
+    overflow: 'visible',
     '& .MuiSwitch-switchBase': {
-      margin: 1,
-      padding: 0,
-      transform: 'translateX(6px)',
+      margin: 0,
+      padding: 3,
+      transform: 'translateX(0)',
       transitionDuration: '280ms',
       transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
       '&.Mui-checked': {
         color: '#fff',
-        transform: 'translateX(22px)',
+        transform: 'translateX(24px)',
         '& .MuiSwitch-thumb:before': {
           backgroundImage: makeSvg(moonPath, moonColor),
         },
         '& + .MuiSwitch-track': {
           opacity: 1,
-          backgroundColor: isDark ? '#4b5563' : '#aab4be',
+          background: isDark
+            ? `linear-gradient(120deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+            : `linear-gradient(120deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
         },
       },
     },
     '& .MuiSwitch-thumb': {
-      backgroundColor: isDark ? '#0f172a' : '#001e3c',
-      width: 32,
-      height: 32,
-      boxShadow: isDark ? '0 6px 14px rgba(0, 0, 0, 0.45)' : '0 6px 12px rgba(0, 0, 0, 0.25)',
+      backgroundColor: isDark ? '#0b1220' : '#f6f1e9',
+      width: 24,
+      height: 24,
+      boxShadow: isDark
+        ? `0 0 0 1px ${theme.palette.primary.main}, 0 6px 14px rgba(0, 0, 0, 0.5), 0 0 8px ${theme.palette.primary.main}`
+        : '0 6px 12px rgba(0, 0, 0, 0.25)',
       '&::before': {
         content: "''",
         position: 'absolute',
@@ -59,9 +64,13 @@ const ThemeSwitch = styled(Switch)(({ theme }) => {
     },
     '& .MuiSwitch-track': {
       opacity: 1,
-      backgroundColor: isDark ? '#374151' : '#cbd5e1',
-      borderRadius: 17,
-      transition: 'background-color 280ms cubic-bezier(0.22, 1, 0.36, 1)',
+      height: 16,
+      margin: 6,
+      background: isDark
+        ? `linear-gradient(120deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`
+        : `linear-gradient(120deg, ${theme.palette.primary.light}, ${theme.palette.secondary.light})`,
+      borderRadius: 999,
+      transition: 'background 280ms cubic-bezier(0.22, 1, 0.36, 1)',
     },
   }
 })

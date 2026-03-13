@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Button, Typography } from '@mui/material'
 import { NavLink } from 'react-router-dom'
 import { ThemeToggle } from './ThemeToggle'
-import { ROUTES } from '@/shared/constats'
+import { ROUTES } from '@/shared/constants'
 
 export const Header = () => {
   return (
