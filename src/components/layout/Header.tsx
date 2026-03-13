@@ -1,5 +1,7 @@
 import { AppBar, Toolbar, Button, Typography } from '@mui/material'
-import { Link } from 'react-router'
+import { NavLink } from 'react-router-dom'
+import { ThemeToggle } from './ThemeToggle'
+import { ROUTES } from '@/shared/constats'
 
 export const Header = () => {
   return (
@@ -9,25 +11,27 @@ export const Header = () => {
           KinoFlow
         </Typography>
 
-        <Button component={Link} to="/" color="inherit">
+        <Button component={NavLink} to={ROUTES.home} color="inherit">
           Main
         </Button>
 
-        <Button component={Link} to="/categories" color="inherit">
+        <Button component={NavLink} to={ROUTES.categories} color="inherit">
           Category Movies
         </Button>
 
-        <Button component={Link} to="/filtered" color="inherit">
+        <Button component={NavLink} to={ROUTES.filtered} color="inherit">
           Filtered Movies
         </Button>
 
-        <Button component={Link} to="/search" color="inherit">
+        <Button component={NavLink} to={ROUTES.search} color="inherit">
           Search
         </Button>
 
-        <Button component={Link} to="/favorites" color="inherit">
+        <Button component={NavLink} to={ROUTES.favorites} color="inherit">
           Favorites
         </Button>
+
+        <ThemeToggle />
       </Toolbar>
     </AppBar>
   )

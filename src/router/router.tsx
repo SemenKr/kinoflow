@@ -5,17 +5,18 @@ import { CategoryMoviesPage } from '@/pages/CategoryMoviesPage/CategoryMoviesPag
 import { FilteredMoviesPage } from '@/pages/FilteredMoviesPage/FilteredMoviesPage'
 import { SearchPage } from '@/pages/SearchPage/SearchPage'
 import { FavoritesPage } from '@/pages/FavoritesPage/FavoritesPage'
-import { createBrowserRouter } from 'react-router'
+import { ROUTES } from '@/shared/constats'
+import { createBrowserRouter } from 'react-router-dom'
 
 export const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
-      { path: '/', element: <MainPage /> },
-      { path: '/categories', element: <CategoryMoviesPage /> },
-      { path: '/filtered', element: <FilteredMoviesPage /> },
-      { path: '/search', element: <SearchPage /> },
-      { path: '/favorites', element: <FavoritesPage /> },
+      { path: ROUTES.home, element: <MainPage /> },
+      { path: ROUTES.categories, element: <CategoryMoviesPage /> },
+      { path: ROUTES.filtered, element: <FilteredMoviesPage /> },
+      { path: ROUTES.search, element: <SearchPage /> },
+      { path: ROUTES.favorites, element: <FavoritesPage /> },
     ],
   },
 ])
