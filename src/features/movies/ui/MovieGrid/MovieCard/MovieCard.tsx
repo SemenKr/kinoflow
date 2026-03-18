@@ -5,6 +5,13 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
 import {
+  createPosterFallbackUrl,
+  getPosterUrl,
+  getRatingColor,
+  getRatingPercent,
+  getReleaseYear,
+} from './MovieCard.utils'
+import {
   cardStyles,
   contentStyles,
   favoriteButtonStyles,
@@ -13,43 +20,6 @@ import {
   ratingBadgeStyles,
   titleStyles,
 } from './MovieCard.styles'
-
-const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500'
-
-const createPosterFallbackUrl = (label: string) => {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 750">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#141a24"/>
-      <stop offset="100%" stop-color="#0b1018"/>
-    </linearGradient>
-  </defs>
-  <rect width="500" height="750" fill="url(#bg)"/>
-  <rect x="70" y="100" width="360" height="520" rx="20" fill="none" stroke="#2c3a52" stroke-width="6"/>
-  <path d="M120 540l88-104 70 82 54-63 48 85H120z" fill="#2c3a52"/>
-  <circle cx="188" cy="240" r="28" fill="#2c3a52"/>
-  <text x="250" y="650" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" fill="#9fb0c9">
-    ${label}
-  </text>
-</svg>`
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
-}
-
-const getPosterUrl = (posterPath: string | null, fallbackUrl: string) =>
-  posterPath ? `${POSTER_BASE_URL}${posterPath}` : fallbackUrl
-
-const getRatingPercent = (voteAverage: number) => {
-  const normalized = Math.round(voteAverage * 10)
-  return Math.min(100, Math.max(0, normalized))
-}
-
-const getRatingColor = (rating: number) => {
-  if (rating >= 70) return '#21d07a'
-  if (rating >= 50) return '#d2d531'
-  return '#db2360'
-}
-
-const getReleaseYear = (releaseDate?: string) => releaseDate?.slice(0, 4)
 
 interface Props {
   movie: Movie
