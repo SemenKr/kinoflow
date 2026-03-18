@@ -1,10 +1,10 @@
 import { useGetMovieDetailsQuery } from '@/features/movies/api/moviesApi'
+import { ROUTES } from '@/shared/constants'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import { Box, Button, Chip, Container, Divider, Skeleton, Stack, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ROUTES } from '@/shared/constants'
 import {
   actionButtonsSx,
   backButtonSx,
@@ -46,7 +46,6 @@ import {
   formatRuntime,
   getRatingColor,
   getRatingPercent,
-  type MovieDetails,
   POSTER_FALLBACK_URL,
 } from './MovieDetailsPage.utils'
 
@@ -81,7 +80,7 @@ export const MovieDetailsPage = () => {
     )
   }
 
-  const movie = data as MovieDetails
+  const movie = data
 
   const backdrop = movie.backdrop_path
     ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
@@ -215,11 +214,7 @@ export const MovieDetailsPage = () => {
                   )}
                 </Stack>
 
-                <Stack
-                  direction={{ xs: 'column', sm: 'row' }}
-                  spacing={1.1}
-                  sx={actionButtonsSx}
-                >
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.1} sx={actionButtonsSx}>
                   {movie.homepage && (
                     <Button
                       variant="contained"

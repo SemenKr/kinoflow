@@ -1,6 +1,7 @@
 import { buildMoviesListQuery } from '@/features/movies/api/buildMoviesListQuery'
 import type { MoviesResponse } from '@/features/movies/api/moviesApi.types'
 import { MoviesResponseSchema } from '@/features/movies/models/movie.schema'
+import type { MovieDetails } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
 import { baseApi } from '@/shared/api/baseApi'
 import type { PaginationParams } from '@/types/types'
 
@@ -32,7 +33,7 @@ export const moviesApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
-    getMovieDetails: builder.query({
+    getMovieDetails: builder.query<MovieDetails, number>({
       query: (id: number) => ({
         url: `/movie/${id}`,
         params: {
