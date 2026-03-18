@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useGetPopularMoviesQuery } from '@/features/movies/api/moviesApi'
+import { IMAGE_BASE } from '@/shared/constants'
 
 export const useRandomBackdrop = () => {
   const { data } = useGetPopularMoviesQuery({ page: 1 })
@@ -11,6 +12,6 @@ export const useRandomBackdrop = () => {
     const index = Math.floor(Math.random() * data.results.length)
     const path = data.results[index]?.backdrop_path
 
-    return path ? `https://image.tmdb.org/t/p/original${path}` : ''
+    return path ? `${IMAGE_BASE}/original${path}` : ''
   }, [data])
 }

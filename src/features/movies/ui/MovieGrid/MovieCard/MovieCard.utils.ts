@@ -1,4 +1,6 @@
-const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500'
+import { IMAGE_BASE } from '@/shared/constants'
+
+const POSTER_BASE_URL = `${IMAGE_BASE}/w500`
 
 export const createPosterFallbackUrl = (label: string) => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 750">

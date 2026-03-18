@@ -1,44 +1,19 @@
 import { useGetMovieDetailsQuery } from '@/features/movies/api/moviesApi'
-import { ROUTES } from '@/shared/constants'
+import { IMAGE_BASE } from '@/shared/constants'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
-import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
-import { Box, Button, Chip, Container, Divider, Skeleton, Stack, Typography } from '@mui/material'
+import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
+
 import {
-  actionButtonsSx,
   backButtonSx,
   detailsContainerSx,
   detailsGridSx,
-  dividerSx,
   errorContainerSx,
-  fadeUpSx,
   fixedBackWrapSx,
-  genreChipSx,
-  genresRowSx,
-  heroContainerSx,
-  heroContentGridSx,
-  heroOverlaySx,
-  heroSectionSx,
-  heroStackDirection,
-  heroStackSpacing,
-  languageRowSx,
   loadingContainerSx,
-  metaChipsSx,
-  overviewTextSx,
   pageRootSx,
-  posterSx,
-  productionBoxSx,
-  quickFactsCardSx,
-  quickFactsStackSx,
-  quickFactsTitleSx,
-  ratingBadgeSx,
-  scoreRowSx,
-  sectionTitleSx,
-  subtitleSx,
-  surfaceSx,
-  taglineSx,
-  titleSx,
 } from './MovieDetailsPage.styles'
 import {
   formatMoney,
@@ -46,8 +21,18 @@ import {
   formatRuntime,
   getRatingColor,
   getRatingPercent,
+  normalizeMovie,
   POSTER_FALLBACK_URL,
 } from './MovieDetailsPage.utils'
+import { HeroSection } from './components/HeroSection'
+import { OverviewSection } from './components/OverviewSection'
+import { ProductionSection } from './components/ProductionSection'
+
+const EMPTY_NORMALIZED = {
+  voteAverage: 0,
+  popularity: 0,
+  originalTitle: '',
+}
 
 export const MovieDetailsPage = () => {
   const { t, i18n } = useTranslation()
@@ -55,9 +40,69 @@ export const MovieDetailsPage = () => {
   const { id } = useParams()
 
   const movieId = Number(id)
-  const isValidMovieId = Number.isFinite(movieId)
+  const isValidMovieId = !Number.isNaN(movieId)
 
   const { data, isLoading, error } = useGetMovieDetailsQuery(movieId, { skip: !isValidMovieId })
+  const locale = i18n.resolvedLanguage || 'en'
+  const labels = {
+    unknown: t('movie_details_unknown'),
+    error: t('movie_details_error'),
+    back: t('movie_details_back'),
+    runtimeUnknown: t('movie_runtime_unknown'),
+    runtime: t('movie_runtime_label'),
+    status: t('movie_details_status'),
+    adult: t('movie_details_adult'),
+    yes: t('movie_details_yes'),
+    no: t('movie_details_no'),
+    userScore: t('movie_details_user_score'),
+    votes: t('movie_details_votes'),
+    facts: t('movie_details_facts'),
+    budget: t('movie_details_budget'),
+    revenue: t('movie_details_revenue'),
+    language: t('movie_details_language'),
+    popularity: t('movie_details_popularity'),
+    originalTitle: t('movie_details_original_title'),
+    collection: t('movie_details_collection'),
+    homepage: t('movie_details_homepage'),
+    overview: t('movie_details_overview'),
+    spokenLanguages: t('movie_details_spoken_languages'),
+    countries: t('movie_details_countries'),
+    production: t('movie_details_production'),
+  }
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [movieId])
+
+  const normalizedData = useMemo(() => (data ? normalizeMovie(data) : EMPTY_NORMALIZED), [data])
+  const releaseDate = data?.release_date ?? null
+  const voteCount = data?.vote_count ?? 0
+  const voteAverage = normalizedData.voteAverage
+  const releaseDateObj = useMemo(() => (releaseDate ? new Date(releaseDate) : null), [releaseDate])
+
+  const releaseDateLabel = useMemo(() => {
+    if (!releaseDateObj) return labels.unknown
+
+    return new Intl.DateTimeFormat(locale, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(releaseDateObj)
+  }, [releaseDateObj, locale, labels.unknown])
+
+  const votesLabel = useMemo(() => {
+    return new Intl.NumberFormat(locale).format(voteCount)
+  }, [voteCount, locale])
+
+  const rating = useMemo(() => {
+    const percent = getRatingPercent(voteAverage)
+    return {
+      percent,
+      value: formatOneDecimal(voteAverage, locale),
+      color: getRatingColor(percent),
+    }
+  }, [voteAverage, locale])
+  const handleBack = useCallback(() => navigate(-1), [navigate])
 
   if (isLoading) {
     return (
@@ -72,51 +117,32 @@ export const MovieDetailsPage = () => {
     )
   }
 
-  if (error || !data) {
+  if (error) {
     return (
       <Container maxWidth="lg" sx={errorContainerSx}>
-        <Typography>{t('movie_details_error')}</Typography>
+        <Typography>{labels.error}</Typography>
       </Container>
     )
   }
+  if (!data) return null
 
   const movie = data
-
-  const backdrop = movie.backdrop_path
-    ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
-    : ''
-
+  const genres = movie.genres ?? []
+  const spokenLanguages = movie.spoken_languages ?? []
+  const productionCountries = movie.production_countries ?? []
+  const productionCompanies = movie.production_companies ?? []
   const poster = movie.poster_path
-    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+    ? `${IMAGE_BASE}/w500${movie.poster_path}`
     : POSTER_FALLBACK_URL
 
-  const locale = i18n.language || 'en'
-  const unknownLabel = t('movie_details_unknown')
-  const voteAverage = movie.vote_average ?? 0
-  const releaseDateLabel = movie.release_date
-    ? new Intl.DateTimeFormat(locale, {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      }).format(new Date(movie.release_date))
-    : unknownLabel
+  const backdrop = movie.backdrop_path
+    ? `${IMAGE_BASE}/original${movie.backdrop_path}`
+    : poster
 
-  const ratingPercent = getRatingPercent(voteAverage)
-  const ratingValue = formatOneDecimal(voteAverage, locale)
-  const ratingColor = getRatingColor(ratingPercent)
-
-  const runtimeLabel = formatRuntime(movie.runtime, t('movie_runtime_unknown'))
-  const votesLabel = new Intl.NumberFormat(locale).format(movie.vote_count ?? 0)
-  const popularityLabel = formatOneDecimal(movie.popularity ?? 0, locale)
-  const budgetLabel = formatMoney(movie.budget, locale, unknownLabel)
-  const revenueLabel = formatMoney(movie.revenue, locale, unknownLabel)
-  const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1)
-      return
-    }
-    navigate(ROUTES.home)
-  }
+  const runtimeLabel = formatRuntime(movie.runtime, labels.runtimeUnknown)
+  const popularityLabel = formatOneDecimal(normalizedData.popularity, locale)
+  const budgetLabel = formatMoney(movie.budget, locale, labels.unknown)
+  const revenueLabel = formatMoney(movie.revenue, locale, labels.unknown)
 
   return (
     <Box sx={pageRootSx}>
@@ -128,175 +154,70 @@ export const MovieDetailsPage = () => {
           size="small"
           sx={backButtonSx}
         >
-          {t('movie_details_back')}
+          {labels.back}
         </Button>
       </Box>
 
-      <Box sx={heroSectionSx(backdrop)}>
-        <Box sx={heroOverlaySx} />
-
-        <Container maxWidth="lg" sx={heroContainerSx}>
-          <Stack direction={heroStackDirection} spacing={heroStackSpacing}>
-            <Box
-              component="img"
-              src={poster}
-              alt={movie.title}
-              sx={theme => ({ ...posterSx(theme), ...fadeUpSx(520) })}
-            />
-
-            <Box sx={heroContentGridSx}>
-              <Box sx={fadeUpSx(560)}>
-                <Typography variant="h3" sx={titleSx}>
-                  {movie.title}
-                </Typography>
-
-                {!!movie.tagline && <Typography sx={taglineSx}>{movie.tagline}</Typography>}
-
-                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={metaChipsSx}>
-                  <Chip label={releaseDateLabel} size="small" />
-                  <Chip label={`${t('movie_runtime_label')}: ${runtimeLabel}`} size="small" />
-                  <Chip label={`${t('movie_details_status')}: ${movie.status}`} size="small" />
-                  <Chip
-                    label={`${t('movie_details_adult')}: ${movie.adult ? t('movie_details_yes') : t('movie_details_no')}`}
-                    size="small"
-                  />
-                </Stack>
-
-                <Stack direction="row" spacing={2} alignItems="center" sx={scoreRowSx}>
-                  <Box sx={ratingBadgeSx(ratingColor, ratingPercent)}>{ratingValue}</Box>
-
-                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                    {t('movie_details_user_score')}
-                  </Typography>
-
-                  <Typography variant="body2" color="text.secondary">
-                    {votesLabel} {t('movie_details_votes')}
-                  </Typography>
-                </Stack>
-
-                {movie.genres?.length > 0 && (
-                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={genresRowSx}>
-                    {movie.genres.map(genre => (
-                      <Chip key={genre.id} label={genre.name} size="small" sx={genreChipSx} />
-                    ))}
-                  </Stack>
-                )}
-              </Box>
-
-              <Box sx={theme => ({ ...quickFactsCardSx(theme), ...fadeUpSx(640) })}>
-                <Typography variant="subtitle2" color="text.secondary" sx={quickFactsTitleSx}>
-                  {t('movie_details_facts')}
-                </Typography>
-
-                <Stack spacing={quickFactsStackSx.spacing}>
-                  <Typography variant="body2">
-                    <strong>{t('movie_details_budget')}:</strong> {budgetLabel}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>{t('movie_details_revenue')}:</strong> {revenueLabel}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>{t('movie_details_language')}:</strong>{' '}
-                    {movie.original_language?.toUpperCase() || unknownLabel}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>{t('movie_details_popularity')}:</strong> {popularityLabel}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>{t('movie_details_original_title')}:</strong>{' '}
-                    {movie.original_title || unknownLabel}
-                  </Typography>
-                  {movie.belongs_to_collection?.name && (
-                    <Typography variant="body2">
-                      <strong>{t('movie_details_collection')}:</strong>{' '}
-                      {movie.belongs_to_collection.name}
-                    </Typography>
-                  )}
-                </Stack>
-
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.1} sx={actionButtonsSx}>
-                  {movie.homepage && (
-                    <Button
-                      variant="contained"
-                      href={movie.homepage}
-                      target="_blank"
-                      rel="noreferrer"
-                      endIcon={<OpenInNewRoundedIcon fontSize="small" />}
-                    >
-                      {t('movie_details_homepage')}
-                    </Button>
-                  )}
-
-                  {movie.imdb_id && (
-                    <Button
-                      variant="outlined"
-                      href={`https://www.imdb.com/title/${movie.imdb_id}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      endIcon={<OpenInNewRoundedIcon fontSize="small" />}
-                    >
-                      IMDb
-                    </Button>
-                  )}
-                </Stack>
-              </Box>
-            </Box>
-          </Stack>
-        </Container>
-      </Box>
+      <HeroSection
+        media={{ backdrop, poster }}
+        title={movie.title}
+        tagline={movie.tagline}
+        meta={{
+          releaseDateLabel,
+          runtimeLabel: labels.runtime,
+          runtimeValue: runtimeLabel,
+          statusLabel: labels.status,
+          statusValue: movie.status,
+          adultLabel: labels.adult,
+          adultValue: movie.adult ? labels.yes : labels.no,
+        }}
+        rating={{
+          color: rating.color,
+          percent: rating.percent,
+          value: rating.value,
+          userScoreLabel: labels.userScore,
+        }}
+        stats={{
+          votesLabel,
+          votesText: labels.votes,
+        }}
+        genres={genres}
+        facts={{
+          factsTitle: labels.facts,
+          budgetLabelText: labels.budget,
+          revenueLabelText: labels.revenue,
+          languageLabelText: labels.language,
+          popularityLabelText: labels.popularity,
+          originalTitleLabelText: labels.originalTitle,
+          collectionLabelText: labels.collection,
+          budgetValue: budgetLabel,
+          revenueValue: revenueLabel,
+          languageValue: movie.original_language?.toUpperCase() || labels.unknown,
+          popularityValue: popularityLabel,
+          originalTitleValue: normalizedData.originalTitle || labels.unknown,
+          collectionValue: movie.belongs_to_collection?.name,
+          homepage: movie.homepage,
+          homepageLabel: labels.homepage,
+          imdbId: movie.imdb_id,
+        }}
+      />
 
       <Container maxWidth="lg" sx={detailsContainerSx}>
         <Box sx={detailsGridSx}>
-          <Box sx={surfaceSx(700)}>
-            <Typography variant="h6" sx={sectionTitleSx}>
-              {t('movie_details_overview')}
-            </Typography>
-            <Typography color="text.secondary" sx={overviewTextSx}>
-              {movie.overview || unknownLabel}
-            </Typography>
-          </Box>
+          <OverviewSection
+            title={labels.overview}
+            overview={movie.overview || labels.unknown}
+          />
 
-          <Box sx={surfaceSx(760)}>
-            <Typography variant="subtitle2" color="text.secondary" sx={subtitleSx}>
-              {t('movie_details_spoken_languages')}
-            </Typography>
-            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={languageRowSx}>
-              {(movie.spoken_languages?.length ? movie.spoken_languages : []).map(language => (
-                <Chip
-                  key={language.iso_639_1}
-                  size="small"
-                  label={language.name || language.english_name}
-                />
-              ))}
-            </Stack>
-
-            <Divider sx={dividerSx} />
-
-            <Typography variant="subtitle2" color="text.secondary" sx={subtitleSx}>
-              {t('movie_details_countries')}
-            </Typography>
-            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-              {(movie.production_countries?.length ? movie.production_countries : []).map(
-                country => (
-                  <Chip key={country.iso_3166_1} size="small" label={country.name} />
-                ),
-              )}
-            </Stack>
-          </Box>
+          <ProductionSection
+            spokenLanguagesTitle={labels.spokenLanguages}
+            countriesTitle={labels.countries}
+            productionTitle={labels.production}
+            spokenLanguages={spokenLanguages}
+            productionCountries={productionCountries}
+            productionCompanies={productionCompanies}
+          />
         </Box>
-
-        {movie.production_companies?.length > 0 && (
-          <Box sx={theme => ({ ...productionBoxSx, ...surfaceSx(820)(theme) })}>
-            <Typography variant="h6" sx={sectionTitleSx}>
-              {t('movie_details_production')}
-            </Typography>
-            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-              {movie.production_companies.map(company => (
-                <Chip key={company.id} size="small" label={company.name} />
-              ))}
-            </Stack>
-          </Box>
-        )}
       </Container>
     </Box>
   )

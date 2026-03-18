@@ -1,7 +1,7 @@
 import { ROUTES } from '@/shared/constants'
 import { Card, CardMedia, CardContent, Typography, Box, IconButton } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-import { type KeyboardEvent, useCallback, useMemo } from 'react'
+import { type KeyboardEvent, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
@@ -34,12 +34,10 @@ export const MovieCard = ({ movie }: Props) => {
   const poster = getPosterUrl(movie.poster_path, createPosterFallbackUrl(t('movie_card_no_poster')))
   const ratingPercent = getRatingPercent(movie.vote_average)
   const ratingValue = getRatingValue(movie.vote_average)
-  const ratingLabel = useMemo(() => {
-    return new Intl.NumberFormat(i18n.language, {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1,
-    }).format(ratingValue)
-  }, [i18n.language, ratingValue])
+  const ratingLabel = new Intl.NumberFormat(i18n.language, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(ratingValue)
   const ratingColor = getRatingColor(ratingPercent)
   const year = getReleaseYear(movie.release_date)
   const detailsPath = ROUTES.movieDetails(movie.id)

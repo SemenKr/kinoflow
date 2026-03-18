@@ -84,3 +84,11 @@ export const getRatingColor = (ratingPercent: number) => {
   if (ratingPercent >= 50) return '#d2d531'
   return '#db2360'
 }
+
+export const safeArray = <T>(arr?: T[]) => arr ?? []
+
+export const normalizeMovie = (movie: MovieDetails) => ({
+  voteAverage: movie.vote_average ?? 0,
+  popularity: movie.popularity ?? 0,
+  originalTitle: movie.original_title || '',
+})
