@@ -25,6 +25,13 @@ export const moviesApi = baseApi.injectEndpoints({
       query: params => buildMoviesListQuery('/movie/now_playing', params),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
+    getSearchMovies: builder.query<MoviesResponse, { query: string; page?: number }>({
+      query: ({ query, page = 1 }) => ({
+        url: '/search/movie',
+        params: { query, page },
+      }),
+      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
+    }),
   }),
 })
 
@@ -33,4 +40,5 @@ export const {
   useGetTopRatedMoviesQuery,
   useGetUpcomingMoviesQuery,
   useGetNowPlayingMoviesQuery,
+  useGetSearchMoviesQuery,
 } = moviesApi
