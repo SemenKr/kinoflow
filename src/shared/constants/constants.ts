@@ -4,4 +4,5 @@ export const ROUTES = {
   filtered: '/filtered',
   search: '/search',
   favorites: '/favorites',
+  movieDetails: (id: number | string) => `/movie/${id}`,
 } as const

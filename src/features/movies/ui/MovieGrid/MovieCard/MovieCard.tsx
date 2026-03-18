@@ -1,6 +1,7 @@
+import { ROUTES } from '@/shared/constants'
 import { Card, CardMedia, CardContent, Typography, Box, IconButton } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-import type { KeyboardEvent } from 'react'
+import { type KeyboardEvent, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
@@ -33,28 +34,31 @@ export const MovieCard = ({ movie }: Props) => {
   const poster = getPosterUrl(movie.poster_path, createPosterFallbackUrl(t('movie_card_no_poster')))
   const ratingPercent = getRatingPercent(movie.vote_average)
   const ratingValue = getRatingValue(movie.vote_average)
-  const ratingLabel = new Intl.NumberFormat(i18n.language, {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  }).format(ratingValue)
+  const ratingLabel = useMemo(() => {
+    return new Intl.NumberFormat(i18n.language, {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    }).format(ratingValue)
+  }, [i18n.language, ratingValue])
   const ratingColor = getRatingColor(ratingPercent)
   const year = getReleaseYear(movie.release_date)
-  const detailsPath = `/movie/${movie.id}`
+  const detailsPath = ROUTES.movieDetails(movie.id)
 
-  const handleOpenMovie = () => {
+  const handleOpenMovie = useCallback(() => {
     navigate(detailsPath)
-  }
+  }, [navigate, detailsPath])
 
   const handleCardKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.currentTarget !== event.target) return
-    if (event.key !== 'Enter' && event.key !== ' ') return
-    event.preventDefault()
-    handleOpenMovie()
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleOpenMovie()
+    }
   }
 
   return (
     <Card
       sx={cardStyles}
+      component="article"
       onClick={handleOpenMovie}
       onKeyDown={handleCardKeyDown}
       role="button"
@@ -64,6 +68,7 @@ export const MovieCard = ({ movie }: Props) => {
       <Box sx={posterWrapperStyles}>
         <IconButton
           sx={favoriteButtonStyles}
+          aria-pressed="false"
           aria-label={t('movie_card_add_favorites', { title: movie.title })}
           onClick={event => event.stopPropagation()}
         >
