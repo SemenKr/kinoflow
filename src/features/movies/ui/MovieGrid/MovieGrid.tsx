@@ -1,31 +1,36 @@
 import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
-import { Box } from '@mui/material'
-
-
-interface Movie {
-  id: number
-  title: string
-  poster_path: string | null
-  vote_average: number
-}
+import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import type { Movie } from '@/features/movies/api/moviesApi.types'
 
 interface Props {
   movies: Movie[]
 }
 
 export const MovieGrid = ({ movies }: Props) => {
+  const { t } = useTranslation()
+
+  if (movies.length === 0) {
+    return (
+      <Typography color="text.secondary" sx={{ py: 4, textAlign: 'center' }}>
+        {t('movie_grid_empty')}
+      </Typography>
+    )
+  }
+
   return (
     <Box
       sx={{
-    display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, 200px)',
-      gap: 2,
-      justifyContent: 'center',
-  }}
->
-  {movies.map(movie => (
-    <MovieCard key={movie.id} movie={movie} />
-  ))}
-  </Box>
-)
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+        gap: { xs: 2, md: 2.5 },
+      }}
+    >
+      {movies.map(movie => (
+        <Box key={movie.id} sx={{ width: '100%', maxWidth: 220, mx: 'auto' }}>
+          <MovieCard movie={movie} />
+        </Box>
+      ))}
+    </Box>
+  )
 }

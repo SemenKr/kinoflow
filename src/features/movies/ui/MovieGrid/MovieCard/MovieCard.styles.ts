@@ -1,7 +1,9 @@
 import { alpha, type Theme } from '@mui/material/styles'
 
 export const cardStyles = (theme: Theme) => ({
-  width: 200,
+  width: 'min(100%, 220px)',
+  maxWidth: 220,
+  minWidth: 0,
   position: 'relative',
   overflow: 'hidden',
   cursor: 'pointer',
@@ -19,6 +21,10 @@ export const cardStyles = (theme: Theme) => ({
   },
   '&:hover .movie-card-poster': {
     transform: 'scale(1.035)',
+  },
+  '&:focus-visible': {
+    outline: `2px solid ${alpha(theme.palette.primary.main, 0.85)}`,
+    outlineOffset: 2,
   },
   '@media (prefers-reduced-motion: reduce)': {
     transition: 'none',
