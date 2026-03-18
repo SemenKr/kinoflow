@@ -27,9 +27,14 @@ export const getRatingPercent = (voteAverage: number) => {
   return Math.min(100, Math.max(0, normalized))
 }
 
-export const getRatingColor = (rating: number) => {
-  if (rating >= 70) return '#21d07a'
-  if (rating >= 50) return '#d2d531'
+export const getRatingValue = (voteAverage: number) => {
+  const normalized = Number(voteAverage.toFixed(1))
+  return Math.min(10, Math.max(0, normalized))
+}
+
+export const getRatingColor = (ratingPercent: number) => {
+  if (ratingPercent >= 70) return '#21d07a'
+  if (ratingPercent >= 50) return '#d2d531'
   return '#db2360'
 }
 

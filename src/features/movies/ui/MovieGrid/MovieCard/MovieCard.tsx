@@ -9,6 +9,7 @@ import {
   getPosterUrl,
   getRatingColor,
   getRatingPercent,
+  getRatingValue,
   getReleaseYear,
 } from './MovieCard.utils'
 import {
@@ -27,11 +28,16 @@ interface Props {
 
 export const MovieCard = ({ movie }: Props) => {
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const poster = getPosterUrl(movie.poster_path, createPosterFallbackUrl(t('movie_card_no_poster')))
-  const rating = getRatingPercent(movie.vote_average)
-  const ratingColor = getRatingColor(rating)
+  const ratingPercent = getRatingPercent(movie.vote_average)
+  const ratingValue = getRatingValue(movie.vote_average)
+  const ratingLabel = new Intl.NumberFormat(i18n.language, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(ratingValue)
+  const ratingColor = getRatingColor(ratingPercent)
   const year = getReleaseYear(movie.release_date)
   const detailsPath = `/movie/${movie.id}`
 
@@ -72,7 +78,7 @@ export const MovieCard = ({ movie }: Props) => {
           sx={posterStyles}
         />
 
-        <Box sx={theme => ratingBadgeStyles(theme, ratingColor, rating)}>{rating}%</Box>
+        <Box sx={theme => ratingBadgeStyles(theme, ratingColor, ratingPercent)}>{ratingLabel}</Box>
       </Box>
 
       <CardContent sx={contentStyles}>
