@@ -5,6 +5,7 @@ import { CategoryMoviesPage } from '@/pages/CategoryMoviesPage/CategoryMoviesPag
 import { FilteredMoviesPage } from '@/pages/FilteredMoviesPage/FilteredMoviesPage'
 import { SearchPage } from '@/pages/SearchPage/SearchPage'
 import { FavoritesPage } from '@/pages/FavoritesPage/FavoritesPage'
+import { MovieDetailsPage } from '@/pages/MovieDetailsPage/MovieDetailsPage'
 import { ROUTES } from '@/shared/constants'
 import { createBrowserRouter } from 'react-router-dom'
 
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.filtered, element: <FilteredMoviesPage /> },
       { path: ROUTES.search, element: <SearchPage /> },
       { path: ROUTES.favorites, element: <FavoritesPage /> },
+      { path: ROUTES.movieDetails(':id'), element: <MovieDetailsPage /> },
     ],
   },
 ])
