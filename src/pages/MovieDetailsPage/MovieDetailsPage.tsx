@@ -28,7 +28,7 @@ import { HeroSection } from './components/HeroSection'
 import { OverviewSection } from './components/OverviewSection'
 import { ProductionSection } from './components/ProductionSection'
 
-const EMPTY_NORMALIZED = {
+const EMPTY_NORMALIZED: ReturnType<typeof normalizeMovie> = {
   voteAverage: 0,
   popularity: 0,
   originalTitle: '',
@@ -44,55 +44,61 @@ export const MovieDetailsPage = () => {
 
   const { data, isLoading, error } = useGetMovieDetailsQuery(movieId, { skip: !isValidMovieId })
   const locale = i18n.resolvedLanguage || 'en'
-  const labels = {
-    unknown: t('movie_details_unknown'),
-    error: t('movie_details_error'),
-    back: t('movie_details_back'),
-    runtimeUnknown: t('movie_runtime_unknown'),
-    runtime: t('movie_runtime_label'),
-    status: t('movie_details_status'),
-    adult: t('movie_details_adult'),
-    yes: t('movie_details_yes'),
-    no: t('movie_details_no'),
-    userScore: t('movie_details_user_score'),
-    votes: t('movie_details_votes'),
-    facts: t('movie_details_facts'),
-    budget: t('movie_details_budget'),
-    revenue: t('movie_details_revenue'),
-    language: t('movie_details_language'),
-    popularity: t('movie_details_popularity'),
-    originalTitle: t('movie_details_original_title'),
-    collection: t('movie_details_collection'),
-    homepage: t('movie_details_homepage'),
-    overview: t('movie_details_overview'),
-    spokenLanguages: t('movie_details_spoken_languages'),
-    countries: t('movie_details_countries'),
-    production: t('movie_details_production'),
-  }
+  const labels = useMemo(
+    () => ({
+      unknown: t('movie_details_unknown'),
+      error: t('movie_details_error'),
+      back: t('movie_details_back'),
+      runtimeUnknown: t('movie_runtime_unknown'),
+      runtime: t('movie_runtime_label'),
+      status: t('movie_details_status'),
+      adult: t('movie_details_adult'),
+      yes: t('movie_details_yes'),
+      no: t('movie_details_no'),
+      userScore: t('movie_details_user_score'),
+      votes: t('movie_details_votes'),
+      facts: t('movie_details_facts'),
+      budget: t('movie_details_budget'),
+      revenue: t('movie_details_revenue'),
+      language: t('movie_details_language'),
+      popularity: t('movie_details_popularity'),
+      originalTitle: t('movie_details_original_title'),
+      collection: t('movie_details_collection'),
+      homepage: t('movie_details_homepage'),
+      overview: t('movie_details_overview'),
+      spokenLanguages: t('movie_details_spoken_languages'),
+      countries: t('movie_details_countries'),
+      production: t('movie_details_production'),
+    }),
+    [t],
+  )
 
   useEffect(() => {
-    window.scrollTo({ top: 0 })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [movieId])
 
   const normalizedData = useMemo(() => (data ? normalizeMovie(data) : EMPTY_NORMALIZED), [data])
   const releaseDate = data?.release_date ?? null
   const voteCount = data?.vote_count ?? 0
   const voteAverage = normalizedData.voteAverage
-  const releaseDateObj = useMemo(() => (releaseDate ? new Date(releaseDate) : null), [releaseDate])
 
   const releaseDateLabel = useMemo(() => {
-    if (!releaseDateObj) return labels.unknown
+    if (!releaseDate) return labels.unknown
 
     return new Intl.DateTimeFormat(locale, {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
-    }).format(releaseDateObj)
-  }, [releaseDateObj, locale, labels.unknown])
+    }).format(new Date(releaseDate))
+  }, [releaseDate, locale, labels.unknown])
 
   const votesLabel = useMemo(() => {
     return new Intl.NumberFormat(locale).format(voteCount)
   }, [voteCount, locale])
+  const genres = useMemo(() => data?.genres ?? [], [data?.genres])
+  const spokenLanguages = useMemo(() => data?.spoken_languages ?? [], [data?.spoken_languages])
+  const productionCountries = useMemo(() => data?.production_countries ?? [], [data?.production_countries])
+  const productionCompanies = useMemo(() => data?.production_companies ?? [], [data?.production_companies])
 
   const rating = useMemo(() => {
     const percent = getRatingPercent(voteAverage)
@@ -127,10 +133,6 @@ export const MovieDetailsPage = () => {
   if (!data) return null
 
   const movie = data
-  const genres = movie.genres ?? []
-  const spokenLanguages = movie.spoken_languages ?? []
-  const productionCountries = movie.production_countries ?? []
-  const productionCompanies = movie.production_companies ?? []
   const poster = movie.poster_path
     ? `${IMAGE_BASE}/w500${movie.poster_path}`
     : POSTER_FALLBACK_URL
@@ -164,12 +166,16 @@ export const MovieDetailsPage = () => {
         tagline={movie.tagline}
         meta={{
           releaseDateLabel,
-          runtimeLabel: labels.runtime,
-          runtimeValue: runtimeLabel,
-          statusLabel: labels.status,
-          statusValue: movie.status,
-          adultLabel: labels.adult,
-          adultValue: movie.adult ? labels.yes : labels.no,
+          runtime: runtimeLabel,
+          status: movie.status,
+          adult: movie.adult,
+        }}
+        metaLabels={{
+          runtime: labels.runtime,
+          status: labels.status,
+          adult: labels.adult,
+          yes: labels.yes,
+          no: labels.no,
         }}
         rating={{
           color: rating.color,

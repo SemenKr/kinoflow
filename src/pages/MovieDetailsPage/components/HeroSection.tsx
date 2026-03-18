@@ -23,12 +23,16 @@ interface HeroSectionProps {
   tagline: string | null
   meta: {
     releaseDateLabel: string
-    runtimeLabel: string
-    runtimeValue: string
-    statusLabel: string
-    statusValue: string
-    adultLabel: string
-    adultValue: string
+    runtime: string
+    status: string
+    adult: boolean
+  }
+  metaLabels: {
+    runtime: string
+    status: string
+    adult: string
+    yes: string
+    no: string
   }
   rating: {
     color: string
@@ -66,6 +70,7 @@ export const HeroSection = ({
   title,
   tagline,
   meta,
+  metaLabels,
   rating,
   stats,
   genres,
@@ -84,9 +89,9 @@ export const HeroSection = ({
               title={title}
               tagline={tagline}
               releaseDateLabel={meta.releaseDateLabel}
-              runtimeLabel={`${meta.runtimeLabel}: ${meta.runtimeValue}`}
-              status={`${meta.statusLabel}: ${meta.statusValue}`}
-              adultLabel={`${meta.adultLabel}: ${meta.adultValue}`}
+              runtimeLabel={`${metaLabels.runtime}: ${meta.runtime}`}
+              status={`${metaLabels.status}: ${meta.status}`}
+              adultLabel={`${metaLabels.adult}: ${meta.adult ? metaLabels.yes : metaLabels.no}`}
               ratingColor={rating.color}
               ratingPercent={rating.percent}
               ratingValue={rating.value}
