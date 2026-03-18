@@ -32,6 +32,14 @@ export const moviesApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
+    getMovieDetails: builder.query({
+      query: (id: number) => ({
+        url: `/movie/${id}`,
+        params: {
+          append_to_response: 'credits,similar',
+        },
+      }),
+    }),
   }),
 })
 
@@ -41,4 +49,5 @@ export const {
   useGetUpcomingMoviesQuery,
   useGetNowPlayingMoviesQuery,
   useGetSearchMoviesQuery,
+  useGetMovieDetailsQuery,
 } = moviesApi
