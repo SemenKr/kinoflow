@@ -20,6 +20,8 @@ import {
   heroContentGridSx,
   heroOverlaySx,
   heroSectionSx,
+  heroStackDirection,
+  heroStackSpacing,
   languageRowSx,
   loadingContainerSx,
   metaChipsSx,
@@ -90,25 +92,25 @@ export const MovieDetailsPage = () => {
     : POSTER_FALLBACK_URL
 
   const locale = i18n.language || 'en'
+  const unknownLabel = t('movie_details_unknown')
+  const voteAverage = movie.vote_average ?? 0
   const releaseDateLabel = movie.release_date
     ? new Intl.DateTimeFormat(locale, {
         day: 'numeric',
         month: 'short',
         year: 'numeric',
       }).format(new Date(movie.release_date))
-    : t('movie_details_unknown')
+    : unknownLabel
 
-  const ratingPercent = getRatingPercent(movie.vote_average ?? 0)
-  const ratingValue = formatOneDecimal(movie.vote_average ?? 0, locale)
+  const ratingPercent = getRatingPercent(voteAverage)
+  const ratingValue = formatOneDecimal(voteAverage, locale)
   const ratingColor = getRatingColor(ratingPercent)
 
   const runtimeLabel = formatRuntime(movie.runtime, t('movie_runtime_unknown'))
   const votesLabel = new Intl.NumberFormat(locale).format(movie.vote_count ?? 0)
   const popularityLabel = formatOneDecimal(movie.popularity ?? 0, locale)
-  const budgetLabel = formatMoney(movie.budget, locale, t('movie_details_unknown'))
-  const revenueLabel = formatMoney(movie.revenue, locale, t('movie_details_unknown'))
-  const heroStackDirection = { xs: 'column', md: 'row' } as const
-  const heroStackSpacing = { xs: 3, md: 4.5 } as const
+  const budgetLabel = formatMoney(movie.budget, locale, unknownLabel)
+  const revenueLabel = formatMoney(movie.revenue, locale, unknownLabel)
   const handleBack = () => {
     if (window.history.length > 1) {
       navigate(-1)
@@ -196,14 +198,14 @@ export const MovieDetailsPage = () => {
                   </Typography>
                   <Typography variant="body2">
                     <strong>{t('movie_details_language')}:</strong>{' '}
-                    {movie.original_language?.toUpperCase() || t('movie_details_unknown')}
+                    {movie.original_language?.toUpperCase() || unknownLabel}
                   </Typography>
                   <Typography variant="body2">
                     <strong>{t('movie_details_popularity')}:</strong> {popularityLabel}
                   </Typography>
                   <Typography variant="body2">
                     <strong>{t('movie_details_original_title')}:</strong>{' '}
-                    {movie.original_title || t('movie_details_unknown')}
+                    {movie.original_title || unknownLabel}
                   </Typography>
                   {movie.belongs_to_collection?.name && (
                     <Typography variant="body2">
@@ -255,7 +257,7 @@ export const MovieDetailsPage = () => {
               {t('movie_details_overview')}
             </Typography>
             <Typography color="text.secondary" sx={overviewTextSx}>
-              {movie.overview || t('movie_details_unknown')}
+              {movie.overview || unknownLabel}
             </Typography>
           </Box>
 
