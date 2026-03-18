@@ -1,15 +1,19 @@
 import { useGetMovieDetailsQuery } from '@/features/movies/api/moviesApi'
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import { Box, Button, Chip, Container, Divider, Skeleton, Stack, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { ROUTES } from '@/shared/constants'
 import {
   actionButtonsSx,
+  backButtonSx,
   detailsContainerSx,
   detailsGridSx,
   dividerSx,
   errorContainerSx,
   fadeUpSx,
+  fixedBackWrapSx,
   genreChipSx,
   genresRowSx,
   heroContainerSx,
@@ -46,6 +50,7 @@ import {
 
 export const MovieDetailsPage = () => {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const { id } = useParams()
 
   const movieId = Number(id)
@@ -104,9 +109,28 @@ export const MovieDetailsPage = () => {
   const revenueLabel = formatMoney(movie.revenue, locale, t('movie_details_unknown'))
   const heroStackDirection = { xs: 'column', md: 'row' } as const
   const heroStackSpacing = { xs: 3, md: 4.5 } as const
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1)
+      return
+    }
+    navigate(ROUTES.home)
+  }
 
   return (
     <Box sx={pageRootSx}>
+      <Box sx={fixedBackWrapSx}>
+        <Button
+          variant="outlined"
+          onClick={handleBack}
+          startIcon={<ArrowBackRoundedIcon />}
+          size="small"
+          sx={backButtonSx}
+        >
+          {t('movie_details_back')}
+        </Button>
+      </Box>
+
       <Box sx={heroSectionSx(backdrop)}>
         <Box sx={heroOverlaySx} />
 
@@ -190,7 +214,7 @@ export const MovieDetailsPage = () => {
                 </Stack>
 
                 <Stack
-                  direction={{ xs: 'column', sm: 'row', lg: 'column' }}
+                  direction={{ xs: 'column', sm: 'row' }}
                   spacing={1.1}
                   sx={actionButtonsSx}
                 >

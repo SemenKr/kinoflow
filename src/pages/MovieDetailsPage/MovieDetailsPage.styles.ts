@@ -30,7 +30,32 @@ export const scoreRowSx = { mt: 2.5 }
 export const genresRowSx = { mt: 2.5 }
 export const quickFactsTitleSx = { mb: 1.2 }
 export const quickFactsStackSx = { spacing: 0.9 }
-export const actionButtonsSx = { mt: 2 }
+export const actionButtonsSx = { mt: 2, flexWrap: 'wrap' as const }
+export const fixedBackWrapSx = {
+  position: 'fixed',
+  top: { xs: 72, md: 84 },
+  right: { xs: 10, md: 18 },
+  zIndex: 1090,
+}
+export const backButtonSx = (theme: Theme) => ({
+  minWidth: { xs: 'auto', sm: 112 },
+  px: { xs: 0.9, sm: 1.2 },
+  py: { xs: 0.45, sm: 0.6 },
+  fontSize: { xs: 12, sm: 14 },
+  borderRadius: 999,
+  color: theme.palette.text.primary,
+  backgroundColor: alpha(theme.palette.background.paper, theme.palette.mode === 'dark' ? 0.9 : 0.94),
+  borderColor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.42 : 0.26),
+  boxShadow:
+    theme.palette.mode === 'dark'
+      ? `0 8px 18px ${alpha(theme.palette.common.black, 0.34)}`
+      : `0 6px 14px ${alpha(theme.palette.common.black, 0.16)}`,
+  backdropFilter: 'blur(8px)',
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.background.paper, theme.palette.mode === 'dark' ? 0.96 : 1),
+    borderColor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.64 : 0.4),
+  },
+})
 export const detailsContainerSx = { mt: { xs: 3, md: 5 } }
 export const detailsGridSx = { display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1.25fr 1fr' }, gap: 2 }
 export const sectionTitleSx = { mb: 1.5 }
