@@ -1,3 +1,9 @@
+import { WelcomeSection } from '@/features/movies/ui/WelcomeSection'
+
 export const MainPage = () => {
-  return <div>Main Page</div>
+  return (
+    <div>
+      <WelcomeSection />
+    </div>
+  )
 }

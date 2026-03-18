@@ -13,6 +13,8 @@ const resources = {
       filtered: 'Filtered Movies',
       search: 'Search',
       favorites: 'Favorites',
+      welcome_title: 'Welcome',
+      welcome_subtitle: 'Browse highlighted titles from TMDB',
     },
   },
   ru: {
@@ -22,6 +24,8 @@ const resources = {
       filtered: 'Фильтр',
       search: 'Поиск',
       favorites: 'Избранное',
+      welcome_title: 'Добро пожаловать',
+      welcome_subtitle: 'Просматривайте популярные фильмы TMDB',
     },
   },
 }

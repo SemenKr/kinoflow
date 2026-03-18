@@ -6,7 +6,7 @@ export const Layout = () => {
     <>
       <Header />
 
-      <main style={{ padding: '24px' }}>
+      <main>
         <Outlet />
       </main>
     </>
