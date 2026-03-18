@@ -15,6 +15,7 @@ const resources = {
       favorites: 'Favorites',
       welcome_title: 'Welcome',
       welcome_subtitle: 'Browse highlighted titles from TMDB',
+      welcome_placeholder: 'Serach for a movie',
     },
   },
   ru: {
@@ -26,6 +27,7 @@ const resources = {
       favorites: 'Избранное',
       welcome_title: 'Добро пожаловать',
       welcome_subtitle: 'Просматривайте популярные фильмы TMDB',
+      welcome_placeholder: 'Просматривайте популярные фильмы TMDB',
     },
   },
 }
