@@ -6,7 +6,6 @@ import { Box, IconButton, InputAdornment, TextField, Typography } from '@mui/mat
 import { alpha } from '@mui/material/styles'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { useTranslation } from 'react-i18next'
-
 import { useGetSearchMoviesQuery } from '@/features/movies/api/moviesApi'
 
 export const SearchPage = () => {

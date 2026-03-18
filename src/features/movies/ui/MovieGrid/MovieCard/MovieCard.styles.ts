@@ -53,6 +53,11 @@ export const posterWrapperStyles = {
 }
 
 export const posterStyles = (theme: Theme) => ({
+  width: '100%',
+  aspectRatio: '2 / 3',
+  height: 'auto',
+  objectFit: 'cover',
+  display: 'block',
   transition: theme.transitions.create('transform', {
     duration: theme.transitions.duration.shorter,
     easing: theme.transitions.easing.easeOut,

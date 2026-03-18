@@ -2,6 +2,7 @@ import { Card, CardMedia, CardContent, Typography, Box, IconButton } from '@mui/
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import type { KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
 import {
   cardStyles,
@@ -14,7 +15,9 @@ import {
 } from './MovieCard.styles'
 
 const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500'
-const POSTER_FALLBACK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 750">
+
+const createPosterFallbackUrl = (label: string) => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 750">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#141a24"/>
@@ -26,13 +29,14 @@ const POSTER_FALLBACK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 
   <path d="M120 540l88-104 70 82 54-63 48 85H120z" fill="#2c3a52"/>
   <circle cx="188" cy="240" r="28" fill="#2c3a52"/>
   <text x="250" y="650" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" fill="#9fb0c9">
-    No Poster
+    ${label}
   </text>
 </svg>`
-const POSTER_FALLBACK_URL = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(POSTER_FALLBACK_SVG)}`
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
+}
 
-const getPosterUrl = (posterPath: string | null) =>
-  posterPath ? `${POSTER_BASE_URL}${posterPath}` : POSTER_FALLBACK_URL
+const getPosterUrl = (posterPath: string | null, fallbackUrl: string) =>
+  posterPath ? `${POSTER_BASE_URL}${posterPath}` : fallbackUrl
 
 const getRatingPercent = (voteAverage: number) => {
   const normalized = Math.round(voteAverage * 10)
@@ -53,8 +57,9 @@ interface Props {
 
 export const MovieCard = ({ movie }: Props) => {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
-  const poster = getPosterUrl(movie.poster_path)
+  const poster = getPosterUrl(movie.poster_path, createPosterFallbackUrl(t('movie_card_no_poster')))
   const rating = getRatingPercent(movie.vote_average)
   const ratingColor = getRatingColor(rating)
   const year = getReleaseYear(movie.release_date)
@@ -78,12 +83,12 @@ export const MovieCard = ({ movie }: Props) => {
       onKeyDown={handleCardKeyDown}
       role="button"
       tabIndex={0}
-      aria-label={`Open details for ${movie.title}`}
+      aria-label={t('movie_card_open_details', { title: movie.title })}
     >
       <Box sx={posterWrapperStyles}>
         <IconButton
           sx={favoriteButtonStyles}
-          aria-label={`Add "${movie.title}" to favorites`}
+          aria-label={t('movie_card_add_favorites', { title: movie.title })}
           onClick={event => event.stopPropagation()}
         >
           <FavoriteIcon sx={{ color: 'white' }} />
@@ -91,11 +96,9 @@ export const MovieCard = ({ movie }: Props) => {
 
         <CardMedia
           component="img"
-          height="300"
           image={poster}
           alt={movie.title}
           loading="lazy"
-          className="movie-card-poster"
           sx={posterStyles}
         />
 
