@@ -229,7 +229,11 @@ export const MovieDetailsPage = () => {
         <ActorsSection key={movie.id} title={t('movie_details_cast')} actors={actors} />
       </Container>
       <Container maxWidth="lg">
-        <SimilarMoviesSection key={movie.id} title={t('movie_details_similar')} movieId={movie.id} />
+        <SimilarMoviesSection
+          key={movie.id}
+          title={t('movie_details_similar')}
+          movieId={movie.id}
+        />
       </Container>
     </Box>
   )

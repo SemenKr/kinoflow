@@ -48,7 +48,9 @@ export const ActorsSection = ({ title, actors }: Props) => {
             <Button
               size="small"
               variant="text"
-              onClick={() => setVisibleCount(prev => Math.min(prev + LOAD_MORE_STEP, actors.length))}
+              onClick={() =>
+                setVisibleCount(prev => Math.min(prev + LOAD_MORE_STEP, actors.length))
+              }
               sx={toggleButtonSx}
             >
               {t('movie_details_cast_expand')}

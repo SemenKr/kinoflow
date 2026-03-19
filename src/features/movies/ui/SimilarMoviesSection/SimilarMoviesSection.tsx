@@ -1,9 +1,15 @@
 import { useLazyGetSimilarMoviesQuery } from '@/features/movies/api/moviesApi'
-import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
+import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
 import { Box, CircularProgress, Typography } from '@mui/material'
-import { useCallback, useEffect, useRef, useState, type UIEvent } from 'react'
-import { footerSx, headerSx, loadingSx, moviesRowSx, sectionSx } from './SimilarMoviesSection.styles'
+import { type UIEvent, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  footerSx,
+  headerSx,
+  loadingSx,
+  moviesRowSx,
+  sectionSx,
+} from './SimilarMoviesSection.styles'
 
 interface Props {
   title: string

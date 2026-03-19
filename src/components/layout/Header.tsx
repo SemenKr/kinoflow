@@ -100,7 +100,6 @@ export const Header = () => {
             <MenuIcon />
           </IconButton>
         </Stack>
-
       </Toolbar>
 
       <Drawer

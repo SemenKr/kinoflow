@@ -65,7 +65,11 @@ export const MovieMeta = ({
           {userScoreLabel}
         </Typography>
 
-        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ minWidth: 0, overflowWrap: 'anywhere' }}
+        >
           {votesLabel} {votesText}
         </Typography>
       </Stack>
