@@ -1,3 +1,4 @@
+import { favoritesReducer } from '@/features/favorites/model/favoritesSlice'
 import { configureStore } from '@reduxjs/toolkit'
 import { baseApi } from '@/shared/api/baseApi'
 import { rtkQueryErrorMiddleware } from '@/shared/api/rtkQueryErrorMiddleware'
@@ -7,6 +8,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
+    favorites: favoritesReducer,
     toast: toastReducer,
   },
   middleware: getDefaultMiddleware =>
