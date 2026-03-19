@@ -1,14 +1,15 @@
 import { useLazyGetSimilarMoviesQuery } from '@/features/movies/api/moviesApi'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
 import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import { InlineLoader } from '@/shared/ui/loading/InlineLoader'
+import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
+import { Box, Button, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { type UIEvent, useCallback, useEffect, useRef, useState } from 'react'
 import {
   errorTextSx,
   footerSx,
   headerSx,
-  loadingSx,
   moviesRowSx,
   sectionSx,
 } from './SimilarMoviesSection.styles'
@@ -137,6 +138,14 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
     }
   }
 
+  if (!visibleMovies.length && isFetching && !hasError) {
+    return (
+      <Box sx={sectionSx}>
+        <SectionLoader cards={4} titleWidth="24%" />
+      </Box>
+    )
+  }
+
   if (!visibleMovies.length && !isFetching && !hasError) return null
 
   return (
@@ -158,11 +167,7 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
       </Box>
 
       <Box sx={footerSx}>
-        {isFetching && (
-          <Box sx={loadingSx}>
-            <CircularProgress size={22} />
-          </Box>
-        )}
+        {isFetching && <InlineLoader label={t('loading')} />}
 
         {hasError && (
           <>

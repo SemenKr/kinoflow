@@ -2,8 +2,9 @@ import { useGetMovieDetailsQuery } from '@/features/movies/api/moviesApi'
 import { ActorsSection } from '@/features/movies/ui/ActorsSection/ActorsSection'
 import { SimilarMoviesSection } from '@/features/movies/ui/SimilarMoviesSection/SimilarMoviesSection'
 import { IMAGE_BASE } from '@/shared/constants'
+import { PageLoader } from '@/shared/ui/loading/PageLoader'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
-import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -14,7 +15,6 @@ import {
   detailsGridSx,
   errorContainerSx,
   fixedBackWrapSx,
-  loadingContainerSx,
   pageRootSx,
 } from './MovieDetailsPage.styles'
 import {
@@ -117,16 +117,7 @@ export const MovieDetailsPage = () => {
   const handleBack = useCallback(() => navigate(-1), [navigate])
 
   if (isLoading) {
-    return (
-      <Container maxWidth="lg" sx={loadingContainerSx}>
-        <Stack spacing={2}>
-          <Skeleton variant="rectangular" height={380} sx={{ borderRadius: 3 }} />
-          <Skeleton variant="text" height={52} width="60%" />
-          <Skeleton variant="text" height={28} width="45%" />
-          <Skeleton variant="rectangular" height={140} sx={{ borderRadius: 2 }} />
-        </Stack>
-      </Container>
-    )
+    return <PageLoader lines={4} />
   }
 
   if (error) {
