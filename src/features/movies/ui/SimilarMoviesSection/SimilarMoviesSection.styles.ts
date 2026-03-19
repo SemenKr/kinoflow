@@ -24,6 +24,9 @@ export const moviesRowSx: SxProps<Theme> = {
 export const footerSx: SxProps<Theme> = {
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'center',
+  flexWrap: 'wrap',
+  gap: 1,
   minHeight: 32,
 }
 
@@ -31,4 +34,8 @@ export const loadingSx: SxProps<Theme> = {
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
+}
+
+export const errorTextSx: SxProps<Theme> = {
+  textAlign: 'center',
 }

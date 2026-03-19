@@ -1,9 +1,11 @@
 import { useLazyGetSimilarMoviesQuery } from '@/features/movies/api/moviesApi'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
 import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
-import { Box, CircularProgress, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { type UIEvent, useCallback, useEffect, useRef, useState } from 'react'
 import {
+  errorTextSx,
   footerSx,
   headerSx,
   loadingSx,
@@ -25,35 +27,51 @@ const appendUniqueMovies = (current: Movie[], next: Movie[]) => {
 }
 
 export const SimilarMoviesSection = ({ title, movieId }: Props) => {
+  const { t } = useTranslation()
   const [trigger, { isFetching }] = useLazyGetSimilarMoviesQuery()
   const [movies, setMovies] = useState<Movie[]>([])
   const [visibleCount, setVisibleCount] = useState(LOAD_MORE_STEP)
+  const [hasError, setHasError] = useState(false)
   const pageRef = useRef(0)
   const totalPagesRef = useRef(1)
+  const rowRef = useRef<HTMLDivElement | null>(null)
+  const requestInFlightRef = useRef(false)
   const visibleMovies = movies.slice(0, visibleCount)
 
   const loadPage = useCallback(
     async (pageToLoad: number) => {
-      const response = await trigger({ movieId, page: pageToLoad }).unwrap()
-      let mergedLength = response.results.length
+      if (requestInFlightRef.current) return null
 
-      setMovies(prev => {
-        const nextMovies =
-          pageToLoad === 1 ? response.results : appendUniqueMovies(prev, response.results)
-        mergedLength = nextMovies.length
-        return nextMovies
-      })
+      requestInFlightRef.current = true
+      setHasError(false)
 
-      pageRef.current = pageToLoad
-      totalPagesRef.current = response.total_pages
+      try {
+        const response = await trigger({ movieId, page: pageToLoad }).unwrap()
+        let mergedLength = response.results.length
 
-      return mergedLength
+        setMovies(prev => {
+          const nextMovies =
+            pageToLoad === 1 ? response.results : appendUniqueMovies(prev, response.results)
+          mergedLength = nextMovies.length
+          return nextMovies
+        })
+
+        pageRef.current = pageToLoad
+        totalPagesRef.current = response.total_pages
+
+        return mergedLength
+      } catch {
+        setHasError(true)
+        return null
+      } finally {
+        requestInFlightRef.current = false
+      }
     },
     [movieId, trigger],
   )
 
   const handleLoadMore = useCallback(async () => {
-    if (isFetching) return
+    if (requestInFlightRef.current) return
 
     const targetVisibleCount = visibleCount + LOAD_MORE_STEP
 
@@ -68,15 +86,24 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
     }
 
     const mergedLength = await loadPage(pageRef.current + 1)
+    if (mergedLength === null) return
+
     setVisibleCount(Math.min(targetVisibleCount, mergedLength))
-  }, [isFetching, loadPage, movies.length, visibleCount])
+  }, [loadPage, movies.length, visibleCount])
 
   useEffect(() => {
     let isActive = true
 
     const initialize = async () => {
+      setMovies([])
+      setVisibleCount(LOAD_MORE_STEP)
+      setHasError(false)
+      pageRef.current = 0
+      totalPagesRef.current = 1
+      requestInFlightRef.current = false
+
       const initialLength = await loadPage(1)
-      if (isActive) {
+      if (isActive && initialLength !== null) {
         setVisibleCount(Math.min(LOAD_MORE_STEP, initialLength))
       }
     }
@@ -88,6 +115,19 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
     }
   }, [loadPage])
 
+  useEffect(() => {
+    const row = rowRef.current
+    if (!row || !movies.length || requestInFlightRef.current) return
+
+    const isScrollable = row.scrollWidth > row.clientWidth + 1
+    const hasHiddenLoadedMovies = visibleCount < movies.length
+    const hasMorePages = pageRef.current < totalPagesRef.current
+
+    if (!isScrollable && (hasHiddenLoadedMovies || hasMorePages)) {
+      void handleLoadMore()
+    }
+  }, [handleLoadMore, movies.length, visibleCount])
+
   const handleRowScroll = (event: UIEvent<HTMLDivElement>) => {
     const { scrollLeft, clientWidth, scrollWidth } = event.currentTarget
     const isNearEnd = scrollLeft + clientWidth >= scrollWidth - 120
@@ -97,7 +137,7 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
     }
   }
 
-  if (!visibleMovies.length && !isFetching) return null
+  if (!visibleMovies.length && !isFetching && !hasError) return null
 
   return (
     <Box sx={sectionSx}>
@@ -105,7 +145,7 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
         {title}
       </Typography>
 
-      <Box sx={moviesRowSx} role="list" onScroll={handleRowScroll}>
+      <Box ref={rowRef} sx={moviesRowSx} role="list" onScroll={handleRowScroll}>
         {visibleMovies.map(movie => (
           <Box
             key={movie.id}
@@ -122,6 +162,17 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
           <Box sx={loadingSx}>
             <CircularProgress size={22} />
           </Box>
+        )}
+
+        {hasError && (
+          <>
+            <Typography variant="body2" color="text.secondary" sx={errorTextSx}>
+              {t('movie_details_similar_error')}
+            </Typography>
+            <Button size="small" variant="text" onClick={() => void handleLoadMore()}>
+              {t('movie_details_retry')}
+            </Button>
+          </>
         )}
       </Box>
     </Box>
