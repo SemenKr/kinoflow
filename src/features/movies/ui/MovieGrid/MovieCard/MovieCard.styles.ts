@@ -16,8 +16,8 @@ export const cardStyles = (theme: Theme) => ({
     transform: 'translateY(-6px)',
     boxShadow:
       theme.palette.mode === 'dark'
-        ? `0 14px 30px ${alpha(theme.palette.common.black, 0.45)}`
-        : `0 12px 24px ${alpha(theme.palette.common.black, 0.2)}`,
+        ? `0 10px 22px ${alpha(theme.palette.common.black, 0.34)}`
+        : `0 8px 18px ${alpha(theme.palette.common.black, 0.14)}`,
   },
   '&:hover .movie-card-poster': {
     transform: 'scale(1.035)',

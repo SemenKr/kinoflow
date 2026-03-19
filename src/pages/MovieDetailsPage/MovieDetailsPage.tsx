@@ -1,5 +1,6 @@
 import { useGetMovieDetailsQuery } from '@/features/movies/api/moviesApi'
 import { ActorsSection } from '@/features/movies/ui/ActorsSection/ActorsSection'
+import { SimilarMoviesSection } from '@/features/movies/ui/SimilarMoviesSection/SimilarMoviesSection'
 import { IMAGE_BASE } from '@/shared/constants'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material'
@@ -148,7 +149,6 @@ export const MovieDetailsPage = () => {
   const revenueLabel = formatMoney(movie.revenue, locale, labels.unknown)
 
   const actors = movie.credits?.cast ?? []
-
   return (
     <Box sx={pageRootSx}>
       <Box sx={fixedBackWrapSx}>
@@ -227,6 +227,9 @@ export const MovieDetailsPage = () => {
       </Container>
       <Container maxWidth="lg">
         <ActorsSection key={movie.id} title={t('movie_details_cast')} actors={actors} />
+      </Container>
+      <Container maxWidth="lg">
+        <SimilarMoviesSection key={movie.id} title={t('movie_details_similar')} movieId={movie.id} />
       </Container>
     </Box>
   )

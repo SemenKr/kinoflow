@@ -37,10 +37,17 @@ export const moviesApi = baseApi.injectEndpoints({
       query: (id: number) => ({
         url: `/movie/${id}`,
         params: {
-          append_to_response: 'credits,similar',
+          append_to_response: 'credits',
         },
       }),
       transformResponse: (response: unknown) => MovieDetailsSchema.parse(response),
+    }),
+    getSimilarMovies: builder.query<MoviesResponse, { movieId: number; page?: number }>({
+      query: ({ movieId, page = 1 }) => ({
+        url: `/movie/${movieId}/similar`,
+        params: { page },
+      }),
+      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
   }),
 })
@@ -52,4 +59,5 @@ export const {
   useGetNowPlayingMoviesQuery,
   useGetSearchMoviesQuery,
   useGetMovieDetailsQuery,
+  useLazyGetSimilarMoviesQuery,
 } = moviesApi
