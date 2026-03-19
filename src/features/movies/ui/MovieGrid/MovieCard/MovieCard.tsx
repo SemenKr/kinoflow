@@ -1,3 +1,4 @@
+import { useFavorites } from '@/features/favorites/model/useFavorites'
 import { ROUTES } from '@/shared/constants'
 import { Card, CardMedia, CardContent, Typography, Box, IconButton } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite'
@@ -30,7 +31,9 @@ interface Props {
 export const MovieCard = ({ movie }: Props) => {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
+  const { isFavorite, toggle } = useFavorites()
 
+  const favorite = isFavorite(movie.id)
   const poster = getPosterUrl(movie.poster_path, createPosterFallbackUrl(t('movie_card_no_poster')))
   const ratingPercent = getRatingPercent(movie.vote_average)
   const ratingValue = getRatingValue(movie.vote_average)
@@ -66,11 +69,20 @@ export const MovieCard = ({ movie }: Props) => {
       <Box sx={posterWrapperStyles}>
         <IconButton
           sx={favoriteButtonStyles}
-          aria-pressed="false"
-          aria-label={t('movie_card_add_favorites', { title: movie.title })}
-          onClick={event => event.stopPropagation()}
+          aria-label="favorite"
+          onClick={event => {
+            event.stopPropagation()
+
+            toggle({
+              id: movie.id,
+              title: movie.title,
+              poster_path: movie.poster_path,
+              vote_average: movie.vote_average,
+              release_date: movie.release_date,
+            })
+          }}
         >
-          <FavoriteIcon sx={{ color: 'white' }} />
+          <FavoriteIcon sx={{ color: favorite ? 'red' : 'white' }} />
         </IconButton>
 
         <CardMedia
