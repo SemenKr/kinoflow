@@ -1,12 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { baseApi } from '@/shared/api/baseApi'
+import { rtkQueryErrorMiddleware } from '@/shared/api/rtkQueryErrorMiddleware'
+import { toastReducer } from '@/shared/ui/toast/toast.slice'
 import { setupListeners } from '@reduxjs/toolkit/query'
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
+    toast: toastReducer,
   },
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware),
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(baseApi.middleware, rtkQueryErrorMiddleware),
 })
 /**
  * setupListeners включает дополнительные возможности RTK Query:
