@@ -34,7 +34,7 @@ export const SearchPage = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ px: { xs: 2, sm: 3 }, py: 3, minWidth: 0 }}>
       <TextField
         type="text"
         inputMode="search"

@@ -8,11 +8,11 @@ html,
 body {
   margin: 0;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 #root {
   min-height: 100vh;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
 }

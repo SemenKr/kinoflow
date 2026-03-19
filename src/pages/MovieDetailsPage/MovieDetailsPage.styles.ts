@@ -26,7 +26,12 @@ export const heroContentGridSx = {
 }
 export const titleSx = { fontWeight: 700, lineHeight: 1.1, fontSize: { xs: '2rem', md: '2.7rem' } }
 export const metaChipsSx = { mt: 2 }
-export const scoreRowSx = { mt: 2.5 }
+export const scoreRowSx = {
+  mt: 2.5,
+  flexWrap: 'wrap' as const,
+  rowGap: 1,
+  minWidth: 0,
+}
 export const genresRowSx = { mt: 2.5 }
 export const quickFactsTitleSx = { mb: 1.2 }
 export const quickFactsStackSx = { spacing: 0.9 }
@@ -138,11 +143,15 @@ export const genreChipSx = (theme: Theme) => ({
 export const quickFactsCardSx = (theme: Theme) => ({
   p: 2,
   borderRadius: 2.5,
+  minWidth: 0,
   backgroundColor: alpha(
     theme.palette.background.paper,
     theme.palette.mode === 'dark' ? 0.68 : 0.86,
   ),
   border: `1px solid ${alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? 0.14 : 0.08)}`,
+  '& .MuiTypography-root': {
+    overflowWrap: 'anywhere',
+  },
 })
 
 export const surfaceSx = (durationMs: number) => (theme: Theme) => ({

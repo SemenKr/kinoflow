@@ -61,11 +61,11 @@ export const MovieMeta = ({
       <Stack direction="row" spacing={2} alignItems="center" sx={scoreRowSx}>
         <Box sx={ratingBadgeSx(ratingColor, ratingPercent)}>{ratingValue}</Box>
 
-        <Typography variant="body1" sx={{ fontWeight: 600 }}>
+        <Typography variant="body1" sx={{ fontWeight: 600, minWidth: 0 }}>
           {userScoreLabel}
         </Typography>
 
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
           {votesLabel} {votesText}
         </Typography>
       </Stack>

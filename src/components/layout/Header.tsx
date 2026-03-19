@@ -42,7 +42,7 @@ export const Header = () => {
 
   return (
     <AppBar position="static">
-      <Toolbar sx={{ display: 'flex', gap: 2 }}>
+      <Toolbar sx={{ display: 'flex', gap: 2, width: '100%', minWidth: 0 }}>
         <Box
           component={RouterLink}
           to={ROUTES.home}
@@ -55,7 +55,7 @@ export const Header = () => {
             color: 'inherit',
             borderRadius: 10,
             padding: '4px 6px',
-            marginLeft: -1,
+            flexShrink: 0,
             '&:focus-visible': {
               outline: `2px solid ${alpha(theme.palette.primary.main, 0.6)}`,
               outlineOffset: 2,
@@ -83,7 +83,12 @@ export const Header = () => {
           ))}
         </Box>
 
-        <Stack direction="row" alignItems="center" spacing={1} sx={{ marginLeft: 'auto' }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1}
+          sx={{ marginLeft: 'auto', minWidth: 0, flexShrink: 0 }}
+        >
           <LanguageSwitch />
           <ThemeToggle />
           <IconButton
@@ -95,6 +100,7 @@ export const Header = () => {
             <MenuIcon />
           </IconButton>
         </Stack>
+
       </Toolbar>
 
       <Drawer
