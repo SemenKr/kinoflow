@@ -26,27 +26,21 @@ export const toggleButtonSx: SxProps<Theme> = {
   px: 1.5,
 }
 
-export const actorsRowSx: SxProps<Theme> = {
+export const actionsSx: SxProps<Theme> = {
+  mt: 2,
   display: 'flex',
+  flexWrap: 'wrap',
+  gap: 1,
+}
+
+export const actorsGridSx: SxProps<Theme> = {
+  display: 'grid',
+  gridTemplateColumns: {
+    xs: 'repeat(2, minmax(0, 1fr))',
+    sm: 'repeat(3, minmax(0, 1fr))',
+    md: 'repeat(4, minmax(0, 1fr))',
+    lg: 'repeat(5, minmax(0, 1fr))',
+  },
   gap: { xs: 1.5, sm: 2 },
-  overflowX: 'auto',
-  px: 0.5,
-  pb: 1,
-  scrollBehavior: 'smooth',
-  scrollSnapType: 'x proximity',
-  scrollPaddingInline: 4,
-  overscrollBehaviorX: 'contain',
-  WebkitOverflowScrolling: 'touch',
-  scrollbarWidth: 'thin',
-  scrollbarColor: 'rgba(127, 127, 127, 0.45) transparent',
-  '&::-webkit-scrollbar': {
-    height: 8,
-  },
-  '&::-webkit-scrollbar-thumb': {
-    backgroundColor: 'rgba(127, 127, 127, 0.38)',
-    borderRadius: 999,
-  },
-  '&::-webkit-scrollbar-track': {
-    backgroundColor: 'transparent',
-  },
+  py: 0.5,
 }

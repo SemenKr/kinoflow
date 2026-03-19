@@ -49,8 +49,8 @@ const resources = {
       movie_details_production: 'Production companies',
       loading: 'Loading...',
       movie_details_cast: 'Top Cast',
-      movie_details_cast_expand: 'Show all',
-      movie_details_cast_collapse: 'Show less',
+      movie_details_cast_expand: 'Show more',
+      movie_details_cast_collapse: 'Hide',
     },
   },
   ru: {
@@ -96,8 +96,8 @@ const resources = {
       movie_details_production: 'Продакшн',
       loading: 'Загрузка...',
       movie_details_cast: 'В главных ролях',
-      movie_details_cast_expand: 'Показать всех',
-      movie_details_cast_collapse: 'Свернуть',
+      movie_details_cast_expand: 'Показать еще',
+      movie_details_cast_collapse: 'Скрыть',
     },
   },
 }

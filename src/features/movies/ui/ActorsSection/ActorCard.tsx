@@ -6,28 +6,29 @@ import { createImageFallbackUrl } from '@/shared/utils/imageFallback'
 
 interface Props {
   actor: MovieCastMember
+  isGrid?: boolean
 }
 
 const FALLBACK = createImageFallbackUrl({
-  width: 184,
-  height: 276,
+  width: 128,
+  height: 160,
   label: 'No Photo',
 })
 
-export const ActorCard = ({ actor }: Props) => {
+export const ActorCard = ({ actor, isGrid = false }: Props) => {
   const image = actor.profile_path ? `${IMAGE_BASE}/w185${actor.profile_path}` : FALLBACK
 
   return (
     <Box
       role={'listitem'}
       sx={theme => ({
-        width: { xs: 150, sm: 168, md: 184 },
+        width: isGrid ? '100%' : { xs: 108, sm: 118, md: 128 },
+        maxWidth: isGrid ? 'none' : { xs: 108, sm: 118, md: 128 },
         flexShrink: 0,
-        scrollSnapAlign: 'start',
-        scrollSnapStop: 'always',
+        scrollSnapAlign: isGrid ? 'none' : 'start',
+        scrollSnapStop: isGrid ? 'normal' : 'always',
         borderRadius: 2,
-        p: 1,
-        overflow: 'hidden',
+        p: 0.625,
         backgroundColor: alpha(
           theme.palette.background.paper,
           theme.palette.mode === 'dark' ? 0.58 : 0.88,
@@ -54,10 +55,10 @@ export const ActorCard = ({ actor }: Props) => {
       <Box
         sx={{
           position: 'relative',
-          mb: 1.25,
+          mb: 0.75,
           overflow: 'hidden',
-          borderRadius: 1.5,
-          aspectRatio: '2 / 3',
+          borderRadius: 1.25,
+          aspectRatio: '4 / 5',
           backgroundColor: 'action.hover',
         }}
       >
@@ -75,6 +76,7 @@ export const ActorCard = ({ actor }: Props) => {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
+            objectPosition: 'center top',
             display: 'block',
           }}
         />
@@ -85,8 +87,8 @@ export const ActorCard = ({ actor }: Props) => {
         title={actor.name}
         sx={{
           fontWeight: 700,
-          lineHeight: 1.3,
-          mb: 0.5,
+          lineHeight: 1.25,
+          mb: 0.2,
           minHeight: '2.6em',
           display: '-webkit-box',
           overflow: 'hidden',
@@ -102,7 +104,7 @@ export const ActorCard = ({ actor }: Props) => {
         color="text.secondary"
         title={actor.character}
         sx={{
-          lineHeight: 1.45,
+          lineHeight: 1.35,
           minHeight: '2.9em',
           display: '-webkit-box',
           overflow: 'hidden',
