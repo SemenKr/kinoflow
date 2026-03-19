@@ -2,7 +2,10 @@ import type { Movie } from '@/features/movies/api/moviesApi.types'
 
 const KEY = 'favorites_movies'
 
-type FavoriteMovieInput = Pick<Movie, 'id' | 'title' | 'poster_path' | 'vote_average' | 'release_date'>
+type FavoriteMovieInput = Pick<
+  Movie,
+  'id' | 'title' | 'poster_path' | 'vote_average' | 'release_date'
+>
 
 export interface FavoriteMovie extends FavoriteMovieInput {
   savedAt: string
