@@ -1,6 +1,6 @@
 import { buildMoviesListQuery } from '@/features/movies/api/buildMoviesListQuery'
 import type { MoviesResponse } from '@/features/movies/api/moviesApi.types'
-import { MoviesResponseSchema } from '@/features/movies/models/movie.schema'
+import { MovieDetailsSchema, MoviesResponseSchema } from '@/features/movies/models/movie.schema'
 import type { MovieDetails } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
 import { baseApi } from '@/shared/api/baseApi'
 import type { PaginationParams } from '@/types/types'
@@ -40,6 +40,7 @@ export const moviesApi = baseApi.injectEndpoints({
           append_to_response: 'credits,similar',
         },
       }),
+      transformResponse: (response: unknown) => MovieDetailsSchema.parse(response),
     }),
   }),
 })

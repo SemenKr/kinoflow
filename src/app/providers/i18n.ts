@@ -48,6 +48,9 @@ const resources = {
       movie_details_countries: 'Production countries',
       movie_details_production: 'Production companies',
       loading: 'Loading...',
+      movie_details_cast: 'Top Cast',
+      movie_details_cast_expand: 'Show all',
+      movie_details_cast_collapse: 'Show less',
     },
   },
   ru: {
@@ -92,6 +95,9 @@ const resources = {
       movie_details_countries: 'Страны производства',
       movie_details_production: 'Продакшн',
       loading: 'Загрузка...',
+      movie_details_cast: 'В главных ролях',
+      movie_details_cast_expand: 'Показать всех',
+      movie_details_cast_collapse: 'Свернуть',
     },
   },
 }

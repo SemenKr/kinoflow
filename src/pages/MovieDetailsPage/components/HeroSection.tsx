@@ -18,6 +18,7 @@ interface HeroSectionProps {
   media: {
     backdrop: string
     poster: string
+    posterFallback: string
   }
   title: string
   tagline: string | null
@@ -82,7 +83,17 @@ export const HeroSection = ({
 
       <Container maxWidth="lg" sx={heroContainerSx}>
         <Stack direction={heroStackDirection} spacing={heroStackSpacing}>
-          <Box component="img" src={media.poster} alt={title} sx={theme => ({ ...posterSx(theme), ...fadeUpSx(520) })} />
+          <Box
+            component="img"
+            src={media.poster}
+            alt={title}
+            onError={event => {
+              if (event.currentTarget.src !== media.posterFallback) {
+                event.currentTarget.src = media.posterFallback
+              }
+            }}
+            sx={theme => ({ ...posterSx(theme), ...fadeUpSx(520) })}
+          />
 
           <Box sx={heroContentGridSx}>
             <MovieMeta

@@ -1,3 +1,5 @@
+import { createImageFallbackUrl } from '@/shared/utils/imageFallback'
+
 export interface Genre {
   id: number
   name: string
@@ -22,6 +24,17 @@ export interface SpokenLanguage {
 export interface BelongsToCollection {
   id: number
   name: string
+}
+
+export interface MovieCastMember {
+  id: number
+  name: string
+  character: string
+  profile_path: string | null
+}
+
+export interface MovieCredits {
+  cast: MovieCastMember[]
 }
 
 export interface MovieDetails {
@@ -49,9 +62,14 @@ export interface MovieDetails {
   popularity: number
   adult: boolean
   belongs_to_collection: BelongsToCollection | null
+  credits?: MovieCredits
 }
 
-export const POSTER_FALLBACK_URL = 'https://placehold.co/500x750?text=No+Poster'
+export const POSTER_FALLBACK_URL = createImageFallbackUrl({
+  width: 500,
+  height: 750,
+  label: 'No Poster',
+})
 
 export const formatRuntime = (minutes: number | null | undefined, fallback: string) => {
   if (!minutes || minutes <= 0) return fallback
@@ -84,8 +102,6 @@ export const getRatingColor = (ratingPercent: number) => {
   if (ratingPercent >= 50) return '#d2d531'
   return '#db2360'
 }
-
-export const safeArray = <T>(arr?: T[]) => arr ?? []
 
 export const normalizeMovie = (movie: MovieDetails) => ({
   voteAverage: movie.vote_average ?? 0,

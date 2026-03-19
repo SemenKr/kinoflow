@@ -1,4 +1,5 @@
 import { useGetMovieDetailsQuery } from '@/features/movies/api/moviesApi'
+import { ActorsSection } from '@/features/movies/ui/ActorsSection/ActorsSection'
 import { IMAGE_BASE } from '@/shared/constants'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material'
@@ -81,10 +82,8 @@ export const MovieDetailsPage = () => {
   const releaseDate = data?.release_date ?? null
   const voteCount = data?.vote_count ?? 0
   const voteAverage = normalizedData.voteAverage
-
   const releaseDateLabel = useMemo(() => {
     if (!releaseDate) return labels.unknown
-
     return new Intl.DateTimeFormat(locale, {
       day: 'numeric',
       month: 'short',
@@ -146,6 +145,8 @@ export const MovieDetailsPage = () => {
   const budgetLabel = formatMoney(movie.budget, locale, labels.unknown)
   const revenueLabel = formatMoney(movie.revenue, locale, labels.unknown)
 
+  const actors = movie.credits?.cast ?? []
+
   return (
     <Box sx={pageRootSx}>
       <Box sx={fixedBackWrapSx}>
@@ -161,7 +162,7 @@ export const MovieDetailsPage = () => {
       </Box>
 
       <HeroSection
-        media={{ backdrop, poster }}
+        media={{ backdrop, poster, posterFallback: POSTER_FALLBACK_URL }}
         title={movie.title}
         tagline={movie.tagline}
         meta={{
@@ -210,10 +211,7 @@ export const MovieDetailsPage = () => {
 
       <Container maxWidth="lg" sx={detailsContainerSx}>
         <Box sx={detailsGridSx}>
-          <OverviewSection
-            title={labels.overview}
-            overview={movie.overview || labels.unknown}
-          />
+          <OverviewSection title={labels.overview} overview={movie.overview || labels.unknown} />
 
           <ProductionSection
             spokenLanguagesTitle={labels.spokenLanguages}
@@ -224,6 +222,9 @@ export const MovieDetailsPage = () => {
             productionCompanies={productionCompanies}
           />
         </Box>
+      </Container>
+      <Container maxWidth="lg">
+        <ActorsSection title={t('movie_details_cast')} actors={actors} />
       </Container>
     </Box>
   )
