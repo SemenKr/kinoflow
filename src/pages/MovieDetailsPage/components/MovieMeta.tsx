@@ -1,6 +1,15 @@
 import { Box, Chip, Stack, Typography } from '@mui/material'
 
-import { fadeUpSx, genreChipSx, genresRowSx, metaChipsSx, ratingBadgeSx, scoreRowSx, taglineSx, titleSx } from '../MovieDetailsPage.styles'
+import {
+  fadeUpSx,
+  genreChipSx,
+  genresRowSx,
+  metaChipsSx,
+  ratingBadgeSx,
+  scoreRowSx,
+  taglineSx,
+  titleSx,
+} from '../MovieDetailsPage.styles'
 import type { Genre } from '../MovieDetailsPage.utils'
 
 interface MovieMetaProps {

@@ -1,7 +1,13 @@
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import { Box, Button, Stack, Typography } from '@mui/material'
 
-import { actionButtonsSx, fadeUpSx, quickFactsCardSx, quickFactsStackSx, quickFactsTitleSx } from '../MovieDetailsPage.styles'
+import {
+  actionButtonsSx,
+  fadeUpSx,
+  quickFactsCardSx,
+  quickFactsStackSx,
+  quickFactsTitleSx,
+} from '../MovieDetailsPage.styles'
 
 interface QuickFactsProps {
   factsTitle: string

@@ -1,6 +1,6 @@
-import { Box, Button, Typography } from '@mui/material'
 import type { MovieCastMember } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
-import { useMemo, useState } from 'react'
+import { Box, Button, Typography } from '@mui/material'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActorCard } from './ActorCard'
 import { actorsRowSx, headerSx, sectionSx, titleSx, toggleButtonSx } from './ActorsSection.styles'
@@ -16,10 +16,7 @@ export const ActorsSection = ({ title, actors }: Props) => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const canToggle = actors.length > INITIAL_VISIBLE_ACTORS
-  const visibleActors = useMemo(
-    () => (isExpanded ? actors : actors.slice(0, INITIAL_VISIBLE_ACTORS)),
-    [actors, isExpanded],
-  )
+  const visibleActors = isExpanded ? actors : actors.slice(0, INITIAL_VISIBLE_ACTORS)
   if (!actors.length) return null
 
   return (
@@ -42,7 +39,7 @@ export const ActorsSection = ({ title, actors }: Props) => {
         )}
       </Box>
 
-      <Box sx={actorsRowSx}>
+      <Box role={'list'} sx={actorsRowSx}>
         {visibleActors.map(actor => (
           <ActorCard key={actor.id} actor={actor} />
         ))}

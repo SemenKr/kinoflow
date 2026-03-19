@@ -38,6 +38,8 @@ export const textContainerStyles = {
 
 export const searchRowStyles = {
   display: 'flex',
+  flexDirection: { xs: 'column', sm: 'row' },
+  alignItems: { xs: 'stretch', sm: 'center' },
   gap: 1.5,
 }
 
@@ -97,7 +99,8 @@ export const inputStyles = (theme: Theme) => ({
 export const buttonStyles = (theme: Theme) => ({
   borderRadius: 2.5,
   px: 3,
-  minWidth: 116,
+  minWidth: { xs: '100%', sm: 116 },
+  width: { xs: '100%', sm: 'auto' },
 
   '&.Mui-disabled': {
     backgroundColor: alpha(

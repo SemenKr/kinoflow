@@ -44,7 +44,10 @@ export const backButtonSx = (theme: Theme) => ({
   fontSize: { xs: 12, sm: 14 },
   borderRadius: 999,
   color: theme.palette.text.primary,
-  backgroundColor: alpha(theme.palette.background.paper, theme.palette.mode === 'dark' ? 0.9 : 0.94),
+  backgroundColor: alpha(
+    theme.palette.background.paper,
+    theme.palette.mode === 'dark' ? 0.9 : 0.94,
+  ),
   borderColor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.42 : 0.26),
   boxShadow:
     theme.palette.mode === 'dark'
@@ -52,12 +55,19 @@ export const backButtonSx = (theme: Theme) => ({
       : `0 6px 14px ${alpha(theme.palette.common.black, 0.16)}`,
   backdropFilter: 'blur(8px)',
   '&:hover': {
-    backgroundColor: alpha(theme.palette.background.paper, theme.palette.mode === 'dark' ? 0.96 : 1),
+    backgroundColor: alpha(
+      theme.palette.background.paper,
+      theme.palette.mode === 'dark' ? 0.96 : 1,
+    ),
     borderColor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.64 : 0.4),
   },
 })
 export const detailsContainerSx = { mt: { xs: 3, md: 5 } }
-export const detailsGridSx = { display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1.25fr 1fr' }, gap: 2 }
+export const detailsGridSx = {
+  display: 'grid',
+  gridTemplateColumns: { xs: '1fr', md: '1.25fr 1fr' },
+  gap: 2,
+}
 export const sectionTitleSx = { mb: 1.5 }
 export const overviewTextSx = { lineHeight: 1.75 }
 export const languageRowSx = { mb: 2 }
@@ -128,14 +138,20 @@ export const genreChipSx = (theme: Theme) => ({
 export const quickFactsCardSx = (theme: Theme) => ({
   p: 2,
   borderRadius: 2.5,
-  backgroundColor: alpha(theme.palette.background.paper, theme.palette.mode === 'dark' ? 0.68 : 0.86),
+  backgroundColor: alpha(
+    theme.palette.background.paper,
+    theme.palette.mode === 'dark' ? 0.68 : 0.86,
+  ),
   border: `1px solid ${alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? 0.14 : 0.08)}`,
 })
 
 export const surfaceSx = (durationMs: number) => (theme: Theme) => ({
   p: { xs: 2, md: 3 },
   borderRadius: 3,
-  backgroundColor: alpha(theme.palette.background.paper, theme.palette.mode === 'dark' ? 0.74 : 0.92),
+  backgroundColor: alpha(
+    theme.palette.background.paper,
+    theme.palette.mode === 'dark' ? 0.74 : 0.92,
+  ),
   border: `1px solid ${alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? 0.1 : 0.08)}`,
   ...fadeUpSx(durationMs),
 })

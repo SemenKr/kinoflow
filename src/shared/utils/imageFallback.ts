@@ -4,7 +4,11 @@ interface ImageFallbackOptions {
   label?: string
 }
 
-export const createImageFallbackUrl = ({ width, height, label = 'No image' }: ImageFallbackOptions) => {
+export const createImageFallbackUrl = ({
+  width,
+  height,
+  label = 'No image',
+}: ImageFallbackOptions) => {
   const centerX = Math.round(width / 2)
   const frameX = Math.round(width * 0.14)
   const frameY = Math.round(height * 0.13)

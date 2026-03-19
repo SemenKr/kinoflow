@@ -70,7 +70,10 @@ export const SearchPage = () => {
             color: theme.palette.text.secondary,
           },
           '& .MuiInputLabel-root.Mui-focused': {
-            color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
+            color:
+              theme.palette.mode === 'dark'
+                ? theme.palette.primary.light
+                : theme.palette.primary.main,
           },
           '& .MuiOutlinedInput-root': {
             borderRadius: 2.5,
@@ -106,7 +109,9 @@ export const SearchPage = () => {
       {isLoading && <Typography sx={{ mt: 3 }}>{t('loading')}</Typography>}
 
       {debouncedQuery && data && data.results.length === 0 && (
-        <Typography sx={{ mt: 3 }}>{t('search_page_no_results', { query: debouncedQuery })}</Typography>
+        <Typography sx={{ mt: 3 }}>
+          {t('search_page_no_results', { query: debouncedQuery })}
+        </Typography>
       )}
 
       {data && data.results.length > 0 && (

@@ -1,7 +1,18 @@
 import { Box, Chip, Divider, Stack, Typography } from '@mui/material'
 
-import { dividerSx, languageRowSx, productionBoxSx, sectionTitleSx, subtitleSx, surfaceSx } from '../MovieDetailsPage.styles'
-import type { ProductionCompany, ProductionCountry, SpokenLanguage } from '../MovieDetailsPage.utils'
+import {
+  dividerSx,
+  languageRowSx,
+  productionBoxSx,
+  sectionTitleSx,
+  subtitleSx,
+  surfaceSx,
+} from '../MovieDetailsPage.styles'
+import type {
+  ProductionCompany,
+  ProductionCountry,
+  SpokenLanguage,
+} from '../MovieDetailsPage.utils'
 
 interface ProductionSectionProps {
   spokenLanguagesTitle: string
@@ -28,7 +39,11 @@ export const ProductionSection = ({
         </Typography>
         <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={languageRowSx}>
           {spokenLanguages.map(language => (
-            <Chip key={language.iso_639_1} size="small" label={language.name || language.english_name} />
+            <Chip
+              key={language.iso_639_1}
+              size="small"
+              label={language.name || language.english_name}
+            />
           ))}
         </Stack>
 

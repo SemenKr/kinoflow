@@ -96,8 +96,14 @@ export const MovieDetailsPage = () => {
   }, [voteCount, locale])
   const genres = useMemo(() => data?.genres ?? [], [data?.genres])
   const spokenLanguages = useMemo(() => data?.spoken_languages ?? [], [data?.spoken_languages])
-  const productionCountries = useMemo(() => data?.production_countries ?? [], [data?.production_countries])
-  const productionCompanies = useMemo(() => data?.production_companies ?? [], [data?.production_companies])
+  const productionCountries = useMemo(
+    () => data?.production_countries ?? [],
+    [data?.production_countries],
+  )
+  const productionCompanies = useMemo(
+    () => data?.production_companies ?? [],
+    [data?.production_companies],
+  )
 
   const rating = useMemo(() => {
     const percent = getRatingPercent(voteAverage)
@@ -132,13 +138,9 @@ export const MovieDetailsPage = () => {
   if (!data) return null
 
   const movie = data
-  const poster = movie.poster_path
-    ? `${IMAGE_BASE}/w500${movie.poster_path}`
-    : POSTER_FALLBACK_URL
+  const poster = movie.poster_path ? `${IMAGE_BASE}/w500${movie.poster_path}` : POSTER_FALLBACK_URL
 
-  const backdrop = movie.backdrop_path
-    ? `${IMAGE_BASE}/original${movie.backdrop_path}`
-    : poster
+  const backdrop = movie.backdrop_path ? `${IMAGE_BASE}/original${movie.backdrop_path}` : poster
 
   const runtimeLabel = formatRuntime(movie.runtime, labels.runtimeUnknown)
   const popularityLabel = formatOneDecimal(normalizedData.popularity, locale)
