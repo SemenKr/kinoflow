@@ -22,6 +22,12 @@ export const cardStyles = (theme: Theme) => ({
   '&:hover .movie-card-poster': {
     transform: 'scale(1.035)',
   },
+  '&:hover .movie-card-favorite, &:focus-visible .movie-card-favorite, &:focus-within .movie-card-favorite':
+    {
+      opacity: 1,
+      transform: 'translateY(0)',
+      pointerEvents: 'auto',
+    },
   '&:focus-visible': {
     outline: `2px solid ${alpha(theme.palette.primary.main, 0.85)}`,
     outlineOffset: 2,
@@ -37,14 +43,50 @@ export const cardStyles = (theme: Theme) => ({
   },
 })
 
-export const favoriteButtonStyles = (theme: Theme) => ({
+export const favoriteButtonStyles = (theme: Theme, favorite: boolean) => ({
   position: 'absolute',
   top: 8,
   right: 8,
   zIndex: 2,
   backgroundColor: alpha(theme.palette.common.black, 0.6),
+  opacity: favorite ? 1 : 0,
+  transform: favorite ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.92)',
+  pointerEvents: favorite ? 'auto' : 'none',
+  transition: theme.transitions.create(['opacity', 'transform', 'background-color', 'box-shadow'], {
+    duration: theme.transitions.duration.shorter,
+    easing: theme.transitions.easing.easeOut,
+  }),
+  boxShadow: `0 6px 14px ${alpha(theme.palette.common.black, 0.24)}`,
   '&:hover': {
     backgroundColor: alpha(theme.palette.common.black, 0.78),
+    transform: 'translateY(0) scale(1.06)',
+  },
+  '&:active': {
+    transform: 'translateY(0) scale(0.92)',
+  },
+  '@keyframes favoriteButtonIn': {
+    from: {
+      opacity: 0,
+      transform: 'translateY(-8px) scale(0.88)',
+    },
+    to: {
+      opacity: 1,
+      transform: 'translateY(0) scale(1)',
+    },
+  },
+  ...(favorite && {
+    animation: 'favoriteButtonIn 180ms ease-out',
+  }),
+  '@media (prefers-reduced-motion: reduce)': {
+    transition: 'none',
+    animation: 'none',
+    '&:hover': {
+      backgroundColor: alpha(theme.palette.common.black, 0.78),
+      transform: 'translateY(0) scale(1)',
+    },
+    '&:active': {
+      transform: 'translateY(0) scale(1)',
+    },
   },
 })
 

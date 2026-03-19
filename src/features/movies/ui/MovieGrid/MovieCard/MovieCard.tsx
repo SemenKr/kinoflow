@@ -68,7 +68,8 @@ export const MovieCard = ({ movie }: Props) => {
     >
       <Box sx={posterWrapperStyles}>
         <IconButton
-          sx={favoriteButtonStyles}
+          className="movie-card-favorite"
+          sx={theme => favoriteButtonStyles(theme, favorite)}
           aria-label="favorite"
           onClick={event => {
             event.stopPropagation()
