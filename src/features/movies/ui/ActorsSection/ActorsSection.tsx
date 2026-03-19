@@ -38,7 +38,7 @@ export const ActorsSection = ({ title, actors }: Props) => {
 
       <Box role={'list'} sx={actorsGridSx}>
         {visibleActors.map(actor => (
-          <ActorCard key={actor.id} actor={actor} isGrid />
+          <ActorCard key={actor.id} actor={actor} />
         ))}
       </Box>
 

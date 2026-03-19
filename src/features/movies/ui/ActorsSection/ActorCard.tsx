@@ -6,7 +6,6 @@ import { createImageFallbackUrl } from '@/shared/utils/imageFallback'
 
 interface Props {
   actor: MovieCastMember
-  isGrid?: boolean
 }
 
 const FALLBACK = createImageFallbackUrl({
@@ -15,18 +14,14 @@ const FALLBACK = createImageFallbackUrl({
   label: 'No Photo',
 })
 
-export const ActorCard = ({ actor, isGrid = false }: Props) => {
+export const ActorCard = ({ actor }: Props) => {
   const image = actor.profile_path ? `${IMAGE_BASE}/w185${actor.profile_path}` : FALLBACK
 
   return (
     <Box
       role={'listitem'}
       sx={theme => ({
-        width: isGrid ? '100%' : { xs: 108, sm: 118, md: 128 },
-        maxWidth: isGrid ? 'none' : { xs: 108, sm: 118, md: 128 },
-        flexShrink: 0,
-        scrollSnapAlign: isGrid ? 'none' : 'start',
-        scrollSnapStop: isGrid ? 'normal' : 'always',
+        width: '100%',
         borderRadius: 2,
         p: 0.625,
         backgroundColor: alpha(

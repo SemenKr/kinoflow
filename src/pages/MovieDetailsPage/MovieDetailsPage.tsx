@@ -226,7 +226,7 @@ export const MovieDetailsPage = () => {
         </Box>
       </Container>
       <Container maxWidth="lg">
-        <ActorsSection title={t('movie_details_cast')} actors={actors} />
+        <ActorsSection key={movie.id} title={t('movie_details_cast')} actors={actors} />
       </Container>
     </Box>
   )
