@@ -5,7 +5,13 @@ import TelegramIcon from '@mui/icons-material/Telegram'
 import { DEFAULT_MOVIE_CATEGORY, getMovieCategoryRoute } from '@/features/movies/config/movieCategories'
 import { ROUTES } from '@/shared/constants'
 
-export const navigationItems = [
+export interface NavigationItemConfig {
+  key: 'main' | 'categories' | 'filtered' | 'search' | 'favorites'
+  to: string
+  activePath?: string
+}
+
+export const navigationItems: readonly NavigationItemConfig[] = [
   { key: 'main', to: ROUTES.home },
   {
     key: 'categories',
@@ -15,7 +21,7 @@ export const navigationItems = [
   { key: 'filtered', to: ROUTES.filtered },
   { key: 'search', to: ROUTES.search },
   { key: 'favorites', to: ROUTES.favorites },
-] as const
+]
 
 export const socialLinks = [
   {
