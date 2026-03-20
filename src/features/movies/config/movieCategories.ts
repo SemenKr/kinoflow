@@ -6,17 +6,17 @@ export const MOVIE_CATEGORY_CONFIG = {
     endpoint: '/movie/popular',
     translationKey: 'categories_tab_popular',
   },
-  'top-rated': {
+  top_rated: {
     endpoint: '/movie/top_rated',
-    translationKey: 'categories_tab_top-rated',
+    translationKey: 'categories_tab_top_rated',
   },
   upcoming: {
     endpoint: '/movie/upcoming',
     translationKey: 'categories_tab_upcoming',
   },
-  'now-playing': {
+  now_playing: {
     endpoint: '/movie/now_playing',
-    translationKey: 'categories_tab_now-playing',
+    translationKey: 'categories_tab_now_playing',
   },
 } as const
 

@@ -52,10 +52,10 @@ export const MainPage = () => {
   const sections = useMemo(
     () =>
       (Object.keys(MOVIE_CATEGORY_CONFIG) as MovieCategoryTab[]).map(category => ({
-      key: category,
-      title: t(MOVIE_CATEGORY_CONFIG[category].translationKey),
-      to: getMovieCategoryRoute(category),
-      query: categoryQueries[category],
+        key: category,
+        title: t(MOVIE_CATEGORY_CONFIG[category].translationKey),
+        to: getMovieCategoryRoute(category),
+        query: categoryQueries[category],
       })),
     [categoryQueries, t],
   )

@@ -1,17 +1,17 @@
 import {
   DEFAULT_MOVIE_CATEGORY,
   DEFAULT_MOVIE_CATEGORY_QUERY,
-  MOVIE_CATEGORY_CONFIG,
-  MOVIE_CATEGORY_TABS,
   getMovieCategoryRoute,
   isMovieCategoryTab,
+  MOVIE_CATEGORY_CONFIG,
+  MOVIE_CATEGORY_TABS,
 } from '@/features/movies/config/movieCategories'
 import { useMovieCategoryQueries } from '@/features/movies/model/useMovieCategoryQueries'
 import { MovieGrid } from '@/features/movies/ui/MovieGrid/MovieGrid'
 import { InlineLoader } from '@/shared/ui/loading/InlineLoader'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Pagination, Stack, Tab, Tabs, Typography } from '@mui/material'
-import { type ChangeEvent, useMemo } from 'react'
+import { type ChangeEvent, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 
@@ -21,17 +21,29 @@ export const CategoryMoviesPage = () => {
   const { t } = useTranslation()
   const { category } = useParams<{ category?: string }>()
   const [searchParams, setSearchParams] = useSearchParams()
+  const previousCategoryRef = useRef<string | undefined>(category)
+  const pageTopRef = useRef<HTMLDivElement | null>(null)
 
   const activeCategory = isMovieCategoryTab(category) ? category : DEFAULT_MOVIE_CATEGORY
   const pageParam = Number(searchParams.get('page') || '1')
   const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1
-  const queryArgs = useMemo(() => ({ page, ...DEFAULT_MOVIE_CATEGORY_QUERY }), [page])
+  const queryArgs = { page, ...DEFAULT_MOVIE_CATEGORY_QUERY }
   const categoryQueries = useMovieCategoryQueries(queryArgs, { activeCategory })
+
+  useEffect(() => {
+    if (previousCategoryRef.current === category) return
+
+    previousCategoryRef.current = category
+
+    if (!searchParams.get('page')) return
+    setSearchParams({})
+  }, [category, searchParams, setSearchParams])
 
   const activeQuery = categoryQueries[activeCategory]
 
   const handlePageChange = (_: ChangeEvent<unknown>, nextPage: number) => {
     setSearchParams(nextPage > 1 ? { page: String(nextPage) } : {})
+    pageTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   const handleRetry = () => {
@@ -43,7 +55,7 @@ export const CategoryMoviesPage = () => {
   const activeCategoryLabel = t(MOVIE_CATEGORY_CONFIG[activeCategory].translationKey)
 
   return (
-    <Box sx={{ px: { xs: 2, sm: 3 }, py: 3, minWidth: 0 }}>
+    <Box ref={pageTopRef} sx={{ px: { xs: 2, sm: 3 }, py: 3, minWidth: 0 }}>
       <Stack spacing={3}>
         <Stack spacing={1}>
           <Typography variant="h4" sx={{ fontWeight: 700 }}>
@@ -53,6 +65,7 @@ export const CategoryMoviesPage = () => {
         </Stack>
 
         <Tabs
+          aria-label="movie categories"
           value={activeCategory}
           variant="scrollable"
           allowScrollButtonsMobile

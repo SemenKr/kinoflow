@@ -14,7 +14,7 @@ export const moviesApi = baseApi.injectEndpoints({
     }),
 
     getTopRatedMovies: builder.query<MoviesResponse, PaginationParams>({
-      query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG['top-rated'].endpoint, params),
+      query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG.top_rated.endpoint, params),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
 
@@ -24,7 +24,7 @@ export const moviesApi = baseApi.injectEndpoints({
     }),
 
     getNowPlayingMovies: builder.query<MoviesResponse, PaginationParams>({
-      query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG['now-playing'].endpoint, params),
+      query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG.now_playing.endpoint, params),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
     getSearchMovies: builder.query<MoviesResponse, { query: string; page?: number }>({

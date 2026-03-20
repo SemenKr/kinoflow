@@ -21,19 +21,19 @@ export const useMovieCategoryQueries = (
     skip: !!activeCategory && activeCategory !== 'popular',
   })
   const topRatedQuery = useGetTopRatedMoviesQuery(queryArgs, {
-    skip: !!activeCategory && activeCategory !== 'top-rated',
+    skip: !!activeCategory && activeCategory !== 'top_rated',
   })
   const upcomingQuery = useGetUpcomingMoviesQuery(queryArgs, {
     skip: !!activeCategory && activeCategory !== 'upcoming',
   })
   const nowPlayingQuery = useGetNowPlayingMoviesQuery(queryArgs, {
-    skip: !!activeCategory && activeCategory !== 'now-playing',
+    skip: !!activeCategory && activeCategory !== 'now_playing',
   })
 
   return {
     popular: popularQuery,
-    'top-rated': topRatedQuery,
+    top_rated: topRatedQuery,
     upcoming: upcomingQuery,
-    'now-playing': nowPlayingQuery,
+    now_playing: nowPlayingQuery,
   } as const
 }
