@@ -1,15 +1,19 @@
 import { Button } from '@mui/material'
 import { alpha } from '@mui/material/styles'
-import { NavLink, useMatch, useResolvedPath } from 'react-router-dom'
+import { NavLink, matchPath, useLocation, useResolvedPath } from 'react-router-dom'
 
 interface Props {
   to: string
   label: string
+  activePath?: string
 }
 
-export const NavItem = ({ to, label }: Props) => {
+export const NavItem = ({ to, label, activePath }: Props) => {
+  const location = useLocation()
   const resolvedPath = useResolvedPath(to)
-  const isActive = !!useMatch({ path: resolvedPath.pathname, end: true })
+  const isActive = activePath
+    ? !!matchPath({ path: activePath, end: false }, location.pathname)
+    : location.pathname === resolvedPath.pathname
 
   return (
     <Button

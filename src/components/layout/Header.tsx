@@ -29,7 +29,7 @@ export const Header = () => {
   const navItems = useMemo(
     () => [
       { to: ROUTES.home, label: t('main') },
-      { to: ROUTES.movieCategory('popular'), label: t('categories') },
+      { to: ROUTES.movieCategory('popular'), label: t('categories'), activePath: '/movies/*' },
       { to: ROUTES.filtered, label: t('filtered') },
       { to: ROUTES.search, label: t('search') },
       { to: ROUTES.favorites, label: t('favorites') },
@@ -79,7 +79,12 @@ export const Header = () => {
           }}
         >
           {navItems.map(item => (
-            <NavItem key={item.to} to={item.to} label={item.label} />
+            <NavItem
+              key={item.to}
+              to={item.to}
+              label={item.label}
+              activePath={item.activePath}
+            />
           ))}
         </Box>
 
