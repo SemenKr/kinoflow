@@ -1,37 +1,7 @@
-import GitHubIcon from '@mui/icons-material/GitHub'
-import InstagramIcon from '@mui/icons-material/Instagram'
-import LinkedInIcon from '@mui/icons-material/LinkedIn'
-import TelegramIcon from '@mui/icons-material/Telegram'
+import { socialLinks } from '@/components/layout/layout.config'
 import { Box, IconButton, Stack, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
-
-const socialLinks = [
-  {
-    key: 'github',
-    href: 'https://example.com/github',
-    labelKey: 'footer_social_github',
-    icon: GitHubIcon,
-  },
-  {
-    key: 'telegram',
-    href: 'https://example.com/telegram',
-    labelKey: 'footer_social_telegram',
-    icon: TelegramIcon,
-  },
-  {
-    key: 'linkedin',
-    href: 'https://example.com/linkedin',
-    labelKey: 'footer_social_linkedin',
-    icon: LinkedInIcon,
-  },
-  {
-    key: 'instagram',
-    href: 'https://example.com/instagram',
-    labelKey: 'footer_social_instagram',
-    icon: InstagramIcon,
-  },
-] as const
 
 export const Footer = () => {
   const { t } = useTranslation()

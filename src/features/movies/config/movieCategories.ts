@@ -3,22 +3,18 @@ import type { PaginationParams } from '@/types/types'
 
 export const MOVIE_CATEGORY_CONFIG = {
   popular: {
-    slug: 'popular',
     endpoint: '/movie/popular',
     translationKey: 'categories_tab_popular',
   },
   'top-rated': {
-    slug: 'top-rated',
     endpoint: '/movie/top_rated',
     translationKey: 'categories_tab_top-rated',
   },
   upcoming: {
-    slug: 'upcoming',
     endpoint: '/movie/upcoming',
     translationKey: 'categories_tab_upcoming',
   },
   'now-playing': {
-    slug: 'now-playing',
     endpoint: '/movie/now_playing',
     translationKey: 'categories_tab_now-playing',
   },
@@ -38,4 +34,3 @@ export const isMovieCategoryTab = (value: string | undefined): value is MovieCat
   !!value && value in MOVIE_CATEGORY_CONFIG
 
 export const getMovieCategoryRoute = (category: MovieCategoryTab) => ROUTES.movieCategory(category)
-

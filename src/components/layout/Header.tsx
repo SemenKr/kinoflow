@@ -1,3 +1,4 @@
+import { navigationItems } from '@/components/layout/layout.config'
 import {
   AppBar,
   Toolbar,
@@ -27,13 +28,7 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const navItems = useMemo(
-    () => [
-      { to: ROUTES.home, label: t('main') },
-      { to: ROUTES.movieCategory('popular'), label: t('categories'), activePath: '/movies/*' },
-      { to: ROUTES.filtered, label: t('filtered') },
-      { to: ROUTES.search, label: t('search') },
-      { to: ROUTES.favorites, label: t('favorites') },
-    ],
+    () => navigationItems.map(item => ({ ...item, label: t(item.key) })),
     [t],
   )
 

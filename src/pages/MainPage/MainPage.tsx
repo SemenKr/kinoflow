@@ -1,15 +1,10 @@
 import {
-  useGetNowPlayingMoviesQuery,
-  useGetPopularMoviesQuery,
-  useGetTopRatedMoviesQuery,
-  useGetUpcomingMoviesQuery,
-} from '@/features/movies/api/moviesApi'
-import {
   DEFAULT_MOVIE_CATEGORY_QUERY,
   MOVIE_CATEGORY_CONFIG,
   type MovieCategoryTab,
   getMovieCategoryRoute,
 } from '@/features/movies/config/movieCategories'
+import { useMovieCategoryQueries } from '@/features/movies/model/useMovieCategoryQueries'
 import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
 import { WelcomeSection } from '@/features/movies/ui/WelcomeSection/WelcomeSection'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
@@ -52,21 +47,7 @@ const previewItemStyles = {
 export const MainPage = () => {
   const { t } = useTranslation()
   const queryArgs = useMemo(() => ({ page: 1, ...DEFAULT_MOVIE_CATEGORY_QUERY }), [])
-
-  const popularQuery = useGetPopularMoviesQuery(queryArgs)
-  const topRatedQuery = useGetTopRatedMoviesQuery(queryArgs)
-  const upcomingQuery = useGetUpcomingMoviesQuery(queryArgs)
-  const nowPlayingQuery = useGetNowPlayingMoviesQuery(queryArgs)
-
-  const categoryQueries = useMemo<Record<MovieCategoryTab, typeof popularQuery>>(
-    () => ({
-      popular: popularQuery,
-      'top-rated': topRatedQuery,
-      upcoming: upcomingQuery,
-      'now-playing': nowPlayingQuery,
-    }),
-    [nowPlayingQuery, popularQuery, topRatedQuery, upcomingQuery],
-  )
+  const categoryQueries = useMovieCategoryQueries(queryArgs)
 
   const sections = useMemo(
     () =>
