@@ -4,9 +4,14 @@ import {
   useGetTopRatedMoviesQuery,
   useGetUpcomingMoviesQuery,
 } from '@/features/movies/api/moviesApi'
-import { MovieGrid } from '@/features/movies/ui/MovieGrid/MovieGrid'
+import {
+  DEFAULT_MOVIE_CATEGORY_QUERY,
+  MOVIE_CATEGORY_CONFIG,
+  type MovieCategoryTab,
+  getMovieCategoryRoute,
+} from '@/features/movies/config/movieCategories'
+import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
 import { WelcomeSection } from '@/features/movies/ui/WelcomeSection/WelcomeSection'
-import { ROUTES } from '@/shared/constants'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Stack, Typography } from '@mui/material'
 import { useMemo } from 'react'
@@ -20,41 +25,59 @@ const sectionShellStyles = {
   py: { xs: 4, sm: 5 },
 }
 
+const previewRowStyles = {
+  display: 'flex',
+  gap: { xs: 1.5, sm: 2 },
+  overflowX: 'auto',
+  overflowY: 'visible',
+  scrollSnapType: 'x proximity',
+  overscrollBehaviorX: 'contain',
+  WebkitOverflowScrolling: 'touch',
+  px: 0.5,
+  pt: 1,
+  pb: 2,
+  scrollbarWidth: 'none',
+  msOverflowStyle: 'none',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
+}
+
+const previewItemStyles = {
+  flex: '0 0 auto',
+  width: { xs: 160, sm: 180, md: 200 },
+  scrollSnapAlign: 'start',
+}
+
 export const MainPage = () => {
   const { t } = useTranslation()
-  const queryArgs = useMemo(() => ({ page: 1, language: 'en-US', region: 'US' }), [])
+  const queryArgs = useMemo(() => ({ page: 1, ...DEFAULT_MOVIE_CATEGORY_QUERY }), [])
 
   const popularQuery = useGetPopularMoviesQuery(queryArgs)
   const topRatedQuery = useGetTopRatedMoviesQuery(queryArgs)
   const upcomingQuery = useGetUpcomingMoviesQuery(queryArgs)
   const nowPlayingQuery = useGetNowPlayingMoviesQuery(queryArgs)
 
-  const sections = [
-    {
-      key: 'popular',
-      title: t('categories_tab_popular'),
-      to: ROUTES.categories,
-      query: popularQuery,
-    },
-    {
-      key: 'top-rated',
-      title: t('categories_tab_top-rated'),
-      to: ROUTES.movieCategory('top-rated'),
-      query: topRatedQuery,
-    },
-    {
-      key: 'upcoming',
-      title: t('categories_tab_upcoming'),
-      to: ROUTES.movieCategory('upcoming'),
-      query: upcomingQuery,
-    },
-    {
-      key: 'now-playing',
-      title: t('categories_tab_now-playing'),
-      to: ROUTES.movieCategory('now-playing'),
-      query: nowPlayingQuery,
-    },
-  ] as const
+  const categoryQueries = useMemo<Record<MovieCategoryTab, typeof popularQuery>>(
+    () => ({
+      popular: popularQuery,
+      'top-rated': topRatedQuery,
+      upcoming: upcomingQuery,
+      'now-playing': nowPlayingQuery,
+    }),
+    [nowPlayingQuery, popularQuery, topRatedQuery, upcomingQuery],
+  )
+
+  const sections = useMemo(
+    () =>
+      (Object.keys(MOVIE_CATEGORY_CONFIG) as MovieCategoryTab[]).map(category => ({
+      key: category,
+      title: t(MOVIE_CATEGORY_CONFIG[category].translationKey),
+      to: getMovieCategoryRoute(category),
+      query: categoryQueries[category],
+      })),
+    [categoryQueries, t],
+  )
 
   return (
     <Box>
@@ -86,7 +109,13 @@ export const MainPage = () => {
               )}
 
               {section.query.data && (
-                <MovieGrid movies={section.query.data.results.slice(0, PREVIEW_MOVIES_COUNT)} />
+                <Box sx={previewRowStyles}>
+                  {section.query.data.results.slice(0, PREVIEW_MOVIES_COUNT).map(movie => (
+                    <Box key={movie.id} sx={previewItemStyles}>
+                      <MovieCard movie={movie} />
+                    </Box>
+                  ))}
+                </Box>
               )}
             </Stack>
           </Box>

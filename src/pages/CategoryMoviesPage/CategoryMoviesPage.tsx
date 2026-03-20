@@ -4,24 +4,24 @@ import {
   useGetTopRatedMoviesQuery,
   useGetUpcomingMoviesQuery,
 } from '@/features/movies/api/moviesApi'
+import {
+  DEFAULT_MOVIE_CATEGORY,
+  DEFAULT_MOVIE_CATEGORY_QUERY,
+  MOVIE_CATEGORY_CONFIG,
+  MOVIE_CATEGORY_TABS,
+  getMovieCategoryRoute,
+  isMovieCategoryTab,
+  type MovieCategoryTab,
+} from '@/features/movies/config/movieCategories'
 import { MovieGrid } from '@/features/movies/ui/MovieGrid/MovieGrid'
 import { InlineLoader } from '@/shared/ui/loading/InlineLoader'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
-import {
-  DEFAULT_MOVIE_CATEGORY,
-  MOVIE_CATEGORY_TABS,
-  ROUTES,
-  type MovieCategoryTab,
-} from '@/shared/constants'
 import { Box, Button, Pagination, Stack, Tab, Tabs, Typography } from '@mui/material'
 import { type ChangeEvent, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 
 const MOVIES_PER_PAGE = 20
-
-const isMovieCategoryTab = (value: string | undefined): value is MovieCategoryTab =>
-  !!value && MOVIE_CATEGORY_TABS.includes(value as MovieCategoryTab)
 
 export const CategoryMoviesPage = () => {
   const { t } = useTranslation()
@@ -31,7 +31,7 @@ export const CategoryMoviesPage = () => {
   const activeCategory = isMovieCategoryTab(category) ? category : DEFAULT_MOVIE_CATEGORY
   const pageParam = Number(searchParams.get('page') || '1')
   const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1
-  const queryArgs = useMemo(() => ({ page, language: 'en-US', region: 'US' }), [page])
+  const queryArgs = useMemo(() => ({ page, ...DEFAULT_MOVIE_CATEGORY_QUERY }), [page])
 
   const popularQuery = useGetPopularMoviesQuery(queryArgs, {
     skip: activeCategory !== 'popular',
@@ -46,14 +46,14 @@ export const CategoryMoviesPage = () => {
     skip: activeCategory !== 'now-playing',
   })
 
-  const activeQuery =
-    activeCategory === 'popular'
-      ? popularQuery
-      : activeCategory === 'top-rated'
-        ? topRatedQuery
-        : activeCategory === 'upcoming'
-          ? upcomingQuery
-          : nowPlayingQuery
+  const categoryQueries: Record<MovieCategoryTab, typeof popularQuery> = {
+    popular: popularQuery,
+    'top-rated': topRatedQuery,
+    upcoming: upcomingQuery,
+    'now-playing': nowPlayingQuery,
+  }
+
+  const activeQuery = categoryQueries[activeCategory]
 
   const handlePageChange = (_: ChangeEvent<unknown>, nextPage: number) => {
     setSearchParams(nextPage > 1 ? { page: String(nextPage) } : {})
@@ -65,7 +65,7 @@ export const CategoryMoviesPage = () => {
 
   const totalPages = Math.max(1, activeQuery.data?.total_pages ?? 1)
   const currentPage = Math.min(page, totalPages)
-  const activeCategoryLabel = t(`categories_tab_${activeCategory}`)
+  const activeCategoryLabel = t(MOVIE_CATEGORY_CONFIG[activeCategory].translationKey)
 
   return (
     <Box sx={{ px: { xs: 2, sm: 3 }, py: 3, minWidth: 0 }}>
@@ -110,9 +110,9 @@ export const CategoryMoviesPage = () => {
             <Tab
               key={tab}
               value={tab}
-              label={t(`categories_tab_${tab}`)}
+              label={t(MOVIE_CATEGORY_CONFIG[tab].translationKey)}
               component={Link}
-              to={tab === DEFAULT_MOVIE_CATEGORY ? ROUTES.categories : ROUTES.movieCategory(tab)}
+              to={getMovieCategoryRoute(tab)}
             />
           ))}
         </Tabs>

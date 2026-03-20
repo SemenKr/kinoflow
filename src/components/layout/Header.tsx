@@ -29,7 +29,7 @@ export const Header = () => {
   const navItems = useMemo(
     () => [
       { to: ROUTES.home, label: t('main') },
-      { to: ROUTES.categories, label: t('categories') },
+      { to: ROUTES.movieCategory('popular'), label: t('categories') },
       { to: ROUTES.filtered, label: t('filtered') },
       { to: ROUTES.search, label: t('search') },
       { to: ROUTES.favorites, label: t('favorites') },

@@ -1,4 +1,5 @@
 import { buildMoviesListQuery } from '@/features/movies/api/buildMoviesListQuery'
+import { MOVIE_CATEGORY_CONFIG } from '@/features/movies/config/movieCategories'
 import type { MoviesResponse } from '@/features/movies/api/moviesApi.types'
 import { MovieDetailsSchema, MoviesResponseSchema } from '@/features/movies/models/movie.schema'
 import type { MovieDetails } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
@@ -8,22 +9,22 @@ import type { PaginationParams } from '@/types/types'
 export const moviesApi = baseApi.injectEndpoints({
   endpoints: builder => ({
     getPopularMovies: builder.query<MoviesResponse, PaginationParams>({
-      query: params => buildMoviesListQuery('/movie/popular', params),
+      query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG.popular.endpoint, params),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
 
     getTopRatedMovies: builder.query<MoviesResponse, PaginationParams>({
-      query: params => buildMoviesListQuery('/movie/top_rated', params),
+      query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG['top-rated'].endpoint, params),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
 
     getUpcomingMovies: builder.query<MoviesResponse, PaginationParams>({
-      query: params => buildMoviesListQuery('/movie/upcoming', params),
+      query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG.upcoming.endpoint, params),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
 
     getNowPlayingMovies: builder.query<MoviesResponse, PaginationParams>({
-      query: params => buildMoviesListQuery('/movie/now_playing', params),
+      query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG['now-playing'].endpoint, params),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
     getSearchMovies: builder.query<MoviesResponse, { query: string; page?: number }>({

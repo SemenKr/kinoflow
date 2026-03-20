@@ -7,14 +7,17 @@ import { SearchPage } from '@/pages/SearchPage/SearchPage'
 import { FavoritesPage } from '@/pages/FavoritesPage/FavoritesPage'
 import { MovieDetailsPage } from '@/pages/MovieDetailsPage/MovieDetailsPage'
 import { ROUTES } from '@/shared/constants'
-import { createBrowserRouter } from 'react-router-dom'
+import { Navigate, createBrowserRouter } from 'react-router-dom'
 
 export const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
       { path: ROUTES.home, element: <MainPage /> },
-      { path: ROUTES.categories, element: <CategoryMoviesPage /> },
+      {
+        path: ROUTES.categories,
+        element: <Navigate to={ROUTES.movieCategory('popular')} replace />,
+      },
       { path: ROUTES.movieCategory(':category'), element: <CategoryMoviesPage /> },
       { path: ROUTES.filtered, element: <FilteredMoviesPage /> },
       { path: ROUTES.search, element: <SearchPage /> },
