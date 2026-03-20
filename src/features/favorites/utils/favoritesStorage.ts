@@ -1,4 +1,5 @@
 import type { Movie } from '@/features/movies/api/moviesApi.types'
+import { z } from 'zod'
 
 const KEY = 'favorites_movies'
 
@@ -10,6 +11,26 @@ type FavoriteMovieInput = Pick<
 export interface FavoriteMovie extends FavoriteMovieInput {
   savedAt: string
 }
+
+const LegacyFavoriteMovieSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  poster_path: z.string().nullable().optional().default(null),
+  vote_average: z.number().optional().default(0),
+  release_date: z.string().optional().default(''),
+  savedAt: z.string().optional(),
+})
+
+const FavoritesStorageSchema = z.array(LegacyFavoriteMovieSchema).transform(items =>
+  items.map(item => ({
+    id: item.id,
+    title: item.title,
+    poster_path: item.poster_path,
+    vote_average: item.vote_average,
+    release_date: item.release_date,
+    savedAt: item.savedAt ?? new Date().toISOString(),
+  })),
+)
 
 export const toFavoriteMovie = (movie: FavoriteMovieInput): FavoriteMovie => ({
   ...movie,
@@ -35,7 +56,10 @@ export const favoriteMovieToMovie = (movie: FavoriteMovie): Movie => ({
 export const loadFavorites = (): FavoriteMovie[] => {
   try {
     const data = localStorage.getItem(KEY)
-    return data ? (JSON.parse(data) as FavoriteMovie[]) : []
+    if (!data) return []
+
+    const parsed = FavoritesStorageSchema.safeParse(JSON.parse(data))
+    return parsed.success ? parsed.data : []
   } catch {
     return []
   }

@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
 import { alpha } from '@mui/material/styles'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useMatch, useResolvedPath } from 'react-router-dom'
 
 interface Props {
   to: string
@@ -8,24 +8,20 @@ interface Props {
 }
 
 export const NavItem = ({ to, label }: Props) => {
+  const resolvedPath = useResolvedPath(to)
+  const isActive = !!useMatch({ path: resolvedPath.pathname, end: true })
+
   return (
     <Button
       component={NavLink}
       to={to}
-      className={({ isActive }) => (isActive ? 'active' : undefined)}
       color="inherit"
       sx={theme => ({
         borderRadius: 12,
         padding: '6px 12px',
         textTransform: 'none',
         border: '1px solid transparent',
-        '&:hover': {
-          backgroundColor: alpha(
-            theme.palette.primary.main,
-            theme.palette.mode === 'dark' ? 0.12 : 0.08,
-          ),
-        },
-        '&.active': {
+        ...(isActive && {
           color: theme.palette.primary.main,
           backgroundColor: alpha(
             theme.palette.primary.main,
@@ -34,6 +30,12 @@ export const NavItem = ({ to, label }: Props) => {
           borderColor: alpha(
             theme.palette.primary.main,
             theme.palette.mode === 'dark' ? 0.4 : 0.25,
+          ),
+        }),
+        '&:hover': {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            theme.palette.mode === 'dark' ? 0.12 : 0.08,
           ),
         },
       })}

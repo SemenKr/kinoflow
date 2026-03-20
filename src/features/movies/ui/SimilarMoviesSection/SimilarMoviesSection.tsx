@@ -1,6 +1,7 @@
 import { useLazyGetSimilarMoviesQuery } from '@/features/movies/api/moviesApi'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
 import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
+import { useGlobalLoading } from '@/hooks'
 import { InlineLoader } from '@/shared/ui/loading/InlineLoader'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Typography } from '@mui/material'
@@ -29,6 +30,7 @@ const appendUniqueMovies = (current: Movie[], next: Movie[]) => {
 
 export const SimilarMoviesSection = ({ title, movieId }: Props) => {
   const { t } = useTranslation()
+  const { track } = useGlobalLoading()
   const [trigger, { isFetching }] = useLazyGetSimilarMoviesQuery()
   const [movies, setMovies] = useState<Movie[]>([])
   const [visibleCount, setVisibleCount] = useState(LOAD_MORE_STEP)
@@ -47,7 +49,7 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
       setHasError(false)
 
       try {
-        const response = await trigger({ movieId, page: pageToLoad }).unwrap()
+        const response = await track(trigger({ movieId, page: pageToLoad }).unwrap())
         let mergedLength = response.results.length
 
         setMovies(prev => {
@@ -68,7 +70,7 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
         requestInFlightRef.current = false
       }
     },
-    [movieId, trigger],
+    [movieId, track, trigger],
   )
 
   const handleLoadMore = useCallback(async () => {

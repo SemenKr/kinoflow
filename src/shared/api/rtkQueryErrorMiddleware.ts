@@ -12,7 +12,13 @@ type EndpointName =
   | 'getMovieDetails'
   | 'getSimilarMovies'
 
-const shouldShowGlobalToast = (status: unknown) => {
+const LOCAL_ERROR_ENDPOINTS = new Set<EndpointName>(['getSimilarMovies'])
+
+const shouldShowGlobalToast = (status: unknown, endpointName?: string) => {
+  if (endpointName && LOCAL_ERROR_ENDPOINTS.has(endpointName as EndpointName)) {
+    return false
+  }
+
   if (status === 'FETCH_ERROR' || status === 'PARSING_ERROR' || status === 'TIMEOUT_ERROR') {
     return true
   }
@@ -63,12 +69,46 @@ const getToastMessage = (status: unknown, endpointName?: string) => {
   return i18n.t('toast_unexpected_error')
 }
 
+const getRejectedStatus = (action: unknown) => {
+  if (
+    typeof action === 'object' &&
+    action !== null &&
+    'payload' in action &&
+    typeof action.payload === 'object' &&
+    action.payload !== null &&
+    'status' in action.payload
+  ) {
+    return action.payload.status
+  }
+
+  return undefined
+}
+
+const getRejectedEndpointName = (action: unknown) => {
+  if (
+    typeof action === 'object' &&
+    action !== null &&
+    'meta' in action &&
+    typeof action.meta === 'object' &&
+    action.meta !== null &&
+    'arg' in action.meta &&
+    typeof action.meta.arg === 'object' &&
+    action.meta.arg !== null &&
+    'endpointName' in action.meta.arg &&
+    typeof action.meta.arg.endpointName === 'string'
+  ) {
+    return action.meta.arg.endpointName
+  }
+
+  return undefined
+}
+
 export const rtkQueryErrorMiddleware: Middleware = api => next => action => {
   if (isRejectedWithValue(action)) {
-    const status = action.payload?.status
-    const endpointName = action.meta?.arg?.endpointName
+    const status = getRejectedStatus(action)
+    const endpointName = getRejectedEndpointName(action)
 
-    if (shouldShowGlobalToast(status)) {
+    if (shouldShowGlobalToast(status, endpointName)) {
       api.dispatch(
         enqueueToast({
           severity: getToastSeverity(status),
