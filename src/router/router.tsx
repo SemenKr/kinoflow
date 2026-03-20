@@ -15,6 +15,7 @@ export const router = createBrowserRouter([
     children: [
       { path: ROUTES.home, element: <MainPage /> },
       { path: ROUTES.categories, element: <CategoryMoviesPage /> },
+      { path: ROUTES.movieCategory(':category'), element: <CategoryMoviesPage /> },
       { path: ROUTES.filtered, element: <FilteredMoviesPage /> },
       { path: ROUTES.search, element: <SearchPage /> },
       { path: ROUTES.favorites, element: <FavoritesPage /> },
