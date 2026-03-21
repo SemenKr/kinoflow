@@ -45,7 +45,7 @@ export interface MovieDetails {
   backdrop_path: string | null
   poster_path: string | null
   release_date: string
-  runtime: number
+  runtime: number | null
   vote_average: number
   vote_count: number
   genres: Genre[]
