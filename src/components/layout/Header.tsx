@@ -17,6 +17,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu'
 
+import { GlobalLoadingBar } from '@/shared/ui/loading/GlobalLoadingBar'
 import { ROUTES } from '@/shared/constants'
 import { NavItem } from './NavItem'
 import { LanguageSwitch } from './LanguageSwitch'
@@ -36,7 +37,7 @@ export const Header = () => {
   const closeMenu = () => setIsMenuOpen(false)
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ overflow: 'hidden' }}>
       <Toolbar sx={{ display: 'flex', gap: 2, width: '100%', minWidth: 0 }}>
         <Box
           component={RouterLink}
@@ -74,12 +75,7 @@ export const Header = () => {
           }}
         >
           {navItems.map(item => (
-            <NavItem
-              key={item.to}
-              to={item.to}
-              label={item.label}
-              activePath={item.activePath}
-            />
+            <NavItem key={item.to} to={item.to} label={item.label} activePath={item.activePath} />
           ))}
         </Box>
 
@@ -169,6 +165,8 @@ export const Header = () => {
           </Stack>
         </Box>
       </Drawer>
+
+      <GlobalLoadingBar />
     </AppBar>
   )
 }

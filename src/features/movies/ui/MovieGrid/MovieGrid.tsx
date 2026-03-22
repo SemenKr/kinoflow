@@ -22,12 +22,12 @@ export const MovieGrid = ({ movies }: Props) => {
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-        gap: { xs: 2, md: 2.5 },
+        gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))',
+        gap: { xs: 1.75, md: 2.25 },
       }}
     >
       {movies.map(movie => (
-        <Box key={movie.id} sx={{ width: '100%', maxWidth: 220, mx: 'auto' }}>
+        <Box key={movie.id} sx={{ width: '100%', maxWidth: 188, mx: 'auto' }}>
           <MovieCard movie={movie} />
         </Box>
       ))}

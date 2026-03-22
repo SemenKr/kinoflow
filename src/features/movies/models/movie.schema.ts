@@ -28,6 +28,10 @@ const GenreSchema = z.object({
   name: z.string(),
 })
 
+export const GenresResponseSchema = z.object({
+  genres: z.array(GenreSchema).default([]),
+})
+
 const ProductionCompanySchema = z.object({
   id: z.number(),
   name: z.string(),

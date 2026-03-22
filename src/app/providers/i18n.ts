@@ -1,9 +1,11 @@
+import {
+  getInitialLanguage,
+  normalizeLanguage,
+  persistLanguage,
+  supportedLanguages,
+} from '@/app/providers/i18n.config'
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-
-const STORAGE_KEY = 'kino-flow-lang'
-const supportedLanguages = ['en', 'ru'] as const
-type SupportedLanguage = (typeof supportedLanguages)[number]
 
 const resources = {
   en: {
@@ -19,6 +21,31 @@ const resources = {
       categories_tab_upcoming: 'Upcoming',
       categories_tab_now_playing: 'Now playing',
       filtered: 'Filtered Movies',
+      filtered_page_title: 'Explore by filters',
+      filtered_page_subtitle:
+        'Open the filter rail when you need precision, hide it when you want full focus on the grid.',
+      filtered_filters_title: 'Filters',
+      filtered_filters_show: 'Open filters',
+      filtered_filters_hide: 'Hide filters',
+      filtered_sort_by: 'Sort by',
+      filtered_rating: 'Rating',
+      filtered_rating_range: 'From {{min}} to {{max}}',
+      filtered_genres: 'Genres',
+      filtered_reset: 'Reset filters',
+      filtered_no_results: 'No movies found for the selected filters.',
+      filtered_results_heading: 'Results',
+      filtered_results_count: '{{count}} matches',
+      filtered_active_filters: '{{count}} active filters',
+      filtered_selected_genres: '{{count}} genres selected',
+      filtered_back_to_top: 'Back to top',
+      filtered_sort_popularity_desc: 'Popularity ↓',
+      filtered_sort_popularity_asc: 'Popularity ↑',
+      filtered_sort_rating_desc: 'Rating ↓',
+      filtered_sort_rating_asc: 'Rating ↑',
+      filtered_sort_release_desc: 'Release date ↓',
+      filtered_sort_release_asc: 'Release date ↑',
+      filtered_sort_title_asc: 'Title A-Z',
+      filtered_sort_title_desc: 'Title Z-A',
       search: 'Search',
       view_more: 'View More',
       favorites: 'Favorites',
@@ -80,6 +107,7 @@ const resources = {
       toast_parse_error: 'Unexpected server response. Please try again later.',
       toast_timeout_error: 'Request timed out. Please try again.',
       toast_auth_error: 'Authorization error. Please sign in again.',
+      toast_not_found_error: 'Requested resource was not found.',
       toast_rate_limit_error: 'Too many requests. Please wait a bit and try again.',
       toast_server_error: 'Server error. Please try again later.',
       toast_movies_feed_error: 'Could not load movies right now.',
@@ -111,6 +139,31 @@ const resources = {
       categories_tab_upcoming: 'Скоро выйдут',
       categories_tab_now_playing: 'Сейчас в кино',
       filtered: 'Фильтр',
+      filtered_page_title: 'Подбор фильмов',
+      filtered_page_subtitle:
+        'Открывайте панель фильтров, когда нужен точный поиск, и скрывайте ее, когда хотите сосредоточиться на каталоге.',
+      filtered_filters_title: 'Фильтры',
+      filtered_filters_show: 'Открыть фильтры',
+      filtered_filters_hide: 'Скрыть фильтры',
+      filtered_sort_by: 'Сортировка',
+      filtered_rating: 'Рейтинг',
+      filtered_rating_range: 'От {{min}} до {{max}}',
+      filtered_genres: 'Жанры',
+      filtered_reset: 'Сбросить фильтры',
+      filtered_no_results: 'По выбранным фильтрам фильмы не найдены.',
+      filtered_results_heading: 'Результаты',
+      filtered_results_count: '{{count}} результатов',
+      filtered_active_filters: '{{count}} активных фильтра',
+      filtered_selected_genres: 'Выбрано жанров: {{count}}',
+      filtered_back_to_top: 'Наверх',
+      filtered_sort_popularity_desc: 'Популярность ↓',
+      filtered_sort_popularity_asc: 'Популярность ↑',
+      filtered_sort_rating_desc: 'Рейтинг ↓',
+      filtered_sort_rating_asc: 'Рейтинг ↑',
+      filtered_sort_release_desc: 'Дата выхода ↓',
+      filtered_sort_release_asc: 'Дата выхода ↑',
+      filtered_sort_title_asc: 'Название А-Я',
+      filtered_sort_title_desc: 'Название Я-А',
       search: 'Поиск',
       view_more: 'Показать все',
       favorites: 'Избранное',
@@ -174,6 +227,7 @@ const resources = {
       toast_parse_error: 'Сервер вернул неожиданный ответ. Попробуйте позже.',
       toast_timeout_error: 'Время ожидания запроса истекло. Попробуйте снова.',
       toast_auth_error: 'Ошибка авторизации. Повторите вход.',
+      toast_not_found_error: 'Запрошенный ресурс не найден.',
       toast_rate_limit_error: 'Слишком много запросов. Немного подождите и попробуйте снова.',
       toast_server_error: 'Ошибка сервера. Попробуйте позже.',
       toast_movies_feed_error: 'Сейчас не удалось загрузить список фильмов.',
@@ -193,24 +247,6 @@ const resources = {
   },
 }
 
-const normalizeLanguage = (value: string): SupportedLanguage | null => {
-  const short = value.toLowerCase().split('-')[0]
-  return supportedLanguages.includes(short as SupportedLanguage)
-    ? (short as SupportedLanguage)
-    : null
-}
-
-const getInitialLanguage = (): SupportedLanguage => {
-  if (typeof window === 'undefined') return 'en'
-
-  const stored = window.localStorage.getItem(STORAGE_KEY)
-  const normalizedStored = stored ? normalizeLanguage(stored) : null
-  if (normalizedStored) return normalizedStored
-
-  const browser = normalizeLanguage(window.navigator.language)
-  return browser ?? 'en'
-}
-
 i18n.use(initReactI18next).init({
   resources,
   lng: getInitialLanguage(),
@@ -223,9 +259,8 @@ i18n.use(initReactI18next).init({
 
 if (typeof window !== 'undefined') {
   i18n.on('languageChanged', language => {
-    const normalized = normalizeLanguage(language)
-    if (normalized) {
-      window.localStorage.setItem(STORAGE_KEY, normalized)
+    if (normalizeLanguage(language)) {
+      persistLanguage(language)
     }
   })
 }

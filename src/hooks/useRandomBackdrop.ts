@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 import { useGetPopularMoviesQuery } from '@/features/movies/api/moviesApi'
+import { useApiLanguage } from '@/hooks/useApiLanguage'
 import { IMAGE_BASE } from '@/shared/constants'
 
 export const useRandomBackdrop = () => {
-  const { data } = useGetPopularMoviesQuery({ page: 1 })
+  const apiLanguage = useApiLanguage()
+  const { data } = useGetPopularMoviesQuery({ page: 1, language: apiLanguage })
 
   return useMemo(() => {
     if (!data?.results.length) return ''

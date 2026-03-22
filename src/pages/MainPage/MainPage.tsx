@@ -7,6 +7,7 @@ import {
 import { useMovieCategoryQueries } from '@/features/movies/model/useMovieCategoryQueries'
 import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
 import { WelcomeSection } from '@/features/movies/ui/WelcomeSection/WelcomeSection'
+import { useApiLanguage } from '@/hooks'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Stack, Typography } from '@mui/material'
 import { useMemo } from 'react'
@@ -46,7 +47,11 @@ const previewItemStyles = {
 
 export const MainPage = () => {
   const { t } = useTranslation()
-  const queryArgs = useMemo(() => ({ page: 1, ...DEFAULT_MOVIE_CATEGORY_QUERY }), [])
+  const apiLanguage = useApiLanguage()
+  const queryArgs = useMemo(
+    () => ({ page: 1, language: apiLanguage, ...DEFAULT_MOVIE_CATEGORY_QUERY }),
+    [apiLanguage],
+  )
   const categoryQueries = useMovieCategoryQueries(queryArgs)
 
   const sections = useMemo(

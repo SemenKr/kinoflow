@@ -63,7 +63,10 @@ export const Footer = () => {
                   transition: 'transform 160ms ease, background-color 160ms ease, color 160ms ease',
                   '&:hover': {
                     color: theme.palette.primary.main,
-                    backgroundColor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.12 : 0.08),
+                    backgroundColor: alpha(
+                      theme.palette.primary.main,
+                      theme.palette.mode === 'dark' ? 0.12 : 0.08,
+                    ),
                     transform: 'translateY(-1px)',
                   },
                 })}

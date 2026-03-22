@@ -1,7 +1,6 @@
 import { MovieGrid } from '@/features/movies/ui/MovieGrid/MovieGrid'
-import { useDebounceValue } from '@/hooks'
-import { InlineLoader } from '@/shared/ui/loading/InlineLoader'
-import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
+import { MovieGridSkeleton } from '@/features/movies/ui/MovieGrid/MovieGridSkeleton'
+import { useApiLanguage, useDebounceValue } from '@/hooks'
 import { useSearchParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Box, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
@@ -14,14 +13,16 @@ export const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const queryFromUrl = searchParams.get('q') || ''
   const { t } = useTranslation()
+  const apiLanguage = useApiLanguage()
 
   const [query, setQuery] = useState(queryFromUrl)
   const debouncedQuery = useDebounceValue(query, 500)
 
   const { data, isLoading, isFetching } = useGetSearchMoviesQuery(
-    { query: debouncedQuery, page: 1 },
+    { query: debouncedQuery, page: 1, language: apiLanguage },
     { skip: !debouncedQuery },
   )
+  const shouldShowResultsSkeleton = Boolean(debouncedQuery) && (isLoading || isFetching)
 
   useEffect(() => {
     if (debouncedQuery) {
@@ -108,29 +109,20 @@ export const SearchPage = () => {
 
       {!query && <Typography sx={{ mt: 3 }}>{t('search_page_empty')}</Typography>}
 
-      {isLoading && (
+      {shouldShowResultsSkeleton && (
         <Box sx={{ mt: 3 }}>
-          {debouncedQuery ? (
-            <SectionLoader cards={4} titleWidth="20%" />
-          ) : (
-            <InlineLoader label={t('loading')} />
-          )}
+          <MovieGridSkeleton cards={12} />
         </Box>
       )}
 
-      {debouncedQuery && data && data.results.length === 0 && (
+      {debouncedQuery && !shouldShowResultsSkeleton && data && data.results.length === 0 && (
         <Typography sx={{ mt: 3 }}>
           {t('search_page_no_results', { query: debouncedQuery })}
         </Typography>
       )}
 
-      {data && data.results.length > 0 && (
+      {!shouldShowResultsSkeleton && data && data.results.length > 0 && (
         <Box sx={{ mt: 3 }}>
-          {isFetching && !isLoading && (
-            <Box sx={{ mb: 2 }}>
-              <InlineLoader label={t('loading')} />
-            </Box>
-          )}
           <MovieGrid movies={data.results} />
         </Box>
       )}

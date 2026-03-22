@@ -22,6 +22,7 @@ import {
   posterWrapperStyles,
   ratingBadgeStyles,
   titleStyles,
+  yearStyles,
 } from './MovieCard.styles'
 
 interface Props {
@@ -98,11 +99,11 @@ export const MovieCard = ({ movie }: Props) => {
       </Box>
 
       <CardContent sx={contentStyles}>
-        <Typography variant="subtitle1" noWrap sx={titleStyles}>
+        <Typography variant="subtitle2" sx={titleStyles}>
           {movie.title}
         </Typography>
 
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" sx={yearStyles}>
           {year}
         </Typography>
       </CardContent>

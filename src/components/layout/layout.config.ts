@@ -2,7 +2,10 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import TelegramIcon from '@mui/icons-material/Telegram'
-import { DEFAULT_MOVIE_CATEGORY, getMovieCategoryRoute } from '@/features/movies/config/movieCategories'
+import {
+  DEFAULT_MOVIE_CATEGORY,
+  getMovieCategoryRoute,
+} from '@/features/movies/config/movieCategories'
 import { ROUTES } from '@/shared/constants'
 
 export interface NavigationItemConfig {

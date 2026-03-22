@@ -1,7 +1,8 @@
 import i18n from '@/app/providers/i18n'
 import { enqueueToast } from '@/shared/ui/toast/toast.slice'
-import { isRejectedWithValue, type Middleware } from '@reduxjs/toolkit'
+import { isRejected, isRejectedWithValue, type Middleware } from '@reduxjs/toolkit'
 import type { ToastSeverity } from '@/shared/ui/toast/toast.slice'
+import { ResponseValidationError } from '@/shared/api/validateResponse'
 
 type EndpointName =
   | 'getPopularMovies'
@@ -11,6 +12,8 @@ type EndpointName =
   | 'getSearchMovies'
   | 'getMovieDetails'
   | 'getSimilarMovies'
+  | 'getDiscoverMovies'
+  | 'getGenres'
 
 const LOCAL_ERROR_ENDPOINTS = new Set<EndpointName>(['getSimilarMovies'])
 
@@ -24,7 +27,7 @@ const shouldShowGlobalToast = (status: unknown, endpointName?: string) => {
   }
 
   if (typeof status === 'number') {
-    return status === 401 || status === 403 || status === 429 || status >= 500
+    return status === 401 || status === 403 || status === 404 || status === 429 || status >= 500
   }
 
   return false
@@ -48,6 +51,8 @@ const getEndpointMessage = (endpointName?: string) => {
     getSearchMovies: 'toast_search_error',
     getMovieDetails: 'toast_movie_details_error',
     getSimilarMovies: 'toast_similar_movies_error',
+    getDiscoverMovies: 'toast_movies_feed_error',
+    getGenres: 'toast_movies_feed_error',
   }
 
   const key = endpointName ? endpointKeyMap[endpointName as EndpointName] : undefined
@@ -56,6 +61,7 @@ const getEndpointMessage = (endpointName?: string) => {
 
 const getToastMessage = (status: unknown, endpointName?: string) => {
   if (status === 401 || status === 403) return i18n.t('toast_auth_error')
+  if (status === 404) return i18n.t('toast_not_found_error')
   if (status === 429) return i18n.t('toast_rate_limit_error')
 
   const endpointMessage = getEndpointMessage(endpointName)
@@ -67,6 +73,22 @@ const getToastMessage = (status: unknown, endpointName?: string) => {
   if (typeof status === 'number' && status >= 500) return i18n.t('toast_server_error')
 
   return i18n.t('toast_unexpected_error')
+}
+
+const getRejectedErrorName = (action: unknown) => {
+  if (
+    typeof action === 'object' &&
+    action !== null &&
+    'error' in action &&
+    typeof action.error === 'object' &&
+    action.error !== null &&
+    'name' in action.error &&
+    typeof action.error.name === 'string'
+  ) {
+    return action.error.name
+  }
+
+  return undefined
 }
 
 const getRejectedStatus = (action: unknown) => {
@@ -104,9 +126,20 @@ const getRejectedEndpointName = (action: unknown) => {
 }
 
 export const rtkQueryErrorMiddleware: Middleware = api => next => action => {
-  if (isRejectedWithValue(action)) {
+  if (isRejectedWithValue(action) || isRejected(action)) {
     const status = getRejectedStatus(action)
     const endpointName = getRejectedEndpointName(action)
+    const errorName = getRejectedErrorName(action)
+
+    if (errorName === ResponseValidationError.name) {
+      api.dispatch(
+        enqueueToast({
+          severity: 'error',
+          message: i18n.t('toast_parse_error'),
+        }),
+      )
+      return next(action)
+    }
 
     if (shouldShowGlobalToast(status, endpointName)) {
       api.dispatch(

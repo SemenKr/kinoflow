@@ -1,8 +1,8 @@
 import { useLazyGetSimilarMoviesQuery } from '@/features/movies/api/moviesApi'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
 import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
+import { MovieCardSkeleton } from '@/features/movies/ui/MovieGrid/MovieCardSkeleton'
 import { useGlobalLoading } from '@/hooks'
-import { InlineLoader } from '@/shared/ui/loading/InlineLoader'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
@@ -18,6 +18,7 @@ import {
 interface Props {
   title: string
   movieId: number
+  language: string
 }
 
 const LOAD_MORE_STEP = 6
@@ -28,7 +29,15 @@ const appendUniqueMovies = (current: Movie[], next: Movie[]) => {
   return [...current, ...uniqueNext]
 }
 
-export const SimilarMoviesSection = ({ title, movieId }: Props) => {
+const renderLoadingSkeletonItems = (count: number) =>
+  Array.from({ length: count }).map((_, index) => (
+    <MovieCardSkeleton
+      key={`similar-skeleton-${index}`}
+      sx={{ width: { xs: 180, sm: 200, md: 220 }, flex: '0 0 auto' }}
+    />
+  ))
+
+export const SimilarMoviesSection = ({ title, movieId, language }: Props) => {
   const { t } = useTranslation()
   const { track } = useGlobalLoading()
   const [trigger, { isFetching }] = useLazyGetSimilarMoviesQuery()
@@ -49,7 +58,7 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
       setHasError(false)
 
       try {
-        const response = await track(trigger({ movieId, page: pageToLoad }).unwrap())
+        const response = await track(trigger({ movieId, page: pageToLoad, language }).unwrap())
         let mergedLength = response.results.length
 
         setMovies(prev => {
@@ -70,7 +79,7 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
         requestInFlightRef.current = false
       }
     },
-    [movieId, track, trigger],
+    [language, movieId, track, trigger],
   )
 
   const handleLoadMore = useCallback(async () => {
@@ -166,11 +175,10 @@ export const SimilarMoviesSection = ({ title, movieId }: Props) => {
             <MovieCard movie={movie} />
           </Box>
         ))}
+        {isFetching && renderLoadingSkeletonItems(3)}
       </Box>
 
       <Box sx={footerSx}>
-        {isFetching && <InlineLoader label={t('loading')} />}
-
         {hasError && (
           <>
             <Typography variant="body2" color="text.secondary" sx={errorTextSx}>

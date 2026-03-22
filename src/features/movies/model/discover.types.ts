@@ -1,5 +1,6 @@
 export interface DiscoverMoviesParams {
   page?: number
+  language?: string
   sort_by?: string
 
   'vote_average.gte'?: number

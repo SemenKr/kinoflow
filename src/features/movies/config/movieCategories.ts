@@ -26,7 +26,6 @@ export const MOVIE_CATEGORY_TABS = Object.keys(MOVIE_CATEGORY_CONFIG) as MovieCa
 export const DEFAULT_MOVIE_CATEGORY: MovieCategoryTab = 'popular'
 
 export const DEFAULT_MOVIE_CATEGORY_QUERY: PaginationParams = {
-  language: 'en-US',
   region: 'US',
 }
 

@@ -1,62 +1,88 @@
 import { buildMoviesListQuery } from '@/features/movies/api/buildMoviesListQuery'
 import { MOVIE_CATEGORY_CONFIG } from '@/features/movies/config/movieCategories'
-import type { MoviesResponse } from '@/features/movies/api/moviesApi.types'
+import type {
+  GenresParams,
+  MovieDetailsParams,
+  MoviesResponse,
+  SearchMoviesParams,
+  SimilarMoviesParams,
+} from '@/features/movies/api/moviesApi.types'
 import type { DiscoverMoviesParams } from '@/features/movies/model/discover.types'
-import { MovieDetailsSchema, MoviesResponseSchema } from '@/features/movies/models/movie.schema'
+import {
+  GenresResponseSchema,
+  MovieDetailsSchema,
+  MoviesResponseSchema,
+} from '@/features/movies/models/movie.schema'
 import type { MovieDetails } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
 import { baseApi } from '@/shared/api/baseApi'
+import { validateResponse } from '@/shared/api/validateResponse'
 import type { PaginationParams } from '@/types/types'
+
+const parseMoviesResponse = validateResponse(MoviesResponseSchema)
+const parseMovieDetailsResponse = validateResponse(MovieDetailsSchema)
+const parseGenresResponse = validateResponse(GenresResponseSchema)
 
 export const moviesApi = baseApi.injectEndpoints({
   endpoints: builder => ({
     getPopularMovies: builder.query<MoviesResponse, PaginationParams>({
       query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG.popular.endpoint, params),
-      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
+      transformResponse: parseMoviesResponse,
     }),
 
     getTopRatedMovies: builder.query<MoviesResponse, PaginationParams>({
       query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG.top_rated.endpoint, params),
-      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
+      transformResponse: parseMoviesResponse,
     }),
 
     getUpcomingMovies: builder.query<MoviesResponse, PaginationParams>({
       query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG.upcoming.endpoint, params),
-      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
+      transformResponse: parseMoviesResponse,
     }),
 
     getNowPlayingMovies: builder.query<MoviesResponse, PaginationParams>({
       query: params => buildMoviesListQuery(MOVIE_CATEGORY_CONFIG.now_playing.endpoint, params),
-      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
+      transformResponse: parseMoviesResponse,
     }),
-    getSearchMovies: builder.query<MoviesResponse, { query: string; page?: number }>({
-      query: ({ query, page = 1 }) => ({
+    getSearchMovies: builder.query<MoviesResponse, SearchMoviesParams>({
+      query: ({ query, page = 1, language = 'en-US' }) => ({
         url: '/search/movie',
-        params: { query, page },
+        params: { query, page, language },
       }),
-      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
+      transformResponse: parseMoviesResponse,
     }),
-    getMovieDetails: builder.query<MovieDetails, number>({
-      query: (id: number) => ({
+    getMovieDetails: builder.query<MovieDetails, MovieDetailsParams>({
+      query: ({ id, language = 'en-US' }) => ({
         url: `/movie/${id}`,
         params: {
+          language,
           append_to_response: 'credits',
         },
       }),
-      transformResponse: (response: unknown) => MovieDetailsSchema.parse(response),
+      transformResponse: parseMovieDetailsResponse,
     }),
-    getSimilarMovies: builder.query<MoviesResponse, { movieId: number; page?: number }>({
-      query: ({ movieId, page = 1 }) => ({
+    getSimilarMovies: builder.query<MoviesResponse, SimilarMoviesParams>({
+      query: ({ movieId, page = 1, language = 'en-US' }) => ({
         url: `/movie/${movieId}/similar`,
-        params: { page },
+        params: { page, language },
       }),
-      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
+      transformResponse: parseMoviesResponse,
     }),
     getDiscoverMovies: builder.query<MoviesResponse, DiscoverMoviesParams>({
-      query: params => ({
+      query: ({ language = 'en-US', ...params }) => ({
         url: '/discover/movie',
+        params: {
+          language,
+          ...params,
+        },
+      }),
+      transformResponse: parseMoviesResponse,
+    }),
+    getGenres: builder.query<{ genres: { id: number; name: string }[] }, GenresParams | void>({
+      query: (params = {}) => ({
+        url: '/genre/movie/list',
         params,
       }),
-      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
+      transformResponse: parseGenresResponse,
     }),
   }),
 })
@@ -70,4 +96,6 @@ export const {
   useGetMovieDetailsQuery,
   useLazyGetSimilarMoviesQuery,
   useGetDiscoverMoviesQuery,
+  useLazyGetDiscoverMoviesQuery,
+  useGetGenresQuery,
 } = moviesApi

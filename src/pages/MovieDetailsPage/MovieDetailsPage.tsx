@@ -1,8 +1,8 @@
 import { useGetMovieDetailsQuery } from '@/features/movies/api/moviesApi'
 import { ActorsSection } from '@/features/movies/ui/ActorsSection/ActorsSection'
 import { SimilarMoviesSection } from '@/features/movies/ui/SimilarMoviesSection/SimilarMoviesSection'
+import { useApiLanguage } from '@/hooks'
 import { IMAGE_BASE } from '@/shared/constants'
-import { PageLoader } from '@/shared/ui/loading/PageLoader'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import { Box, Button, Container, Typography } from '@mui/material'
 import { useCallback, useEffect, useMemo } from 'react'
@@ -27,6 +27,7 @@ import {
   POSTER_FALLBACK_URL,
 } from './MovieDetailsPage.utils'
 import { HeroSection } from './components/HeroSection'
+import { MovieDetailsPageSkeleton } from './components/MovieDetailsPageSkeleton'
 import { OverviewSection } from './components/OverviewSection'
 import { ProductionSection } from './components/ProductionSection'
 
@@ -40,11 +41,15 @@ export const MovieDetailsPage = () => {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { id } = useParams()
+  const apiLanguage = useApiLanguage()
 
   const movieId = Number(id)
   const isValidMovieId = !Number.isNaN(movieId)
 
-  const { data, isLoading, error } = useGetMovieDetailsQuery(movieId, { skip: !isValidMovieId })
+  const { data, isLoading, error } = useGetMovieDetailsQuery(
+    { id: movieId, language: apiLanguage },
+    { skip: !isValidMovieId },
+  )
   const locale = i18n.resolvedLanguage || 'en'
   const labels = useMemo(
     () => ({
@@ -117,7 +122,7 @@ export const MovieDetailsPage = () => {
   const handleBack = useCallback(() => navigate(-1), [navigate])
 
   if (isLoading) {
-    return <PageLoader lines={4} />
+    return <MovieDetailsPageSkeleton />
   }
 
   if (error) {
@@ -224,6 +229,7 @@ export const MovieDetailsPage = () => {
           key={movie.id}
           title={t('movie_details_similar')}
           movieId={movie.id}
+          language={apiLanguage}
         />
       </Container>
     </Box>

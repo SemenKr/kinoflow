@@ -1,8 +1,8 @@
 import { alpha, type Theme } from '@mui/material/styles'
 
 export const cardStyles = (theme: Theme) => ({
-  width: 'min(100%, 220px)',
-  maxWidth: 220,
+  width: 'min(100%, 188px)',
+  maxWidth: 188,
   minWidth: 0,
   position: 'relative',
   overflow: 'hidden',
@@ -96,7 +96,7 @@ export const posterWrapperStyles = {
 
 export const posterStyles = (theme: Theme) => ({
   width: '100%',
-  aspectRatio: '2 / 3',
+  aspectRatio: '5 / 7',
   height: 'auto',
   objectFit: 'cover',
   display: 'block',
@@ -108,22 +108,24 @@ export const posterStyles = (theme: Theme) => ({
 })
 
 export const contentStyles = {
-  pt: 3.5,
+  pt: 3,
+  pb: 1.75,
+  px: 1.5,
 }
 
 export const ratingBadgeStyles = (theme: Theme, ratingColor: string, rating: number) => ({
   position: 'absolute',
-  left: 12,
+  left: 10,
   bottom: 0,
   transform: 'translateY(50%)',
   zIndex: 2,
-  width: 44,
-  height: 44,
+  width: 40,
+  height: 40,
   borderRadius: '50%',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: 11,
+  fontSize: 10,
   fontWeight: 700,
   lineHeight: 1.2,
   color: theme.palette.common.white,
@@ -145,4 +147,16 @@ export const ratingBadgeStyles = (theme: Theme, ratingColor: string, rating: num
 
 export const titleStyles = {
   fontWeight: 600,
+  fontSize: '0.95rem',
+  lineHeight: 1.25,
+  minHeight: '2.5em',
+  display: '-webkit-box',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+}
+
+export const yearStyles = {
+  mt: 0.35,
+  fontSize: '0.8rem',
 }

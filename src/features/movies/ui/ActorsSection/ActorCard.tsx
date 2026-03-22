@@ -9,8 +9,8 @@ interface Props {
 }
 
 const FALLBACK = createImageFallbackUrl({
-  width: 128,
-  height: 160,
+  width: 80,
+  height: 112,
   label: 'No Photo',
 })
 
@@ -22,8 +22,8 @@ export const ActorCard = ({ actor }: Props) => {
       role={'listitem'}
       sx={theme => ({
         width: '100%',
-        borderRadius: 2,
-        p: 0.625,
+        borderRadius: 1.5,
+        p: 0.45,
         backgroundColor: alpha(
           theme.palette.background.paper,
           theme.palette.mode === 'dark' ? 0.58 : 0.88,
@@ -34,26 +34,26 @@ export const ActorCard = ({ actor }: Props) => {
         )}`,
         boxShadow:
           theme.palette.mode === 'dark'
-            ? `0 14px 28px ${alpha(theme.palette.common.black, 0.3)}`
-            : `0 12px 26px ${alpha(theme.palette.common.black, 0.08)}`,
+            ? `0 10px 18px ${alpha(theme.palette.common.black, 0.24)}`
+            : `0 8px 16px ${alpha(theme.palette.common.black, 0.06)}`,
         transition: 'transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease',
         '&:hover': {
-          transform: 'translateY(-2px)',
+          transform: 'translateY(-1px)',
           borderColor: alpha(theme.palette.primary.main, 0.28),
           boxShadow:
             theme.palette.mode === 'dark'
-              ? `0 18px 34px ${alpha(theme.palette.common.black, 0.38)}`
-              : `0 16px 32px ${alpha(theme.palette.common.black, 0.12)}`,
+              ? `0 12px 22px ${alpha(theme.palette.common.black, 0.28)}`
+              : `0 10px 20px ${alpha(theme.palette.common.black, 0.09)}`,
         },
       })}
     >
       <Box
         sx={{
           position: 'relative',
-          mb: 0.75,
+          mb: 0.45,
           overflow: 'hidden',
-          borderRadius: 1.25,
-          aspectRatio: '4 / 5',
+          borderRadius: 1,
+          aspectRatio: '5 / 7',
           backgroundColor: 'action.hover',
         }}
       >
@@ -78,13 +78,14 @@ export const ActorCard = ({ actor }: Props) => {
       </Box>
 
       <Typography
-        variant="subtitle2"
+        variant="caption"
         title={actor.name}
         sx={{
           fontWeight: 700,
-          lineHeight: 1.25,
-          mb: 0.2,
-          minHeight: '2.6em',
+          lineHeight: 1.2,
+          fontSize: '0.72rem',
+          mb: 0.1,
+          minHeight: '2.4em',
           display: '-webkit-box',
           overflow: 'hidden',
           WebkitBoxOrient: 'vertical',
@@ -95,12 +96,13 @@ export const ActorCard = ({ actor }: Props) => {
       </Typography>
 
       <Typography
-        variant="body2"
+        variant="caption"
         color="text.secondary"
         title={actor.character}
         sx={{
-          lineHeight: 1.35,
-          minHeight: '2.9em',
+          lineHeight: 1.2,
+          fontSize: '0.68rem',
+          minHeight: '2.4em',
           display: '-webkit-box',
           overflow: 'hidden',
           WebkitBoxOrient: 'vertical',

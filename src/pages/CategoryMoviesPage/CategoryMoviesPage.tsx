@@ -8,8 +8,8 @@ import {
 } from '@/features/movies/config/movieCategories'
 import { useMovieCategoryQueries } from '@/features/movies/model/useMovieCategoryQueries'
 import { MovieGrid } from '@/features/movies/ui/MovieGrid/MovieGrid'
-import { InlineLoader } from '@/shared/ui/loading/InlineLoader'
-import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
+import { MovieGridSkeleton } from '@/features/movies/ui/MovieGrid/MovieGridSkeleton'
+import { useApiLanguage } from '@/hooks'
 import { Box, Button, Pagination, Stack, Tab, Tabs, Typography } from '@mui/material'
 import { type ChangeEvent, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +19,7 @@ const MOVIES_PER_PAGE = 20
 
 export const CategoryMoviesPage = () => {
   const { t } = useTranslation()
+  const apiLanguage = useApiLanguage()
   const { category } = useParams<{ category?: string }>()
   const [searchParams, setSearchParams] = useSearchParams()
   const previousCategoryRef = useRef<string | undefined>(category)
@@ -27,7 +28,7 @@ export const CategoryMoviesPage = () => {
   const activeCategory = isMovieCategoryTab(category) ? category : DEFAULT_MOVIE_CATEGORY
   const pageParam = Number(searchParams.get('page') || '1')
   const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1
-  const queryArgs = { page, ...DEFAULT_MOVIE_CATEGORY_QUERY }
+  const queryArgs = { page, language: apiLanguage, ...DEFAULT_MOVIE_CATEGORY_QUERY }
   const categoryQueries = useMovieCategoryQueries(queryArgs, { activeCategory })
 
   useEffect(() => {
@@ -53,6 +54,7 @@ export const CategoryMoviesPage = () => {
   const totalPages = Math.max(1, activeQuery.data?.total_pages ?? 1)
   const currentPage = Math.min(page, totalPages)
   const activeCategoryLabel = t(MOVIE_CATEGORY_CONFIG[activeCategory].translationKey)
+  const shouldShowResultsSkeleton = activeQuery.isLoading || activeQuery.isFetching
 
   return (
     <Box ref={pageTopRef} sx={{ px: { xs: 2, sm: 3 }, py: 3, minWidth: 0 }}>
@@ -114,7 +116,7 @@ export const CategoryMoviesPage = () => {
           </Typography>
         </Stack>
 
-        {activeQuery.isLoading && <SectionLoader cards={6} titleWidth="24%" />}
+        {shouldShowResultsSkeleton && <MovieGridSkeleton cards={12} />}
 
         {activeQuery.isError && (
           <Stack spacing={1.5} sx={{ py: 2 }}>
@@ -127,12 +129,8 @@ export const CategoryMoviesPage = () => {
           </Stack>
         )}
 
-        {activeQuery.data && (
+        {!shouldShowResultsSkeleton && activeQuery.data && (
           <Stack spacing={3}>
-            {activeQuery.isFetching && !activeQuery.isLoading && (
-              <InlineLoader label={t('loading')} />
-            )}
-
             <MovieGrid movies={activeQuery.data.results} />
 
             {activeQuery.data.total_results > MOVIES_PER_PAGE && (
