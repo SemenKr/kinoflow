@@ -2,7 +2,7 @@
 
 Movie discovery application built with `React`, `TypeScript` and `Vite`, powered by the `TMDB API`.
 
-Live site: [https://kinoflow-mipxuckjn-semenkrs-projects.vercel.app/](https://kinoflow-mipxuckjn-semenkrs-projects.vercel.app/)
+Live site: [https://kinoflow-movies.vercel.app/](https://kinoflow-mipxuckjn-semenkrs-projects.vercel.app/)
 
 ## Overview
 
