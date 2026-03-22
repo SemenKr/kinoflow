@@ -12,6 +12,7 @@ import {
   Stack,
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
+import { prefetchRoute } from '@/router/router.prefetch'
 import { useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router-dom'
 import { useMemo, useState } from 'react'
@@ -23,6 +24,14 @@ import { NavItem } from './NavItem'
 import { LanguageSwitch } from './LanguageSwitch'
 import { ThemeToggle } from './ThemeToggle'
 import logoUrl from '@/assets/icons/tmdblogo.svg'
+
+const navItemPrefetchMap = {
+  main: 'home',
+  categories: 'categories',
+  filtered: 'filtered',
+  search: 'search',
+  favorites: 'favorites',
+} as const
 
 export const Header = () => {
   const { t } = useTranslation()
@@ -75,7 +84,13 @@ export const Header = () => {
           }}
         >
           {navItems.map(item => (
-            <NavItem key={item.to} to={item.to} label={item.label} activePath={item.activePath} />
+            <NavItem
+              key={item.to}
+              to={item.to}
+              label={item.label}
+              activePath={item.activePath}
+              prefetchKey={navItemPrefetchMap[item.key]}
+            />
           ))}
         </Box>
 
@@ -141,6 +156,8 @@ export const Header = () => {
                 component={RouterLink}
                 to={item.to}
                 onClick={closeMenu}
+                onMouseEnter={() => prefetchRoute(navItemPrefetchMap[item.key])}
+                onFocus={() => prefetchRoute(navItemPrefetchMap[item.key])}
                 sx={theme => ({
                   borderRadius: 10,
                   marginBottom: 0.5,

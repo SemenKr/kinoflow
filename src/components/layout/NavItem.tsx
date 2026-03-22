@@ -1,14 +1,16 @@
 import { Button } from '@mui/material'
 import { alpha } from '@mui/material/styles'
+import { prefetchRoute } from '@/router/router.prefetch'
 import { NavLink, matchPath, useLocation, useResolvedPath } from 'react-router-dom'
 
 interface Props {
   to: string
   label: string
   activePath?: string
+  prefetchKey?: 'home' | 'categories' | 'filtered' | 'search' | 'favorites'
 }
 
-export const NavItem = ({ to, label, activePath }: Props) => {
+export const NavItem = ({ to, label, activePath, prefetchKey }: Props) => {
   const location = useLocation()
   const resolvedPath = useResolvedPath(to)
   const isActive = activePath
@@ -20,6 +22,8 @@ export const NavItem = ({ to, label, activePath }: Props) => {
       component={NavLink}
       to={to}
       color="inherit"
+      onMouseEnter={() => prefetchKey && prefetchRoute(prefetchKey)}
+      onFocus={() => prefetchKey && prefetchRoute(prefetchKey)}
       sx={theme => ({
         borderRadius: 12,
         padding: '6px 12px',

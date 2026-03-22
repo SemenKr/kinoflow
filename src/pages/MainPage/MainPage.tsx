@@ -8,6 +8,7 @@ import { useMovieCategoryQueries } from '@/features/movies/model/useMovieCategor
 import { MovieCard } from '@/features/movies/ui/MovieGrid/MovieCard/MovieCard'
 import { WelcomeSection } from '@/features/movies/ui/WelcomeSection/WelcomeSection'
 import { useApiLanguage } from '@/hooks'
+import { prefetchRoute } from '@/router/router.prefetch'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Stack, Typography } from '@mui/material'
 import { useMemo } from 'react'
@@ -83,7 +84,13 @@ export const MainPage = () => {
                   {section.title}
                 </Typography>
 
-                <Button component={RouterLink} to={section.to} variant="outlined">
+                <Button
+                  component={RouterLink}
+                  to={section.to}
+                  variant="outlined"
+                  onMouseEnter={() => prefetchRoute('categories')}
+                  onFocus={() => prefetchRoute('categories')}
+                >
                   {t('view_more')}
                 </Button>
               </Stack>
