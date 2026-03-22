@@ -1,73 +1,205 @@
-# React + TypeScript + Vite
+# KinoFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Movie discovery application built with `React`, `TypeScript` and `Vite`, powered by the `TMDB API`.
 
-Currently, two official plugins are available:
+Live site: [https://kinoflow-mipxuckjn-semenkrs-projects.vercel.app/](https://kinoflow-mipxuckjn-semenkrs-projects.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Overview
 
-## React Compiler
+KinoFlow is a client-side movie app focused on:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- browsing curated TMDB categories
+- filtering and sorting movie lists
+- searching movies by title
+- viewing detailed movie pages
+- saving favorites in `localStorage`
+- switching language and theme
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Core
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- `React 19`
+- `TypeScript`
+- `Vite`
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### UI
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `MUI`
+- `MUI Icons`
+- `Emotion`
+
+### State and Data Fetching
+
+- `Redux Toolkit`
+- `RTK Query`
+
+### Routing
+
+- `React Router`
+
+### Internationalization
+
+- `i18next`
+- `react-i18next`
+
+### Validation
+
+- `Zod`
+
+### Tooling
+
+- `ESLint`
+- `Prettier`
+- `Husky`
+- `lint-staged`
+
+## Features
+
+- Global header with navigation, theme switcher and language switcher
+- TMDB logo with navigation to the home page
+- Main page with random backdrop in the welcome section
+- Search from the welcome section with redirect to the search page
+- Category movies page with URL-based category routing and pagination
+- Filtered movies page with:
+  - sorting by popularity, rating, release date and title
+  - rating range filter
+  - multi-select genres
+  - reset filters
+  - URL sync for filters
+- Search page with:
+  - query sync in URL
+  - pagination
+  - clear action
+  - empty and no-results states
+- Favorites page backed by `localStorage`
+- Movie details page with:
+  - hero section
+  - genres
+  - rating badge
+  - runtime
+  - overview
+  - production details
+  - top cast
+  - similar movies
+  - back navigation
+- Centralized error handling with snackbar notifications
+- Response validation for API payloads via `Zod`
+- Global linear loading bar
+- Skeleton loaders on all data-driven pages except favorites
+- Lazy-loaded routes and vendor chunk splitting for better bundle loading
+
+## Project Structure
+
+```text
+src/
+  app/                  # providers, store, global setup
+  assets/               # static assets
+  components/           # shared layout components
+  features/             # domain features: movies, favorites
+  hooks/                # reusable hooks
+  pages/                # route-level pages
+  router/               # router config and route prefetch
+  shared/               # shared API, constants, UI, utilities
+  styles/               # global styles
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Environment Variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create `.env.local` and provide:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_BASE_URL=https://api.themoviedb.org/3
+VITE_API_TOKEN=your_tmdb_bearer_token
 ```
+
+Notes:
+
+- `VITE_API_TOKEN` is required
+- `VITE_BASE_URL` should point to TMDB v3 API
+
+## Available Scripts
+
+```bash
+pnpm install
+pnpm dev
+pnpm build
+pnpm preview
+pnpm lint
+pnpm format
+```
+
+## Local Development
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+## Production Build
+
+```bash
+pnpm build
+```
+
+The app uses:
+
+- route-level lazy loading
+- manual vendor chunk splitting in `vite.config.ts`
+- prefetch for important routes on navigation hover/focus
+
+## Deployment
+
+The project is deployed on `Vercel`.
+
+Production URL:
+
+- [https://kinoflow-mipxuckjn-semenkrs-projects.vercel.app/](https://kinoflow-mipxuckjn-semenkrs-projects.vercel.app/)
+
+For deployment, configure:
+
+```env
+VITE_BASE_URL=https://api.themoviedb.org/3
+VITE_API_TOKEN=your_tmdb_bearer_token
+```
+
+## API
+
+Data source:
+
+- [TMDB API](https://developer.themoviedb.org/)
+
+Used API capabilities include:
+
+- popular movies
+- top rated movies
+- upcoming movies
+- now playing movies
+- discover movies
+- search movies
+- movie details
+- similar movies
+- genres list
+
+## Quality and UX
+
+Implemented in the project:
+
+- centralized API error handling
+- snackbar-based user notifications
+- typed API layer
+- `Zod` schema validation for responses
+- theme persistence in `localStorage`
+- favorites persistence in `localStorage`
+- responsive layout for desktop and mobile
+- skeleton states and loading progress indicators
+
+## Author
+
+Semen Kr
