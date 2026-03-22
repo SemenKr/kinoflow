@@ -29,25 +29,25 @@ export const navigationItems: readonly NavigationItemConfig[] = [
 export const socialLinks = [
   {
     key: 'github',
-    href: 'https://example.com/github',
+    href: 'https://github.com/SemenKr',
     labelKey: 'footer_social_github',
     icon: GitHubIcon,
   },
   {
     key: 'telegram',
-    href: 'https://example.com/telegram',
+    href: 'https://t.me/SemenKrekotun',
     labelKey: 'footer_social_telegram',
     icon: TelegramIcon,
   },
   {
     key: 'linkedin',
-    href: 'https://example.com/linkedin',
+    href: 'https://www.linkedin.com/in/%D1%81%D0%B5%D0%BC%D1%91%D0%BD-%D0%BA%D1%80%D0%B5%D0%BA%D0%BE%D1%82%D1%83%D0%BD-8a103024b',
     labelKey: 'footer_social_linkedin',
     icon: LinkedInIcon,
   },
   {
     key: 'instagram',
-    href: 'https://example.com/instagram',
+    href: 'https://www.instagram.com/semen_kr',
     labelKey: 'footer_social_instagram',
     icon: InstagramIcon,
   },
