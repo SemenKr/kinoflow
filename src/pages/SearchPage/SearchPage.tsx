@@ -49,7 +49,9 @@ export const SearchPage = () => {
     const normalizedQuery = debouncedQuery.trim()
     if (!normalizedQuery) return
 
-    setSearchParams(nextPage > 1 ? { q: normalizedQuery, page: String(nextPage) } : { q: normalizedQuery })
+    setSearchParams(
+      nextPage > 1 ? { q: normalizedQuery, page: String(nextPage) } : { q: normalizedQuery },
+    )
     pageTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 

@@ -3,7 +3,10 @@ import { DEFAULT_FILTERS } from '@/shared/constants'
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { parseFiltersFromSearchParams, serializeFiltersToSearchParams } from '../FilteredMoviesPage.search'
+import {
+  parseFiltersFromSearchParams,
+  serializeFiltersToSearchParams,
+} from '../FilteredMoviesPage.search'
 
 type FiltersUpdater = (prev: FiltersState) => FiltersState
 
@@ -48,9 +51,7 @@ export const useFiltersUrlSync = () => {
 
       return {
         ...prev,
-        genres: exists
-          ? prev.genres.filter(id => id !== genreId)
-          : [...prev.genres, genreId],
+        genres: exists ? prev.genres.filter(id => id !== genreId) : [...prev.genres, genreId],
         page: 1,
       }
     })

@@ -74,11 +74,7 @@ export const FilterSidebar = ({
         onToggle={onGenreToggle}
       />
 
-      <ResetButton
-        label={labels.reset}
-        disabled={!hasActiveFilters}
-        onReset={onReset}
-      />
+      <ResetButton label={labels.reset} disabled={!hasActiveFilters} onReset={onReset} />
     </Paper>
   )
 }

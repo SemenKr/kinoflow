@@ -127,7 +127,10 @@ export const MovieDetailsPageSkeleton = () => {
         <Box sx={carouselRowSx}>
           {Array.from({ length: 6 }).map((_, index) => (
             <Box key={index} sx={{ width: { xs: 160, sm: 180, md: 188 }, flex: '0 0 auto' }}>
-              <Skeleton variant="rectangular" sx={{ width: '100%', aspectRatio: '5 / 7', borderRadius: 3, mb: 1.25 }} />
+              <Skeleton
+                variant="rectangular"
+                sx={{ width: '100%', aspectRatio: '5 / 7', borderRadius: 3, mb: 1.25 }}
+              />
               <Skeleton variant="text" height={24} width="82%" />
               <Skeleton variant="text" height={18} width="34%" />
             </Box>

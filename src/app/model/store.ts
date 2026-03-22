@@ -15,7 +15,11 @@ export const store = configureStore({
     toast: toastReducer,
   },
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(baseApi.middleware, rtkQueryLoadingMiddleware, rtkQueryErrorMiddleware),
+    getDefaultMiddleware().concat(
+      baseApi.middleware,
+      rtkQueryLoadingMiddleware,
+      rtkQueryErrorMiddleware,
+    ),
 })
 /**
  * setupListeners включает дополнительные возможности RTK Query:

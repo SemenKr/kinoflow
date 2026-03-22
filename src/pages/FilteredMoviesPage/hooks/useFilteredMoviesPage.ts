@@ -14,14 +14,7 @@ export const useFilteredMoviesPage = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
   const [isMobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const {
-    filters,
-    resetFilters,
-    setSort,
-    setRating,
-    toggleGenre,
-    setPage,
-  } = useFiltersUrlSync()
+  const { filters, resetFilters, setSort, setRating, toggleGenre, setPage } = useFiltersUrlSync()
 
   const debouncedRating = useDebounceValue(filters.rating, 700)
 
@@ -64,7 +57,8 @@ export const useFilteredMoviesPage = () => {
 
   const activeFilterCount = [
     filters.sortBy !== DEFAULT_FILTERS.sortBy,
-    filters.rating.min !== DEFAULT_FILTERS.rating.min || filters.rating.max !== DEFAULT_FILTERS.rating.max,
+    filters.rating.min !== DEFAULT_FILTERS.rating.min ||
+      filters.rating.max !== DEFAULT_FILTERS.rating.max,
     filters.genres.length > 0,
   ].filter(Boolean).length
 

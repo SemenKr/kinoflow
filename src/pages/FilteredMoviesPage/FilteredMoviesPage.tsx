@@ -64,11 +64,7 @@ export const FilteredMoviesPage = () => {
   return (
     <Box ref={pageTopRef} sx={pageRootSx}>
       <Box sx={layoutSx}>
-        {!isMobile && (
-          <Box sx={desktopSidebarWrapSx}>
-            {renderFilterSidebar()}
-          </Box>
-        )}
+        {!isMobile && <Box sx={desktopSidebarWrapSx}>{renderFilterSidebar()}</Box>}
 
         <Box sx={contentWrapSx}>
           <ResultsHeader

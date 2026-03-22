@@ -2,11 +2,7 @@ import { MovieGrid } from '@/features/movies/ui/MovieGrid/MovieGrid'
 import { MovieGridSkeleton } from '@/features/movies/ui/MovieGrid/MovieGridSkeleton'
 import { Box, Pagination, Typography } from '@mui/material'
 
-import {
-  loadingWrapSx,
-  paginationWrapSx,
-  selectedGenresTextSx,
-} from '../FilteredMoviesPage.styles'
+import { loadingWrapSx, paginationWrapSx, selectedGenresTextSx } from '../FilteredMoviesPage.styles'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
 
 interface FilteredMoviesResultsProps {

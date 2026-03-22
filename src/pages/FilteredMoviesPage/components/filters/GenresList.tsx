@@ -10,12 +10,7 @@ interface GenresListProps {
   onToggle: (genreId: number) => void
 }
 
-export const GenresList = ({
-  label,
-  genres,
-  selectedGenres,
-  onToggle,
-}: GenresListProps) => {
+export const GenresList = ({ label, genres, selectedGenres, onToggle }: GenresListProps) => {
   return (
     <Box sx={filterSectionSx}>
       <Typography variant="body2" sx={filterLabelSx}>

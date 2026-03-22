@@ -10,13 +10,7 @@ interface RatingSliderProps {
   onChange: (min: number, max: number) => void
 }
 
-export const RatingSlider = ({
-  label,
-  valueLabel,
-  min,
-  max,
-  onChange,
-}: RatingSliderProps) => {
+export const RatingSlider = ({ label, valueLabel, min, max, onChange }: RatingSliderProps) => {
   return (
     <Box sx={filterSectionSx}>
       <Typography variant="body2" sx={filterLabelSx}>
