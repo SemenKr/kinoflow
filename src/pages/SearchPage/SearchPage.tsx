@@ -2,8 +2,8 @@ import { MovieGrid } from '@/features/movies/ui/MovieGrid/MovieGrid'
 import { MovieGridSkeleton } from '@/features/movies/ui/MovieGrid/MovieGridSkeleton'
 import { useApiLanguage, useDebounceValue } from '@/hooks'
 import { useSearchParams } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { Box, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
+import { Box, IconButton, InputAdornment, Pagination, TextField, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { useTranslation } from 'react-i18next'
@@ -12,32 +12,49 @@ import { useGetSearchMoviesQuery } from '@/features/movies/api/moviesApi'
 export const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const queryFromUrl = searchParams.get('q') || ''
+  const pageParam = Number(searchParams.get('page') || '1')
   const { t } = useTranslation()
   const apiLanguage = useApiLanguage()
+  const pageTopRef = useRef<HTMLDivElement | null>(null)
 
   const [query, setQuery] = useState(queryFromUrl)
   const debouncedQuery = useDebounceValue(query, 500)
+  const currentPage = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1
 
   const { data, isLoading, isFetching } = useGetSearchMoviesQuery(
-    { query: debouncedQuery, page: 1, language: apiLanguage },
+    { query: debouncedQuery, page: currentPage, language: apiLanguage },
     { skip: !debouncedQuery },
   )
   const shouldShowResultsSkeleton = Boolean(debouncedQuery) && (isLoading || isFetching)
+  const totalPages = Math.max(1, data?.total_pages ?? 1)
+  const paginationPage = Math.min(currentPage, totalPages)
 
   useEffect(() => {
-    if (debouncedQuery) {
-      setSearchParams({ q: debouncedQuery })
-      return
-    }
-    setSearchParams({})
-  }, [debouncedQuery, setSearchParams])
+    setQuery(queryFromUrl)
+  }, [queryFromUrl])
+
+  useEffect(() => {
+    const normalizedQuery = debouncedQuery.trim()
+
+    if (normalizedQuery === queryFromUrl) return
+
+    setSearchParams(normalizedQuery ? { q: normalizedQuery } : {}, { replace: true })
+  }, [debouncedQuery, queryFromUrl, setSearchParams])
 
   const handleClearSearch = () => {
     setQuery('')
   }
 
+  const handlePageChange = (_: React.ChangeEvent<unknown>, nextPage: number) => {
+    const normalizedQuery = debouncedQuery.trim()
+    if (!normalizedQuery) return
+
+    setSearchParams(nextPage > 1 ? { q: normalizedQuery, page: String(nextPage) } : { q: normalizedQuery })
+    pageTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
-    <Box sx={{ px: { xs: 2, sm: 3 }, py: 3, minWidth: 0 }}>
+    <Box ref={pageTopRef} sx={{ px: { xs: 2, sm: 3 }, py: 3, minWidth: 0 }}>
       <TextField
         type="text"
         inputMode="search"
@@ -124,6 +141,18 @@ export const SearchPage = () => {
       {!shouldShowResultsSkeleton && data && data.results.length > 0 && (
         <Box sx={{ mt: 3 }}>
           <MovieGrid movies={data.results} />
+
+          {totalPages > 1 && (
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+              <Pagination
+                page={paginationPage}
+                count={totalPages}
+                color="primary"
+                size="medium"
+                onChange={handlePageChange}
+              />
+            </Box>
+          )}
         </Box>
       )}
     </Box>
