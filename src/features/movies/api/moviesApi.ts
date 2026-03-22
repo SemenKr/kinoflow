@@ -78,9 +78,9 @@ export const moviesApi = baseApi.injectEndpoints({
       transformResponse: parseMoviesResponse,
     }),
     getGenres: builder.query<{ genres: { id: number; name: string }[] }, GenresParams | void>({
-      query: (params = {}) => ({
+      query: (params?: GenresParams) => ({
         url: '/genre/movie/list',
-        params,
+        params: params ?? undefined,
       }),
       transformResponse: parseGenresResponse,
     }),

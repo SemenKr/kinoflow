@@ -1,9 +1,12 @@
 import { z } from 'zod'
 
 export class ResponseValidationError extends Error {
-  constructor(public readonly issues: z.ZodIssue[]) {
+  readonly issues: z.ZodIssue[]
+
+  constructor(issues: z.ZodIssue[]) {
     super('Response validation failed')
     this.name = 'ResponseValidationError'
+    this.issues = issues
   }
 }
 

@@ -2,7 +2,10 @@ import { DEFAULT_FILTERS, SORT_OPTION_KEYS } from '@/shared/constants'
 import type { FiltersState } from '@/features/movies/model/filter.types'
 
 const DEFAULT_MAX_RATING = DEFAULT_FILTERS.rating.max
-const SORT_VALUES = new Set(SORT_OPTION_KEYS.map(option => option.value))
+const SORT_VALUES: readonly string[] = SORT_OPTION_KEYS.map(option => option.value)
+type SortValue = FiltersState['sortBy']
+
+const isSortValue = (value: string): value is SortValue => SORT_VALUES.includes(value as SortValue)
 
 const clampRating = (value: number) => Math.min(DEFAULT_MAX_RATING, Math.max(0, value))
 
@@ -55,7 +58,7 @@ export const parseFiltersFromSearchParams = (searchParams: URLSearchParams): Fil
   const page = Number(searchParams.get('page') || String(DEFAULT_FILTERS.page))
 
   return {
-    sortBy: sort && SORT_VALUES.has(sort) ? sort : DEFAULT_FILTERS.sortBy,
+    sortBy: sort && isSortValue(sort) ? sort : DEFAULT_FILTERS.sortBy,
     rating: parseRating(searchParams.get('rating')),
     genres: parseGenres(searchParams.get('genres')),
     page: Number.isInteger(page) && page > 0 ? page : DEFAULT_FILTERS.page,
