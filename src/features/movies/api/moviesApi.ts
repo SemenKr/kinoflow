@@ -1,6 +1,7 @@
 import { buildMoviesListQuery } from '@/features/movies/api/buildMoviesListQuery'
 import { MOVIE_CATEGORY_CONFIG } from '@/features/movies/config/movieCategories'
 import type { MoviesResponse } from '@/features/movies/api/moviesApi.types'
+import type { DiscoverMoviesParams } from '@/features/movies/model/discover.types'
 import { MovieDetailsSchema, MoviesResponseSchema } from '@/features/movies/models/movie.schema'
 import type { MovieDetails } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
 import { baseApi } from '@/shared/api/baseApi'
@@ -50,6 +51,13 @@ export const moviesApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
     }),
+    getDiscoverMovies: builder.query<MoviesResponse, DiscoverMoviesParams>({
+      query: params => ({
+        url: '/discover/movie',
+        params,
+      }),
+      transformResponse: (response: unknown) => MoviesResponseSchema.parse(response),
+    }),
   }),
 })
 
@@ -61,4 +69,5 @@ export const {
   useGetSearchMoviesQuery,
   useGetMovieDetailsQuery,
   useLazyGetSimilarMoviesQuery,
+  useGetDiscoverMoviesQuery,
 } = moviesApi
