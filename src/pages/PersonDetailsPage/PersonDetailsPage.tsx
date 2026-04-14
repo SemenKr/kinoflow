@@ -19,7 +19,7 @@ import { PageLoader } from '@/shared/ui/loading/PageLoader'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Container, IconButton, Link, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { type ReactElement, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
@@ -38,7 +38,7 @@ type ExternalLink = {
   key: string
   label: string
   href: string
-  icon: JSX.Element
+  icon: ReactElement
 }
 
 const getTrimmedValue = (value: string | null | undefined) => {
@@ -204,7 +204,7 @@ export const PersonDetailsPage = () => {
   const youtubeId = getTrimmedValue(externalIds?.youtube_id)
   const tiktokId = tiktokIdRaw ? tiktokIdRaw.replace(/^@/, '') : null
   const twitterId = twitterIdRaw ? twitterIdRaw.replace(/^@/, '') : null
-  const externalLinks: Array<ExternalLink | null> = [
+  const externalLinksRaw: Array<ExternalLink | null> = [
     imdbId
       ? {
           key: 'imdb',
@@ -261,7 +261,8 @@ export const PersonDetailsPage = () => {
           icon: <YouTubeIcon fontSize="small" />,
         }
       : null,
-  ].filter((link): link is ExternalLink => link !== null)
+  ]
+  const externalLinks = externalLinksRaw.filter((link): link is ExternalLink => link !== null)
   const hasPersonalInfo = Boolean(department || birthday || deathday || placeOfBirth || homepage)
   const hasSidebarDetails = hasPersonalInfo || externalLinks.length > 0
   const visibleMovies = personMovies.slice(0, visibleCount)
