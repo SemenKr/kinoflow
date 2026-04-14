@@ -44,6 +44,9 @@ Handle development tasks end-to-end in a controlled workflow:
 - Treat planning as a separate mandatory step.
 - Do not run full build for small changes unless necessary.
 - Prefer typecheck and lint for quick validation.
+- Ensure accessibility attributes reflect real state (no static aria values).
+- Avoid hardcoded IDs if component can be reused.
+- Review must include edge cases and potential inconsistencies.
 
 ## Output format
 

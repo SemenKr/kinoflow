@@ -32,6 +32,7 @@ const PHOTO_FALLBACK = createImageFallbackUrl({
 
 const INITIAL_VISIBLE_MOVIES = 6
 const LOAD_MORE_STEP = 6
+const FILMOGRAPHY_GRID_ID = 'person-filmography-grid'
 
 const statusContainerSx = { py: 6 }
 const fixedBackWrapSx = {
@@ -98,6 +99,8 @@ export const PersonDetailsPage = () => {
     isOverflowing: false,
   })
   const biographyTextRef = useRef<HTMLParagraphElement | null>(null)
+  const filmographySectionRef = useRef<HTMLDivElement | null>(null)
+  const filmographyHeadingRef = useRef<HTMLHeadingElement | null>(null)
 
   const { data, isLoading, error } = useGetPersonDetailsQuery(
     { personId, language: apiLanguage },
@@ -139,6 +142,7 @@ export const PersonDetailsPage = () => {
       moviesEmpty: t('person_details_movies_empty'),
       moviesShowAll: t('person_details_movies_show_all'),
       moviesShowLess: t('person_details_movies_show_less'),
+      moviesControlsAria: t('person_details_movies_controls_aria'),
       bioExpand: t('person_details_bio_expand'),
       bioCollapse: t('person_details_bio_collapse'),
     }),
@@ -153,6 +157,19 @@ export const PersonDetailsPage = () => {
 
   const isBioExpanded = bioDisclosure.personId === personId ? bioDisclosure.isExpanded : false
   const handleBack = useCallback(() => navigate(-1), [navigate])
+  const handleCollapseMovies = useCallback(() => {
+    hide()
+
+    window.requestAnimationFrame(() => {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      filmographySectionRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      })
+      filmographyHeadingRef.current?.focus({ preventScroll: true })
+    })
+  }, [hide])
   const biographyTextForMeasure = data?.biography?.trim() || null
 
   useEffect(() => {
@@ -511,8 +528,8 @@ export const PersonDetailsPage = () => {
               )}
             </Box>
 
-            <Box>
-              <Typography variant="h6" sx={{ mb: 2 }}>
+            <Box ref={filmographySectionRef}>
+              <Typography ref={filmographyHeadingRef} variant="h6" tabIndex={-1} sx={{ mb: 2 }}>
                 {labels.moviesTitle}
               </Typography>
 
@@ -528,6 +545,9 @@ export const PersonDetailsPage = () => {
 
               {!isMoviesLoading && !moviesError && personMovies.length > 0 && (
                 <>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    {t('person_details_movies_count', { count: personMovies.length })}
+                  </Typography>
                   <Typography
                     variant="body2"
                     color="text.secondary"
@@ -539,14 +559,21 @@ export const PersonDetailsPage = () => {
                       total: personMovies.length,
                     })}
                   </Typography>
-                  <MovieGrid movies={visibleMovies} />
+                  <Box id={FILMOGRAPHY_GRID_ID}>
+                    <MovieGrid movies={visibleMovies} />
+                  </Box>
                   {(canExpand || canCollapse) && (
-                    <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    <Box
+                      role="group"
+                      aria-label={labels.moviesControlsAria}
+                      sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}
+                    >
                       {canExpand && (
                         <Button
                           size="small"
-                          variant="text"
+                          variant="contained"
                           onClick={showMore}
+                          aria-controls={FILMOGRAPHY_GRID_ID}
                           sx={{
                             textTransform: 'none',
                             whiteSpace: 'nowrap',
@@ -562,6 +589,7 @@ export const PersonDetailsPage = () => {
                           size="small"
                           variant="outlined"
                           onClick={showAll}
+                          aria-controls={FILMOGRAPHY_GRID_ID}
                           sx={{
                             textTransform: 'none',
                             whiteSpace: 'nowrap',
@@ -576,7 +604,8 @@ export const PersonDetailsPage = () => {
                         <Button
                           size="small"
                           variant="text"
-                          onClick={hide}
+                          onClick={handleCollapseMovies}
+                          aria-controls={FILMOGRAPHY_GRID_ID}
                           sx={{
                             textTransform: 'none',
                             whiteSpace: 'nowrap',

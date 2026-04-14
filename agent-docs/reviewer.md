@@ -32,6 +32,7 @@ Review code changes and find:
   - semantics
   - loading / error / empty states
   - consistency with the project style
+- For each issue, suggest a minimal fix when possible.
 
 ## Output format
 
