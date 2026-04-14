@@ -1,4 +1,5 @@
 import { favoritesReducer } from '@/features/favorites/model/favoritesSlice'
+import { favoritesListenerMiddleware } from '@/features/favorites/model/favoritesListener'
 import { configureStore } from '@reduxjs/toolkit'
 import { baseApi } from '@/shared/api/baseApi'
 import { rtkQueryErrorMiddleware } from '@/shared/api/rtkQueryErrorMiddleware'
@@ -19,6 +20,7 @@ export const store = configureStore({
       baseApi.middleware,
       rtkQueryLoadingMiddleware,
       rtkQueryErrorMiddleware,
+      favoritesListenerMiddleware.middleware,
     ),
 })
 /**

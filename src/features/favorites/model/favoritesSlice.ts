@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { loadFavorites, saveFavorites, type FavoriteMovie } from '../utils/favoritesStorage'
+import { loadFavorites, type FavoriteMovie } from '../utils/favoritesStorage'
 
 interface FavoritesState {
   movies: FavoriteMovie[]
@@ -21,8 +21,6 @@ const favoritesSlice = createSlice({
       } else {
         state.movies.push(action.payload)
       }
-
-      saveFavorites(state.movies)
     },
   },
 })
