@@ -4,6 +4,7 @@ import {
   useGetPersonExternalIdsQuery,
 } from '@/features/movies/api/moviesApi'
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail'
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import FacebookIcon from '@mui/icons-material/Facebook'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies'
@@ -18,10 +19,10 @@ import { createImageFallbackUrl } from '@/shared/utils/imageFallback'
 import { PageLoader } from '@/shared/ui/loading/PageLoader'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Container, IconButton, Link, Tooltip, Typography } from '@mui/material'
-import { alpha } from '@mui/material/styles'
-import { type ReactElement, useEffect, useMemo, useRef, useState } from 'react'
+import { alpha, type Theme } from '@mui/material/styles'
+import { type ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const PHOTO_FALLBACK = createImageFallbackUrl({
   width: 400,
@@ -33,6 +34,37 @@ const INITIAL_VISIBLE_MOVIES = 6
 const LOAD_MORE_STEP = 6
 
 const statusContainerSx = { py: 6 }
+const fixedBackWrapSx = {
+  position: 'fixed',
+  top: { xs: 72, md: 84 },
+  right: { xs: 10, md: 18 },
+  zIndex: 1090,
+}
+const backButtonSx = (theme: Theme) => ({
+  minWidth: { xs: 'auto', sm: 112 },
+  px: { xs: 0.9, sm: 1.2 },
+  py: { xs: 0.45, sm: 0.6 },
+  fontSize: { xs: 12, sm: 14 },
+  borderRadius: 999,
+  color: theme.palette.text.primary,
+  backgroundColor: alpha(
+    theme.palette.background.paper,
+    theme.palette.mode === 'dark' ? 0.9 : 0.94,
+  ),
+  borderColor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.42 : 0.26),
+  boxShadow:
+    theme.palette.mode === 'dark'
+      ? `0 8px 18px ${alpha(theme.palette.common.black, 0.34)}`
+      : `0 6px 14px ${alpha(theme.palette.common.black, 0.16)}`,
+  backdropFilter: 'blur(8px)',
+  '&:hover': {
+    backgroundColor: alpha(
+      theme.palette.background.paper,
+      theme.palette.mode === 'dark' ? 0.96 : 1,
+    ),
+    borderColor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.64 : 0.4),
+  },
+})
 
 type ExternalLink = {
   key: string
@@ -46,8 +78,11 @@ const getTrimmedValue = (value: string | null | undefined) => {
   return trimmed ? trimmed : null
 }
 
+const encodePathSegment = (value: string) => encodeURIComponent(value)
+
 export const PersonDetailsPage = () => {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const { id } = useParams()
   const apiLanguage = useApiLanguage()
 
@@ -88,6 +123,7 @@ export const PersonDetailsPage = () => {
   const labels = useMemo(
     () => ({
       error: t('person_details_error'),
+      back: t('movie_details_back'),
       invalidId: t('person_details_invalid_id'),
       empty: t('person_details_empty'),
       biography: t('person_details_biography'),
@@ -97,17 +133,18 @@ export const PersonDetailsPage = () => {
       placeOfBirth: t('person_details_place_of_birth'),
       homepage: t('person_details_homepage'),
       externalLinks: t('person_details_external_links'),
+      externalLinkUnknownPerson: t('person_details_external_link_unknown_person'),
       moviesTitle: t('person_details_movies_title'),
       moviesError: t('person_details_movies_error'),
       moviesEmpty: t('person_details_movies_empty'),
-      expand: t('movie_details_cast_expand'),
-      collapse: t('movie_details_cast_collapse'),
+      moviesShowAll: t('person_details_movies_show_all'),
+      moviesShowLess: t('person_details_movies_show_less'),
       bioExpand: t('person_details_bio_expand'),
       bioCollapse: t('person_details_bio_collapse'),
     }),
     [t],
   )
-  const { visibleCount, canExpand, canCollapse, showMore, hide } = useProgressiveReveal({
+  const { visibleCount, canExpand, canCollapse, showMore, showAll, hide } = useProgressiveReveal({
     total: personMovies.length,
     initial: INITIAL_VISIBLE_MOVIES,
     step: LOAD_MORE_STEP,
@@ -115,6 +152,7 @@ export const PersonDetailsPage = () => {
   })
 
   const isBioExpanded = bioDisclosure.personId === personId ? bioDisclosure.isExpanded : false
+  const handleBack = useCallback(() => navigate(-1), [navigate])
   const biographyTextForMeasure = data?.biography?.trim() || null
 
   useEffect(() => {
@@ -209,7 +247,7 @@ export const PersonDetailsPage = () => {
       ? {
           key: 'imdb',
           label: 'IMDb',
-          href: `https://www.imdb.com/name/${imdbId}`,
+          href: `https://www.imdb.com/name/${encodePathSegment(imdbId)}`,
           icon: <LocalMoviesIcon fontSize="small" />,
         }
       : null,
@@ -217,7 +255,7 @@ export const PersonDetailsPage = () => {
       ? {
           key: 'wikidata',
           label: 'Wikidata',
-          href: `https://www.wikidata.org/wiki/${wikidataId}`,
+          href: `https://www.wikidata.org/wiki/${encodePathSegment(wikidataId)}`,
           icon: <PublicIcon fontSize="small" />,
         }
       : null,
@@ -225,7 +263,7 @@ export const PersonDetailsPage = () => {
       ? {
           key: 'facebook',
           label: 'Facebook',
-          href: `https://www.facebook.com/${facebookId}`,
+          href: `https://www.facebook.com/${encodePathSegment(facebookId)}`,
           icon: <FacebookIcon fontSize="small" />,
         }
       : null,
@@ -233,7 +271,7 @@ export const PersonDetailsPage = () => {
       ? {
           key: 'instagram',
           label: 'Instagram',
-          href: `https://www.instagram.com/${instagramId}`,
+          href: `https://www.instagram.com/${encodePathSegment(instagramId)}`,
           icon: <InstagramIcon fontSize="small" />,
         }
       : null,
@@ -241,7 +279,7 @@ export const PersonDetailsPage = () => {
       ? {
           key: 'tiktok',
           label: 'TikTok',
-          href: `https://www.tiktok.com/@${tiktokId}`,
+          href: `https://www.tiktok.com/@${encodePathSegment(tiktokId)}`,
           icon: <MusicNoteIcon fontSize="small" />,
         }
       : null,
@@ -249,7 +287,7 @@ export const PersonDetailsPage = () => {
       ? {
           key: 'x',
           label: 'X',
-          href: `https://x.com/${twitterId}`,
+          href: `https://x.com/${encodePathSegment(twitterId)}`,
           icon: <AlternateEmailIcon fontSize="small" />,
         }
       : null,
@@ -257,7 +295,7 @@ export const PersonDetailsPage = () => {
       ? {
           key: 'youtube',
           label: 'YouTube',
-          href: `https://www.youtube.com/${youtubeId}`,
+          href: `https://www.youtube.com/${encodePathSegment(youtubeId)}`,
           icon: <YouTubeIcon fontSize="small" />,
         }
       : null,
@@ -266,9 +304,23 @@ export const PersonDetailsPage = () => {
   const hasPersonalInfo = Boolean(department || birthday || deathday || placeOfBirth || homepage)
   const hasSidebarDetails = hasPersonalInfo || externalLinks.length > 0
   const visibleMovies = personMovies.slice(0, visibleCount)
+  const remainingMovies = Math.max(personMovies.length - visibleCount, 0)
+  const showMoreCount = Math.min(remainingMovies, LOAD_MORE_STEP)
+  const canShowAll = canExpand && remainingMovies > LOAD_MORE_STEP
 
   return (
     <Box>
+      <Box sx={fixedBackWrapSx}>
+        <Button
+          variant="outlined"
+          onClick={handleBack}
+          startIcon={<ArrowBackRoundedIcon />}
+          size="small"
+          sx={backButtonSx}
+        >
+          {labels.back}
+        </Button>
+      </Box>
       <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
         <Box
           sx={{
@@ -364,7 +416,10 @@ export const PersonDetailsPage = () => {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label={`Open ${link.label} profile`}
+                            aria-label={t('person_details_external_link_aria', {
+                              platform: link.label,
+                              person: personName || labels.externalLinkUnknownPerson,
+                            })}
                             size="small"
                             sx={theme => ({
                               border: `1px solid ${alpha(
@@ -473,6 +528,17 @@ export const PersonDetailsPage = () => {
 
               {!isMoviesLoading && !moviesError && personMovies.length > 0 && (
                 <>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    aria-live="polite"
+                    sx={{ mb: 1.5 }}
+                  >
+                    {t('person_details_movies_progress', {
+                      visible: visibleMovies.length,
+                      total: personMovies.length,
+                    })}
+                  </Typography>
                   <MovieGrid movies={visibleMovies} />
                   {(canExpand || canCollapse) && (
                     <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -488,7 +554,22 @@ export const PersonDetailsPage = () => {
                             px: 1.5,
                           }}
                         >
-                          {labels.expand}
+                          {t('person_details_movies_show_more', { count: showMoreCount })}
+                        </Button>
+                      )}
+                      {canShowAll && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={showAll}
+                          sx={{
+                            textTransform: 'none',
+                            whiteSpace: 'nowrap',
+                            borderRadius: 999,
+                            px: 1.5,
+                          }}
+                        >
+                          {labels.moviesShowAll}
                         </Button>
                       )}
                       {canCollapse && (
@@ -503,7 +584,7 @@ export const PersonDetailsPage = () => {
                             px: 1.5,
                           }}
                         >
-                          {labels.collapse}
+                          {labels.moviesShowLess}
                         </Button>
                       )}
                     </Box>

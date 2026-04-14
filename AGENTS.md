@@ -46,3 +46,7 @@
 
 - После изменений проверять типы и линтер
 - Показывать diff
+
+## Task-Specific Documentation
+
+- ./agent-docs/reviewer.md — использовать для code review и оценки изменений

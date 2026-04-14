@@ -33,5 +33,9 @@ export const useProgressiveReveal = ({
     setState({ key: resetKey, count: initial })
   }, [initial, resetKey])
 
-  return { visibleCount, canExpand, canCollapse, showMore, hide }
+  const showAll = useCallback(() => {
+    setState({ key: resetKey, count: total })
+  }, [resetKey, total])
+
+  return { visibleCount, canExpand, canCollapse, showMore, showAll, hide }
 }
