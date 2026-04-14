@@ -17,7 +17,7 @@ import { IMAGE_BASE } from '@/shared/constants'
 import { createImageFallbackUrl } from '@/shared/utils/imageFallback'
 import { PageLoader } from '@/shared/ui/loading/PageLoader'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
-import { Box, Button, Container, IconButton, Link, Typography } from '@mui/material'
+import { Box, Button, Container, IconButton, Link, Tooltip, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import { type ReactElement, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -358,24 +358,30 @@ export const PersonDetailsPage = () => {
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
                       {externalLinks.map(link => (
-                        <IconButton
-                          key={link.key}
-                          component="a"
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={link.label}
-                          size="small"
-                          sx={theme => ({
-                            border: `1px solid ${alpha(
-                              theme.palette.text.primary,
-                              theme.palette.mode === 'dark' ? 0.2 : 0.14,
-                            )}`,
-                            color: theme.palette.text.primary,
-                          })}
-                        >
-                          {link.icon}
-                        </IconButton>
+                        <Tooltip key={link.key} title={link.label} arrow>
+                          <IconButton
+                            component="a"
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Open ${link.label} profile`}
+                            size="small"
+                            sx={theme => ({
+                              border: `1px solid ${alpha(
+                                theme.palette.text.primary,
+                                theme.palette.mode === 'dark' ? 0.2 : 0.14,
+                              )}`,
+                              color: theme.palette.text.primary,
+                              transition: 'background-color 0.2s ease, color 0.2s ease',
+                              '&:hover': {
+                                backgroundColor: alpha(theme.palette.primary.main, 0.12),
+                                color: theme.palette.primary.main,
+                              },
+                            })}
+                          >
+                            {link.icon}
+                          </IconButton>
+                        </Tooltip>
                       ))}
                     </Box>
                   </Box>
