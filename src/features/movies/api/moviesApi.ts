@@ -4,6 +4,8 @@ import type {
   GenresParams,
   MovieDetailsParams,
   MoviesResponse,
+  PersonDetails,
+  PersonDetailsParams,
   SearchMoviesParams,
   SimilarMoviesParams,
 } from '@/features/movies/api/moviesApi.types'
@@ -12,6 +14,7 @@ import {
   GenresResponseSchema,
   MovieDetailsSchema,
   MoviesResponseSchema,
+  PersonDetailsSchema,
 } from '@/features/movies/models/movie.schema'
 import type { MovieDetails } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
 import { baseApi } from '@/shared/api/baseApi'
@@ -20,6 +23,7 @@ import type { PaginationParams } from '@/types/types'
 
 const parseMoviesResponse = validateResponse(MoviesResponseSchema)
 const parseMovieDetailsResponse = validateResponse(MovieDetailsSchema)
+const parsePersonDetailsResponse = validateResponse(PersonDetailsSchema)
 const parseGenresResponse = validateResponse(GenresResponseSchema)
 
 export const moviesApi = baseApi.injectEndpoints({
@@ -60,6 +64,13 @@ export const moviesApi = baseApi.injectEndpoints({
       }),
       transformResponse: parseMovieDetailsResponse,
     }),
+    getPersonDetails: builder.query<PersonDetails, PersonDetailsParams>({
+      query: ({ personId, language = 'en-US' }) => ({
+        url: `/person/${personId}`,
+        params: { language },
+      }),
+      transformResponse: parsePersonDetailsResponse,
+    }),
     getSimilarMovies: builder.query<MoviesResponse, SimilarMoviesParams>({
       query: ({ movieId, page = 1, language = 'en-US' }) => ({
         url: `/movie/${movieId}/similar`,
@@ -94,6 +105,7 @@ export const {
   useGetNowPlayingMoviesQuery,
   useGetSearchMoviesQuery,
   useGetMovieDetailsQuery,
+  useGetPersonDetailsQuery,
   useLazyGetSimilarMoviesQuery,
   useGetDiscoverMoviesQuery,
   useLazyGetDiscoverMoviesQuery,

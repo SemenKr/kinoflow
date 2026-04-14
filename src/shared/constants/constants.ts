@@ -9,6 +9,7 @@ export const ROUTES = {
   search: '/search',
   favorites: '/favorites',
   movieDetails: (id: number | string) => `/movie/${id}`,
+  personDetails: (id: number | string) => `/person/${id}`,
   movieCategory: (category: string) => `/movies/${category}`,
 } as const
 

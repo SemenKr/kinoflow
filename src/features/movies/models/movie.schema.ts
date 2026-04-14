@@ -91,3 +91,20 @@ export const MovieDetailsSchema = z.object({
   belongs_to_collection: BelongsToCollectionSchema.nullable(),
   credits: MovieCreditsSchema.optional().default({ cast: [] }),
 })
+
+export const PersonDetailsSchema = z.object({
+  adult: z.boolean().default(false),
+  also_known_as: z.array(z.string()).default([]),
+  biography: z.string().default(''),
+  birthday: z.string().nullable().default(null),
+  deathday: z.string().nullable().default(null),
+  gender: z.number().default(0),
+  homepage: z.string().nullable().default(null),
+  id: z.number(),
+  imdb_id: z.string().nullable().default(null),
+  known_for_department: z.string().default(''),
+  name: z.string().default(''),
+  place_of_birth: z.string().nullable().default(null),
+  popularity: z.number().default(0),
+  profile_path: z.string().nullable().default(null),
+})

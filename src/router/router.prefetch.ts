@@ -5,6 +5,7 @@ const routeImporters = {
   search: () => import('@/pages/SearchPage/SearchPage'),
   favorites: () => import('@/pages/FavoritesPage/FavoritesPage'),
   movieDetails: () => import('@/pages/MovieDetailsPage/MovieDetailsPage'),
+  personDetails: () => import('@/pages/PersonDetailsPage/PersonDetailsPage'),
   notFound: () => import('@/pages/NotFoundPage/NotFoundPage'),
 } as const
 

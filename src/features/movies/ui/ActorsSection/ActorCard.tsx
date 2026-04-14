@@ -1,8 +1,10 @@
 import { Box, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
-import { IMAGE_BASE } from '@/shared/constants'
+import { IMAGE_BASE, ROUTES } from '@/shared/constants'
 import type { MovieCastMember } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
 import { createImageFallbackUrl } from '@/shared/utils/imageFallback'
+import type { KeyboardEvent } from 'react'
+import { Link } from 'react-router-dom'
 
 interface Props {
   actor: MovieCastMember
@@ -16,11 +18,24 @@ const FALLBACK = createImageFallbackUrl({
 
 export const ActorCard = ({ actor }: Props) => {
   const image = actor.profile_path ? `${IMAGE_BASE}/w185${actor.profile_path}` : FALLBACK
+  const personDetailsPath = ROUTES.personDetails(actor.id)
+
+  const handleLinkKeyDown = (event: KeyboardEvent<HTMLAnchorElement>) => {
+    if (event.key === ' ') {
+      event.preventDefault()
+      event.currentTarget.click()
+    }
+  }
 
   return (
     <Box
-      role={'listitem'}
+      component={Link}
+      to={personDetailsPath}
+      aria-label={`Open details for ${actor.name}`}
+      onKeyDown={handleLinkKeyDown}
       sx={theme => ({
+        textDecoration: 'none',
+        color: 'inherit',
         width: '100%',
         borderRadius: 1.5,
         p: 0.45,

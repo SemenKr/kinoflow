@@ -25,6 +25,10 @@ const MovieDetailsPage = lazy(async () => ({
   default: (await import('@/pages/MovieDetailsPage/MovieDetailsPage')).MovieDetailsPage,
 }))
 
+const PersonDetailsPage = lazy(async () => ({
+  default: (await import('@/pages/PersonDetailsPage/PersonDetailsPage')).PersonDetailsPage,
+}))
+
 const NotFoundPage = lazy(async () => ({
   default: (await import('@/pages/NotFoundPage/NotFoundPage')).NotFoundPage,
 }))
@@ -48,5 +52,7 @@ export const SearchPageRoute = () => withRouteSuspense(SearchPage)
 export const FavoritesPageRoute = () => withRouteSuspense(FavoritesPage)
 
 export const MovieDetailsPageRoute = () => withRouteSuspense(MovieDetailsPage)
+
+export const PersonDetailsPageRoute = () => withRouteSuspense(PersonDetailsPage)
 
 export const NotFoundPageRoute = () => withRouteSuspense(NotFoundPage)

@@ -6,6 +6,7 @@ import {
   MainPageRoute,
   MovieDetailsPageRoute,
   NotFoundPageRoute,
+  PersonDetailsPageRoute,
   SearchPageRoute,
 } from '@/router/router.elements'
 import { ROUTES } from '@/shared/constants'
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.search, element: <SearchPageRoute /> },
       { path: ROUTES.favorites, element: <FavoritesPageRoute /> },
       { path: ROUTES.movieDetails(':id'), element: <MovieDetailsPageRoute /> },
+      { path: ROUTES.personDetails(':id'), element: <PersonDetailsPageRoute /> },
       { path: '*', element: <NotFoundPageRoute /> },
     ],
   },
