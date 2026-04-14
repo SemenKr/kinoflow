@@ -1,6 +1,7 @@
 import { useGetDiscoverMoviesQuery, useGetGenresQuery } from '@/features/movies/api/moviesApi'
 import { useApiLanguage, useDebounceValue } from '@/hooks'
 import { DEFAULT_FILTERS, SORT_OPTION_KEYS } from '@/shared/constants'
+import { usePageSync } from '@/shared/hooks/usePageSync'
 import { useMediaQuery, useTheme } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -36,7 +37,14 @@ export const useFilteredMoviesPage = () => {
   const { data: genresData } = useGetGenresQuery({ language: apiLanguage })
 
   const totalPages = Math.max(1, data?.total_pages ?? 1)
-  const currentPage = Math.min(filters.page, totalPages)
+  const currentPage = usePageSync({
+    page: filters.page,
+    totalPages,
+    enabled: Boolean(data),
+    onCorrectPage: nextPage => {
+      setPage(nextPage)
+    },
+  })
   const results = data?.results ?? []
   const totalResults = data?.total_results ?? 0
 

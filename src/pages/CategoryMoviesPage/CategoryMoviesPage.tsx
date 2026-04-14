@@ -10,6 +10,7 @@ import { useMovieCategoryQueries } from '@/features/movies/model/useMovieCategor
 import { MovieGrid } from '@/features/movies/ui/MovieGrid/MovieGrid'
 import { MovieGridSkeleton } from '@/features/movies/ui/MovieGrid/MovieGridSkeleton'
 import { useApiLanguage } from '@/hooks'
+import { usePageSync } from '@/shared/hooks/usePageSync'
 import { Box, Button, Pagination, Stack, Tab, Tabs, Typography } from '@mui/material'
 import { type ChangeEvent, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -52,7 +53,14 @@ export const CategoryMoviesPage = () => {
   }
 
   const totalPages = Math.max(1, activeQuery.data?.total_pages ?? 1)
-  const currentPage = Math.min(page, totalPages)
+  const currentPage = usePageSync({
+    page,
+    totalPages,
+    enabled: Boolean(activeQuery.data),
+    onCorrectPage: nextPage => {
+      setSearchParams(nextPage > 1 ? { page: String(nextPage) } : {}, { replace: true })
+    },
+  })
   const activeCategoryLabel = t(MOVIE_CATEGORY_CONFIG[activeCategory].translationKey)
   const shouldShowResultsSkeleton = activeQuery.isLoading || activeQuery.isFetching
 

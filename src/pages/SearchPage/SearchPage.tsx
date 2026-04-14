@@ -8,6 +8,7 @@ import { alpha } from '@mui/material/styles'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { useTranslation } from 'react-i18next'
 import { useGetSearchMoviesQuery } from '@/features/movies/api/moviesApi'
+import { usePageSync } from '@/shared/hooks/usePageSync'
 
 export const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -27,7 +28,17 @@ export const SearchPage = () => {
   )
   const shouldShowResultsSkeleton = Boolean(debouncedQuery) && (isLoading || isFetching)
   const totalPages = Math.max(1, data?.total_pages ?? 1)
-  const paginationPage = Math.min(currentPage, totalPages)
+  const paginationPage = usePageSync({
+    page: currentPage,
+    totalPages,
+    enabled: Boolean(data) && Boolean(queryFromUrl),
+    onCorrectPage: nextPage => {
+      setSearchParams(
+        nextPage > 1 ? { q: queryFromUrl, page: String(nextPage) } : { q: queryFromUrl },
+        { replace: true },
+      )
+    },
+  })
 
   useEffect(() => {
     setQuery(queryFromUrl)
