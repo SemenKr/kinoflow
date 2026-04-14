@@ -20,7 +20,7 @@ import { PageLoader } from '@/shared/ui/loading/PageLoader'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Container, IconButton, Link, Tooltip, Typography } from '@mui/material'
 import { alpha, type Theme } from '@mui/material/styles'
-import { type ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { type ReactElement, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -32,7 +32,6 @@ const PHOTO_FALLBACK = createImageFallbackUrl({
 
 const INITIAL_VISIBLE_MOVIES = 6
 const LOAD_MORE_STEP = 6
-const FILMOGRAPHY_GRID_ID = 'person-filmography-grid'
 
 const statusContainerSx = { py: 6 }
 const fixedBackWrapSx = {
@@ -86,6 +85,7 @@ export const PersonDetailsPage = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const apiLanguage = useApiLanguage()
+  const filmographyGridId = `person-filmography-grid-${useId()}`
 
   const personId = Number(id)
   const isValidPersonId = Number.isInteger(personId) && personId > 0
@@ -161,7 +161,10 @@ export const PersonDetailsPage = () => {
     hide()
 
     window.requestAnimationFrame(() => {
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const prefersReducedMotion =
+        typeof window.matchMedia === 'function'
+          ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          : false
 
       filmographySectionRef.current?.scrollIntoView({
         behavior: prefersReducedMotion ? 'auto' : 'smooth',
@@ -559,7 +562,7 @@ export const PersonDetailsPage = () => {
                       total: personMovies.length,
                     })}
                   </Typography>
-                  <Box id={FILMOGRAPHY_GRID_ID}>
+                  <Box id={filmographyGridId}>
                     <MovieGrid movies={visibleMovies} />
                   </Box>
                   {(canExpand || canCollapse) && (
@@ -573,7 +576,7 @@ export const PersonDetailsPage = () => {
                           size="small"
                           variant="contained"
                           onClick={showMore}
-                          aria-controls={FILMOGRAPHY_GRID_ID}
+                          aria-controls={filmographyGridId}
                           sx={{
                             textTransform: 'none',
                             whiteSpace: 'nowrap',
@@ -589,7 +592,7 @@ export const PersonDetailsPage = () => {
                           size="small"
                           variant="outlined"
                           onClick={showAll}
-                          aria-controls={FILMOGRAPHY_GRID_ID}
+                          aria-controls={filmographyGridId}
                           sx={{
                             textTransform: 'none',
                             whiteSpace: 'nowrap',
@@ -605,7 +608,7 @@ export const PersonDetailsPage = () => {
                           size="small"
                           variant="text"
                           onClick={handleCollapseMovies}
-                          aria-controls={FILMOGRAPHY_GRID_ID}
+                          aria-controls={filmographyGridId}
                           sx={{
                             textTransform: 'none',
                             whiteSpace: 'nowrap',
