@@ -16,7 +16,7 @@ Help with libraries and APIs:
 
 - Always use Context7 first to get current documentation.
 - If Context7 is unavailable, explicitly say so and proceed carefully.
-- Prefer official documentation over assumptions.
+- Prefer official documentation to assumptions.
 - Do not answer from memory only.
 - Use the latest library version.
 - Provide minimal, clear examples.
