@@ -2,6 +2,10 @@ import { buildMoviesListQuery } from '@/features/movies/api/buildMoviesListQuery
 import { MOVIE_CATEGORY_CONFIG } from '@/features/movies/config/movieCategories'
 import type {
   GenresParams,
+  PersonCombinedCreditsParams,
+  PersonExternalIds,
+  PersonExternalIdsParams,
+  Movie,
   MovieDetailsParams,
   MoviesResponse,
   PersonDetails,
@@ -14,7 +18,9 @@ import {
   GenresResponseSchema,
   MovieDetailsSchema,
   MoviesResponseSchema,
+  PersonCombinedCreditsSchema,
   PersonDetailsSchema,
+  PersonExternalIdsSchema,
 } from '@/features/movies/models/movie.schema'
 import type { MovieDetails } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
 import { baseApi } from '@/shared/api/baseApi'
@@ -24,6 +30,8 @@ import type { PaginationParams } from '@/types/types'
 const parseMoviesResponse = validateResponse(MoviesResponseSchema)
 const parseMovieDetailsResponse = validateResponse(MovieDetailsSchema)
 const parsePersonDetailsResponse = validateResponse(PersonDetailsSchema)
+const parsePersonCombinedCreditsResponse = validateResponse(PersonCombinedCreditsSchema)
+const parsePersonExternalIdsResponse = validateResponse(PersonExternalIdsSchema)
 const parseGenresResponse = validateResponse(GenresResponseSchema)
 
 export const moviesApi = baseApi.injectEndpoints({
@@ -71,6 +79,48 @@ export const moviesApi = baseApi.injectEndpoints({
       }),
       transformResponse: parsePersonDetailsResponse,
     }),
+    getPersonCombinedCredits: builder.query<Movie[], PersonCombinedCreditsParams>({
+      query: ({ personId, language = 'en-US' }) => ({
+        url: `/person/${personId}/combined_credits`,
+        params: { language },
+      }),
+      transformResponse: response => {
+        const parsed = parsePersonCombinedCreditsResponse(response)
+        const moviesOnly = parsed.cast.filter(item => item.media_type === 'movie')
+        const seenIds = new Set<number>()
+
+        return moviesOnly.reduce<Movie[]>((acc, item) => {
+          if (seenIds.has(item.id)) return acc
+          seenIds.add(item.id)
+
+          const mappedMovie: Movie = {
+            id: item.id,
+            title: item.title || item.original_title || '',
+            original_title: item.original_title || item.title || '',
+            overview: item.overview || '',
+            poster_path: item.poster_path,
+            backdrop_path: item.backdrop_path,
+            release_date: item.release_date || '',
+            vote_average: item.vote_average ?? 0,
+            vote_count: item.vote_count ?? 0,
+            popularity: item.popularity ?? 0,
+            genre_ids: item.genre_ids ?? [],
+            adult: item.adult ?? false,
+            original_language: item.original_language || '',
+          }
+
+          acc.push(mappedMovie)
+          return acc
+        }, [])
+      },
+    }),
+    getPersonExternalIds: builder.query<PersonExternalIds, PersonExternalIdsParams>({
+      query: ({ personId, language = 'en-US' }) => ({
+        url: `/person/${personId}/external_ids`,
+        params: { language },
+      }),
+      transformResponse: parsePersonExternalIdsResponse,
+    }),
     getSimilarMovies: builder.query<MoviesResponse, SimilarMoviesParams>({
       query: ({ movieId, page = 1, language = 'en-US' }) => ({
         url: `/movie/${movieId}/similar`,
@@ -106,6 +156,8 @@ export const {
   useGetSearchMoviesQuery,
   useGetMovieDetailsQuery,
   useGetPersonDetailsQuery,
+  useGetPersonCombinedCreditsQuery,
+  useGetPersonExternalIdsQuery,
   useLazyGetSimilarMoviesQuery,
   useGetDiscoverMoviesQuery,
   useLazyGetDiscoverMoviesQuery,

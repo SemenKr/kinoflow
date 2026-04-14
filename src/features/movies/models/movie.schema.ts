@@ -108,3 +108,36 @@ export const PersonDetailsSchema = z.object({
   popularity: z.number().default(0),
   profile_path: z.string().nullable().default(null),
 })
+
+const PersonCombinedCreditsCastItemSchema = z.object({
+  id: z.number(),
+  media_type: z.string().default(''),
+  title: z.string().optional().default(''),
+  original_title: z.string().optional().default(''),
+  overview: z.string().optional().default(''),
+  poster_path: z.string().nullable().optional().default(null),
+  backdrop_path: z.string().nullable().optional().default(null),
+  release_date: z.string().optional().default(''),
+  vote_average: z.number().optional().default(0),
+  vote_count: z.number().optional().default(0),
+  popularity: z.number().optional().default(0),
+  genre_ids: z.array(z.number()).optional().default([]),
+  adult: z.boolean().optional().default(false),
+  original_language: z.string().optional().default(''),
+  character: z.string().optional().default(''),
+})
+
+export const PersonCombinedCreditsSchema = z.object({
+  cast: z.array(PersonCombinedCreditsCastItemSchema).default([]),
+  crew: z.array(z.unknown()).default([]),
+})
+
+export const PersonExternalIdsSchema = z.object({
+  imdb_id: z.string().nullable().optional().default(null),
+  wikidata_id: z.string().nullable().optional().default(null),
+  facebook_id: z.string().nullable().optional().default(null),
+  instagram_id: z.string().nullable().optional().default(null),
+  tiktok_id: z.string().nullable().optional().default(null),
+  twitter_id: z.string().nullable().optional().default(null),
+  youtube_id: z.string().nullable().optional().default(null),
+})
