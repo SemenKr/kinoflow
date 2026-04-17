@@ -1,52 +1,52 @@
-# Project Rules (KinoFlow)
+# AGENTS.md
 
-## Стек
+## Project
 
-- React + TypeScript + Vite
-- RTK Query для server state
-- Redux Toolkit для client state
+KinoFlow is a frontend application built with React, TypeScript, and Vite.
 
-## Архитектура
+## Core workflow
 
-- Следовать feature-sliced структуре (app / shared / features / pages)
-- Не нарушать границы слоёв
-- Не импортировать внутренности feature напрямую (использовать public API)
+Default workflow for non-trivial tasks:
 
-## Работа с кодом
+1. Plan
+2. Implement
+3. Review
 
-- Не добавлять новые библиотеки без необходимости
-- Делать минимальные изменения
-- Не ломать текущую структуру
+Do not skip planning for multi-file or architecture-sensitive tasks.
+Do not skip review after code changes.
 
-## React best practices
+## Source of truth
 
-- Использовать функциональные компоненты
-- Выносить логику в hooks
-- Избегать большого количества логики в компонентах
-- Не использовать `any`, если можно избежать
+For project-specific questions, prefer project documentation and RAG knowledge before making assumptions.
 
-## Работа с API
+Use:
 
-- Использовать RTK Query
-- Не дублировать запросы
-- Переиспользовать baseApi
+- README and project docs
+- architecture docs
+- routing docs
+- API patterns
+- frontend style guide
+- review checklist
 
-## UX / UI
+## Change policy
 
-- Не ломать существующий UI
-- Учитывать loading / error состояния
+Prefer minimal, local changes.
+Do not introduce large refactors unless explicitly requested.
+Preserve existing conventions and structure.
 
-## Обучение (ВАЖНО)
+## Engineering rules
 
-- Сначала объяснять, потом писать код
-- Объяснять, почему решение хорошее
-- Указывать возможные улучшения
+- Follow existing React + TypeScript + Vite patterns.
+- Keep components readable and focused.
+- Avoid unnecessary abstraction.
+- Respect routing and API conventions.
+- Keep naming consistent with the codebase.
 
-## Проверка
+## Validation
 
-- После изменений проверять типы и линтер
-- Показывать diff
+Before finishing:
 
-## Task-Specific Documentation
-
-- ./agent-docs/reviewer.md — использовать для code review и оценки изменений
+- explain what changed
+- explain why it changed
+- mention affected files
+- mention risks or follow-ups
