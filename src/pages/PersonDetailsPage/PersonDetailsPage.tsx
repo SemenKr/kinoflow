@@ -12,13 +12,13 @@ import MusicNoteIcon from '@mui/icons-material/MusicNote'
 import PublicIcon from '@mui/icons-material/Public'
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import { MovieGrid } from '@/features/movies/ui/MovieGrid/MovieGrid'
+import { MovieGridSkeleton } from '@/features/movies/ui/MovieGrid/MovieGridSkeleton'
 import { useApiLanguage } from '@/hooks'
 import { useProgressiveReveal } from '@/pages/PersonDetailsPage/hooks/useProgressiveReveal'
 import { IMAGE_BASE } from '@/shared/constants'
 import { createImageFallbackUrl } from '@/shared/utils/imageFallback'
 import { PageLoader } from '@/shared/ui/loading/PageLoader'
-import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
-import { Box, Button, Container, IconButton, Link, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Container, IconButton, Link, Skeleton, Stack, Tooltip, Typography } from '@mui/material'
 import { alpha, type Theme } from '@mui/material/styles'
 import { type ReactElement, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -40,6 +40,26 @@ const fixedBackWrapSx = {
   right: { xs: 10, md: 18 },
   zIndex: 1090,
 }
+const filmographyButtonSx = {
+  textTransform: 'none',
+  whiteSpace: 'nowrap',
+  borderRadius: 999,
+  px: 1.5,
+}
+const filmographyEmptyStateSx = (theme: Theme) => ({
+  display: 'grid',
+  justifyItems: 'center',
+  gap: 1,
+  py: 3,
+  px: 2,
+  borderRadius: 2,
+  textAlign: 'center',
+  border: `1px dashed ${alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? 0.24 : 0.18)}`,
+  backgroundColor: alpha(
+    theme.palette.background.paper,
+    theme.palette.mode === 'dark' ? 0.5 : 0.72,
+  ),
+})
 const backButtonSx = (theme: Theme) => ({
   minWidth: { xs: 'auto', sm: 112 },
   px: { xs: 0.9, sm: 1.2 },
@@ -71,6 +91,13 @@ type ExternalLink = {
   label: string
   href: string
   icon: ReactElement
+}
+
+type FilmographyControl = {
+  key: string
+  variant: 'contained' | 'outlined' | 'text'
+  label: string
+  action: 'showMore' | 'showAll' | 'showLess'
 }
 
 const getTrimmedValue = (value: string | null | undefined) => {
@@ -327,6 +354,37 @@ export const PersonDetailsPage = () => {
   const remainingMovies = Math.max(personMovies.length - visibleCount, 0)
   const showMoreCount = Math.min(remainingMovies, LOAD_MORE_STEP)
   const canShowAll = canExpand && remainingMovies > LOAD_MORE_STEP
+  const isMoviesLoaded = !isMoviesLoading
+  const hasMovies = personMovies.length > 0
+  const showMoviesError = isMoviesLoaded && Boolean(moviesError)
+  const showMoviesEmpty = isMoviesLoaded && !moviesError && !hasMovies
+  const showFilmography = isMoviesLoaded && !moviesError && hasMovies
+  const filmographyControls: FilmographyControl[] = []
+  if (canExpand) {
+    filmographyControls.push({
+      key: 'show-more',
+      variant: 'contained',
+      label: t('person_details_movies_show_more', { count: showMoreCount }),
+      action: 'showMore',
+    })
+  }
+  if (canShowAll) {
+    filmographyControls.push({
+      key: 'show-all',
+      variant: 'outlined',
+      label: labels.moviesShowAll,
+      action: 'showAll',
+    })
+  }
+  if (canCollapse) {
+    filmographyControls.push({
+      key: 'show-less',
+      variant: 'text',
+      label: labels.moviesShowLess,
+      action: 'showLess',
+    })
+  }
+  const hasFilmographyControls = filmographyControls.length > 0
 
   return (
     <Box>
@@ -536,17 +594,32 @@ export const PersonDetailsPage = () => {
                 {labels.moviesTitle}
               </Typography>
 
-              {isMoviesLoading && <SectionLoader cards={6} titleWidth="34%" />}
+              {isMoviesLoading && (
+                <Stack spacing={1.5} sx={{ mb: 1 }}>
+                  <Stack spacing={1.25}>
+                    <Skeleton variant="text" width="38%" height={26} />
+                    <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+                      {Array.from({ length: 3 }, (_, index) => (
+                        <Skeleton key={index} variant="rounded" width={88} height={24} />
+                      ))}
+                    </Stack>
+                  </Stack>
+                  <MovieGridSkeleton cards={INITIAL_VISIBLE_MOVIES} />
+                </Stack>
+              )}
 
-              {!isMoviesLoading && moviesError && (
+              {showMoviesError && (
                 <Typography color="text.secondary">{labels.moviesError}</Typography>
               )}
 
-              {!isMoviesLoading && !moviesError && personMovies.length === 0 && (
-                <Typography color="text.secondary">{labels.moviesEmpty}</Typography>
+              {showMoviesEmpty && (
+                <Box sx={filmographyEmptyStateSx}>
+                  <LocalMoviesIcon fontSize="small" color="disabled" />
+                  <Typography color="text.secondary">{labels.moviesEmpty}</Typography>
+                </Box>
               )}
 
-              {!isMoviesLoading && !moviesError && personMovies.length > 0 && (
+              {showFilmography && (
                 <>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                     {t('person_details_movies_count', { count: personMovies.length })}
@@ -565,60 +638,30 @@ export const PersonDetailsPage = () => {
                   <Box id={filmographyGridId}>
                     <MovieGrid movies={visibleMovies} />
                   </Box>
-                  {(canExpand || canCollapse) && (
+                  {hasFilmographyControls && (
                     <Box
                       role="group"
                       aria-label={labels.moviesControlsAria}
                       sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}
                     >
-                      {canExpand && (
+                      {filmographyControls.map(control => (
                         <Button
+                          key={control.key}
                           size="small"
-                          variant="contained"
-                          onClick={showMore}
+                          variant={control.variant}
+                          onClick={
+                            control.action === 'showMore'
+                              ? showMore
+                              : control.action === 'showAll'
+                                ? showAll
+                                : handleCollapseMovies
+                          }
                           aria-controls={filmographyGridId}
-                          sx={{
-                            textTransform: 'none',
-                            whiteSpace: 'nowrap',
-                            borderRadius: 999,
-                            px: 1.5,
-                          }}
+                          sx={filmographyButtonSx}
                         >
-                          {t('person_details_movies_show_more', { count: showMoreCount })}
+                          {control.label}
                         </Button>
-                      )}
-                      {canShowAll && (
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          onClick={showAll}
-                          aria-controls={filmographyGridId}
-                          sx={{
-                            textTransform: 'none',
-                            whiteSpace: 'nowrap',
-                            borderRadius: 999,
-                            px: 1.5,
-                          }}
-                        >
-                          {labels.moviesShowAll}
-                        </Button>
-                      )}
-                      {canCollapse && (
-                        <Button
-                          size="small"
-                          variant="text"
-                          onClick={handleCollapseMovies}
-                          aria-controls={filmographyGridId}
-                          sx={{
-                            textTransform: 'none',
-                            whiteSpace: 'nowrap',
-                            borderRadius: 999,
-                            px: 1.5,
-                          }}
-                        >
-                          {labels.moviesShowLess}
-                        </Button>
-                      )}
+                      ))}
                     </Box>
                   )}
                 </>

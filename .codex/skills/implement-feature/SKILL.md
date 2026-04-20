@@ -1,49 +1,117 @@
 ---
 name: implement-feature
-description: Use to implement a feature or code change in this React + TypeScript + Vite project after planning. Best for minimal, controlled changes that should follow project docs, architecture guidance, and existing code conventions.
+description: Implement a feature or code change in this React + TypeScript + Vite project with minimal, controlled changes following existing patterns.
 ---
 
-You are the implementation skill for this project.
+# Implement Feature
 
-Your job is to implement requested changes with minimal scope and strong alignment to project conventions.
+Ты реализуешь новую функциональность или изменение в проекте React + TypeScript + Vite.
 
-## Rules
+## Когда использовать
 
-- Use project docs and RAG knowledge when the task is project-specific.
-- Follow AGENTS.md and existing architecture.
-- Prefer minimal, local changes over broad rewrites.
-- Do not refactor unrelated code.
-- Keep naming, typing, and structure consistent with the codebase.
-- If docs conflict with code, mention the conflict explicitly.
+Используй этот skill, если задача:
+- добавляет новую функциональность
+- добавляет или изменяет UI
+- изменяет пользовательский сценарий
+- требует новой логики, состояния или взаимодействий
+- требует интеграции с API или routing
 
-## React + TypeScript + Vite guidance
+Не используй для:
+- чистого рефакторинга (используй safe-refactor)
+- code review (используй reviewer)
 
-- Preserve existing component patterns.
-- Prefer explicit typing when useful.
-- Avoid unnecessary abstractions.
-- Keep side effects predictable.
-- Respect project routing and API patterns.
+---
 
-## Output format
+## Основные принципы
 
-### Goal
+- Отвечай на русском языке.
+- Делай минимально необходимые изменения.
+- Сохраняй текущую архитектуру проекта.
+- Следуй существующим паттернам компонентов, хуков и стилей.
+- Не добавляй абстракции “на вырост”.
+- Не трогай несвязанный код.
+- Если можно переиспользовать существующий код — переиспользуй.
+- Если что-то неясно — явно зафиксируй допущения.
+- При возможности предпочитай переиспользование существующих UI skeleton / empty / error компонентов.
+---
 
-...
+## Перед реализацией
 
-### Relevant knowledge
+1. Найди, где уже реализована похожая логика.
+2. Проверь существующие паттерны:
+    - UI (MUI, layout, компоненты)
+    - состояние (hooks)
+    - загрузка / ошибки / empty
+3. Определи минимальный scope изменений.
+4. Убедись, что не требуется изменение API или архитектуры.
 
-- Docs:
-- Files:
-- Constraints:
+---
 
-### Change plan
+## Критические проверки
+
+Перед изменением убедись, что:
+
+- не ломается существующий UX
+- сохраняются состояния:
+    - loading
+    - error
+    - empty
+- не меняется поведение существующих веток
+- не нарушаются зависимости между состояниями
+
+---
+
+## Предпочитаемый подход
+
+- локальные изменения вместо глобальных
+- добавление логики рядом с использованием
+- минимальные правки JSX
+- повторное использование существующих компонентов и стилей
+
+---
+
+## Чего избегать
+
+- переписывания компонентов без необходимости
+- изменения архитектуры
+- добавления новых слоёв абстракции
+- смешивания фичи и рефакторинга
+- массовых изменений в нескольких файлах без причины
+
+---
+
+## Формат ответа
+
+### Понимание задачи
+
+- Что нужно реализовать:
+- Тип изменения:
+- Предположения (если есть):
+
+### План
 
 1. ...
 2. ...
+3. ...
 
-### Implementation summary
+### Реализация
 
-- Files changed:
-- Main logic:
-- Assumptions:
-- Open questions:
+- Файлы:
+- Что добавлено:
+- Что изменено:
+- Что переиспользовано:
+
+### Проверка
+
+- Проверены ли состояния:
+    - loading
+    - error
+    - empty
+- Линтер / typecheck:
+- Возможные риски:
+
+### Итог
+
+- Что реализовано:
+- Поведение не затронуто:
+- Follow-up (если есть):
