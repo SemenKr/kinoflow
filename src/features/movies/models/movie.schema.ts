@@ -23,6 +23,20 @@ export const MoviesResponseSchema = z.object({
   total_results: z.number().default(0),
 })
 
+const MovieVideoSchema = z.object({
+  id: z.string().default(''),
+  key: z.string().default(''),
+  name: z.string().default(''),
+  site: z.string().default(''),
+  type: z.string().default(''),
+  official: z.boolean().optional().default(false),
+})
+
+export const MovieVideosResponseSchema = z.object({
+  id: z.number().default(0),
+  results: z.array(MovieVideoSchema).default([]),
+})
+
 const GenreSchema = z.object({
   id: z.number(),
   name: z.string(),

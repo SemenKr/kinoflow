@@ -1,4 +1,4 @@
-import { useGetMovieDetailsQuery } from '@/features/movies/api/moviesApi'
+import { useGetMovieDetailsQuery, useGetMovieVideosQuery } from '@/features/movies/api/moviesApi'
 import { ActorsSection } from '@/features/movies/ui/ActorsSection/ActorsSection'
 import { SimilarMoviesSection } from '@/features/movies/ui/SimilarMoviesSection/SimilarMoviesSection'
 import { useApiLanguage } from '@/hooks'
@@ -30,6 +30,7 @@ import { HeroSection } from './components/HeroSection'
 import { MovieDetailsPageSkeleton } from './components/MovieDetailsPageSkeleton'
 import { OverviewSection } from './components/OverviewSection'
 import { ProductionSection } from './components/ProductionSection'
+import { TrailerSection } from './components/TrailerSection'
 
 const EMPTY_NORMALIZED: ReturnType<typeof normalizeMovie> = {
   voteAverage: 0,
@@ -48,6 +49,10 @@ export const MovieDetailsPage = () => {
 
   const { data, isLoading, error } = useGetMovieDetailsQuery(
     { id: movieId, language: apiLanguage },
+    { skip: !isValidMovieId },
+  )
+  const { data: movieVideosData, isLoading: isVideosLoading } = useGetMovieVideosQuery(
+    { movieId, language: apiLanguage },
     { skip: !isValidMovieId },
   )
   const locale = i18n.resolvedLanguage || 'en'
@@ -76,6 +81,8 @@ export const MovieDetailsPage = () => {
       spokenLanguages: t('movie_details_spoken_languages'),
       countries: t('movie_details_countries'),
       production: t('movie_details_production'),
+      trailer: t('movie_details_trailer'),
+      trailerPlay: t('movie_details_trailer_play'),
     }),
     [t],
   )
@@ -119,6 +126,16 @@ export const MovieDetailsPage = () => {
       color: getRatingColor(percent),
     }
   }, [voteAverage, locale])
+  const primaryTrailer = useMemo(() => {
+    const youtubeVideos = (movieVideosData?.results ?? []).filter(
+      video => video.site === 'YouTube' && Boolean(video.key),
+    )
+    const officialTrailer = youtubeVideos.find(
+      video => video.type === 'Trailer' && video.official === true,
+    )
+
+    return officialTrailer ?? youtubeVideos[0] ?? null
+  }, [movieVideosData?.results])
   const handleBack = useCallback(() => navigate(-1), [navigate])
 
   if (isLoading) {
@@ -145,6 +162,7 @@ export const MovieDetailsPage = () => {
   const revenueLabel = formatMoney(movie.revenue, locale, labels.unknown)
 
   const actors = movie.credits?.cast ?? []
+
   return (
     <Box sx={pageRootSx}>
       <Box sx={fixedBackWrapSx}>
@@ -220,6 +238,12 @@ export const MovieDetailsPage = () => {
             productionCompanies={productionCompanies}
           />
         </Box>
+        <TrailerSection
+          isLoading={isVideosLoading}
+          trailer={primaryTrailer ? { key: primaryTrailer.key, name: primaryTrailer.name } : null}
+          title={labels.trailer}
+          playLabel={labels.trailerPlay}
+        />
       </Container>
       <Container maxWidth="lg">
         <ActorsSection key={movie.id} title={t('movie_details_cast')} actors={actors} />

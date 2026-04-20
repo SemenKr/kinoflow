@@ -73,6 +73,55 @@ export const detailsGridSx = {
   gridTemplateColumns: { xs: '1fr', md: '1.25fr 1fr' },
   gap: 2,
 }
+export const trailerContainerSx = { mt: { xs: 3, md: 4 } }
+export const trailerFrameWrapSx = (theme: Theme) => ({
+  position: 'relative',
+  width: '100%',
+  aspectRatio: '16 / 9',
+  borderRadius: 2.5,
+  overflow: 'hidden',
+  backgroundColor: alpha(theme.palette.common.black, 0.5),
+  border: `1px solid ${alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? 0.14 : 0.1)}`,
+})
+export const trailerIframeSx = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  border: 0,
+}
+export const trailerPreviewButtonSx = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  p: 0,
+}
+export const trailerPreviewImageSx = {
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+}
+export const trailerPreviewOverlaySx = (theme: Theme) => ({
+  position: 'absolute',
+  inset: 0,
+  display: 'grid',
+  placeItems: 'center',
+  background: `linear-gradient(to top, ${alpha(theme.palette.common.black, 0.48)}, ${alpha(
+    theme.palette.common.black,
+    0.2,
+  )})`,
+})
+export const trailerPlayBadgeSx = (theme: Theme) => ({
+  width: 64,
+  height: 64,
+  borderRadius: '50%',
+  display: 'grid',
+  placeItems: 'center',
+  color: theme.palette.common.white,
+  backgroundColor: alpha(theme.palette.common.black, 0.58),
+  border: `1px solid ${alpha(theme.palette.common.white, 0.3)}`,
+})
 export const sectionTitleSx = { mb: 1.5 }
 export const overviewTextSx = { lineHeight: 1.75 }
 export const languageRowSx = { mb: 2 }

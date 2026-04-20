@@ -9,6 +9,8 @@ import type {
   PersonImagesParams,
   Movie,
   MovieDetailsParams,
+  MovieVideosParams,
+  MovieVideosResponse,
   MoviesResponse,
   PersonDetails,
   PersonDetailsParams,
@@ -19,6 +21,7 @@ import type { DiscoverMoviesParams } from '@/features/movies/model/discover.type
 import {
   GenresResponseSchema,
   MovieDetailsSchema,
+  MovieVideosResponseSchema,
   MoviesResponseSchema,
   PersonCombinedCreditsSchema,
   PersonDetailsSchema,
@@ -32,6 +35,7 @@ import type { PaginationParams } from '@/types/types'
 
 const parseMoviesResponse = validateResponse(MoviesResponseSchema)
 const parseMovieDetailsResponse = validateResponse(MovieDetailsSchema)
+const parseMovieVideosResponse = validateResponse(MovieVideosResponseSchema)
 const parsePersonDetailsResponse = validateResponse(PersonDetailsSchema)
 const parsePersonCombinedCreditsResponse = validateResponse(PersonCombinedCreditsSchema)
 const parsePersonExternalIdsResponse = validateResponse(PersonExternalIdsSchema)
@@ -75,6 +79,13 @@ export const moviesApi = baseApi.injectEndpoints({
         },
       }),
       transformResponse: parseMovieDetailsResponse,
+    }),
+    getMovieVideos: builder.query<MovieVideosResponse, MovieVideosParams>({
+      query: ({ movieId, language = 'en-US' }) => ({
+        url: `/movie/${movieId}/videos`,
+        params: { language },
+      }),
+      transformResponse: parseMovieVideosResponse,
     }),
     getPersonDetails: builder.query<PersonDetails, PersonDetailsParams>({
       query: ({ personId, language = 'en-US' }) => ({
@@ -166,6 +177,7 @@ export const {
   useGetNowPlayingMoviesQuery,
   useGetSearchMoviesQuery,
   useGetMovieDetailsQuery,
+  useGetMovieVideosQuery,
   useGetPersonDetailsQuery,
   useGetPersonCombinedCreditsQuery,
   useGetPersonExternalIdsQuery,
