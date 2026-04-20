@@ -11,11 +11,12 @@ type EndpointName =
   | 'getNowPlayingMovies'
   | 'getSearchMovies'
   | 'getMovieDetails'
+  | 'getPersonImages'
   | 'getSimilarMovies'
   | 'getDiscoverMovies'
   | 'getGenres'
 
-const LOCAL_ERROR_ENDPOINTS = new Set<EndpointName>(['getSimilarMovies'])
+const LOCAL_ERROR_ENDPOINTS = new Set<EndpointName>(['getSimilarMovies', 'getPersonImages'])
 
 const shouldShowGlobalToast = (status: unknown, endpointName?: string) => {
   if (endpointName && LOCAL_ERROR_ENDPOINTS.has(endpointName as EndpointName)) {

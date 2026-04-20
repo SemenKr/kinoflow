@@ -141,3 +141,18 @@ export const PersonExternalIdsSchema = z.object({
   twitter_id: z.string().nullable().optional().default(null),
   youtube_id: z.string().nullable().optional().default(null),
 })
+
+const PersonImageSchema = z.object({
+  aspect_ratio: z.number().optional().default(0),
+  file_path: z.string().nullable().optional().default(null),
+  height: z.number().optional().default(0),
+  iso_639_1: z.string().nullable().optional().default(null),
+  vote_average: z.number().optional().default(0),
+  vote_count: z.number().optional().default(0),
+  width: z.number().optional().default(0),
+})
+
+export const PersonImagesSchema = z.object({
+  id: z.number().default(0),
+  profiles: z.array(PersonImageSchema).default([]),
+})

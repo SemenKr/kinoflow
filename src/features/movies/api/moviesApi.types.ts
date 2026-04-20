@@ -3,6 +3,7 @@ import {
   MoviesResponseSchema,
   PersonCombinedCreditsSchema,
   PersonDetailsSchema,
+  PersonImagesSchema,
   PersonExternalIdsSchema,
 } from '@/features/movies/models/movie.schema'
 import { z } from 'zod'
@@ -12,6 +13,7 @@ export type MoviesResponse = z.infer<typeof MoviesResponseSchema>
 export type PersonDetails = z.infer<typeof PersonDetailsSchema>
 export type PersonCombinedCredits = z.infer<typeof PersonCombinedCreditsSchema>
 export type PersonExternalIds = z.infer<typeof PersonExternalIdsSchema>
+export type PersonImages = z.infer<typeof PersonImagesSchema>
 
 export interface SearchMoviesParams {
   query: string
@@ -41,6 +43,11 @@ export interface PersonCombinedCreditsParams {
 }
 
 export interface PersonExternalIdsParams {
+  personId: number
+  language?: string
+}
+
+export interface PersonImagesParams {
   personId: number
   language?: string
 }

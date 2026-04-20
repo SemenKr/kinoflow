@@ -5,6 +5,8 @@ import type {
   PersonCombinedCreditsParams,
   PersonExternalIds,
   PersonExternalIdsParams,
+  PersonImages,
+  PersonImagesParams,
   Movie,
   MovieDetailsParams,
   MoviesResponse,
@@ -20,6 +22,7 @@ import {
   MoviesResponseSchema,
   PersonCombinedCreditsSchema,
   PersonDetailsSchema,
+  PersonImagesSchema,
   PersonExternalIdsSchema,
 } from '@/features/movies/models/movie.schema'
 import type { MovieDetails } from '@/pages/MovieDetailsPage/MovieDetailsPage.utils'
@@ -32,6 +35,7 @@ const parseMovieDetailsResponse = validateResponse(MovieDetailsSchema)
 const parsePersonDetailsResponse = validateResponse(PersonDetailsSchema)
 const parsePersonCombinedCreditsResponse = validateResponse(PersonCombinedCreditsSchema)
 const parsePersonExternalIdsResponse = validateResponse(PersonExternalIdsSchema)
+const parsePersonImagesResponse = validateResponse(PersonImagesSchema)
 const parseGenresResponse = validateResponse(GenresResponseSchema)
 
 export const moviesApi = baseApi.injectEndpoints({
@@ -121,6 +125,13 @@ export const moviesApi = baseApi.injectEndpoints({
       }),
       transformResponse: parsePersonExternalIdsResponse,
     }),
+    getPersonImages: builder.query<PersonImages, PersonImagesParams>({
+      query: ({ personId, language = 'en-US' }) => ({
+        url: `/person/${personId}/images`,
+        params: { language },
+      }),
+      transformResponse: parsePersonImagesResponse,
+    }),
     getSimilarMovies: builder.query<MoviesResponse, SimilarMoviesParams>({
       query: ({ movieId, page = 1, language = 'en-US' }) => ({
         url: `/movie/${movieId}/similar`,
@@ -158,6 +169,7 @@ export const {
   useGetPersonDetailsQuery,
   useGetPersonCombinedCreditsQuery,
   useGetPersonExternalIdsQuery,
+  useGetPersonImagesQuery,
   useLazyGetSimilarMoviesQuery,
   useGetDiscoverMoviesQuery,
   useLazyGetDiscoverMoviesQuery,

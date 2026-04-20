@@ -2,6 +2,7 @@ import {
   useGetPersonCombinedCreditsQuery,
   useGetPersonDetailsQuery,
   useGetPersonExternalIdsQuery,
+  useGetPersonImagesQuery,
 } from '@/features/movies/api/moviesApi'
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
@@ -32,6 +33,7 @@ const PHOTO_FALLBACK = createImageFallbackUrl({
 
 const INITIAL_VISIBLE_MOVIES = 6
 const LOAD_MORE_STEP = 6
+const MAX_PERSON_IMAGES = 6
 
 const statusContainerSx = { py: 6 }
 const fixedBackWrapSx = {
@@ -60,6 +62,23 @@ const filmographyEmptyStateSx = (theme: Theme) => ({
     theme.palette.mode === 'dark' ? 0.5 : 0.72,
   ),
 })
+const personImagesGridSx = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(108px, 1fr))',
+  gap: 1,
+}
+const personImageSx = (theme: Theme) => ({
+  width: '100%',
+  aspectRatio: '2 / 3',
+  borderRadius: 2,
+  objectFit: 'cover',
+  border: `1px solid ${alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? 0.18 : 0.12)}`,
+})
+const personImageSkeletonSx = {
+  width: '100%',
+  aspectRatio: '2 / 3',
+  borderRadius: 2,
+}
 const backButtonSx = (theme: Theme) => ({
   minWidth: { xs: 'auto', sm: 112 },
   px: { xs: 0.9, sm: 1.2 },
@@ -145,6 +164,11 @@ export const PersonDetailsPage = () => {
     { personId, language: apiLanguage },
     { skip: !isValidPersonId },
   )
+  const {
+    data: personImagesData,
+    isLoading: isPersonImagesLoading,
+    error: personImagesError,
+  } = useGetPersonImagesQuery({ personId, language: apiLanguage }, { skip: !isValidPersonId })
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -170,6 +194,8 @@ export const PersonDetailsPage = () => {
       moviesShowAll: t('person_details_movies_show_all'),
       moviesShowLess: t('person_details_movies_show_less'),
       moviesControlsAria: t('person_details_movies_controls_aria'),
+      imagesTitle: t('person_details_images_title'),
+      imagesError: t('person_details_images_error'),
       bioExpand: t('person_details_bio_expand'),
       bioCollapse: t('person_details_bio_collapse'),
     }),
@@ -359,6 +385,15 @@ export const PersonDetailsPage = () => {
   const showMoviesError = isMoviesLoaded && Boolean(moviesError)
   const showMoviesEmpty = isMoviesLoaded && !moviesError && !hasMovies
   const showFilmography = isMoviesLoaded && !moviesError && hasMovies
+  const personImages = personImagesData?.profiles ?? []
+  const visiblePersonImages = personImages
+    .filter(image => Boolean(image.file_path))
+    .slice(0, MAX_PERSON_IMAGES)
+  const hasMultiplePersonImages = visiblePersonImages.length > 1
+  const isPersonImagesLoaded = !isPersonImagesLoading
+  const showPersonImagesError = isPersonImagesLoaded && Boolean(personImagesError)
+  const showPersonImagesGrid = isPersonImagesLoaded && !personImagesError && hasMultiplePersonImages
+  const shouldShowImagesSection = isPersonImagesLoading || showPersonImagesError || showPersonImagesGrid
   const filmographyControls: FilmographyControl[] = []
   if (canExpand) {
     filmographyControls.push({
@@ -667,6 +702,49 @@ export const PersonDetailsPage = () => {
                 </>
               )}
             </Box>
+
+            {shouldShowImagesSection && (
+              <Box>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  {labels.imagesTitle}
+                </Typography>
+
+                {isPersonImagesLoading && (
+                  <Box sx={personImagesGridSx}>
+                    {Array.from({ length: MAX_PERSON_IMAGES }, (_, index) => (
+                      <Skeleton key={index} variant="rounded" sx={personImageSkeletonSx} />
+                    ))}
+                  </Box>
+                )}
+
+                {showPersonImagesError && (
+                  <Typography color="text.secondary">{labels.imagesError}</Typography>
+                )}
+
+                {showPersonImagesGrid && (
+                  <Box sx={personImagesGridSx}>
+                    {visiblePersonImages.map((image, index) => (
+                      <Box
+                        key={image.file_path || `person-image-${index}`}
+                        component="img"
+                        src={`${IMAGE_BASE}/w300${image.file_path}`}
+                        alt={t('person_details_image_alt', {
+                          person: personName || labels.externalLinkUnknownPerson,
+                          index: index + 1,
+                        })}
+                        loading="lazy"
+                        onError={event => {
+                          if (!event.currentTarget.src.includes('data:image')) {
+                            event.currentTarget.src = PHOTO_FALLBACK
+                          }
+                        }}
+                        sx={personImageSx}
+                      />
+                    ))}
+                  </Box>
+                )}
+              </Box>
+            )}
           </Box>
         </Box>
       </Container>

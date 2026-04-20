@@ -148,6 +148,10 @@ const resources = {
       person_details_movies_controls_aria: 'Filmography display controls',
       person_details_movies_error: 'Failed to load filmography.',
       person_details_movies_empty: 'No movies found in cast credits.',
+      person_details_images_title: 'Images',
+      person_details_images_error: 'Failed to load person images.',
+      person_details_images_empty: 'No images available.',
+      person_details_image_alt: '{{person}} photo {{index}}',
     },
   },
   ru: {
@@ -295,6 +299,10 @@ const resources = {
       person_details_movies_controls_aria: 'Управление отображением фильмографии',
       person_details_movies_error: 'Не удалось загрузить фильмографию.',
       person_details_movies_empty: 'В актерских работах фильмов не найдено.',
+      person_details_images_title: 'Изображения',
+      person_details_images_error: 'Не удалось загрузить изображения персоны.',
+      person_details_images_empty: 'Изображения недоступны.',
+      person_details_image_alt: 'Фото {{person}} №{{index}}',
     },
   },
 }
