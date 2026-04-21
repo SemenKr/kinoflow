@@ -1,5 +1,6 @@
 import {
   MovieSchema,
+  MovieCreditsSchema,
   MovieVideosResponseSchema,
   MoviesResponseSchema,
   PersonCombinedCreditsSchema,
@@ -10,6 +11,7 @@ import {
 import { z } from 'zod'
 
 export type Movie = z.infer<typeof MovieSchema>
+export type MovieCredits = z.infer<typeof MovieCreditsSchema>
 export type MovieVideosResponse = z.infer<typeof MovieVideosResponseSchema>
 export type MoviesResponse = z.infer<typeof MoviesResponseSchema>
 export type PersonDetails = z.infer<typeof PersonDetailsSchema>
@@ -29,6 +31,11 @@ export interface MovieDetailsParams {
 }
 
 export interface MovieVideosParams {
+  movieId: number
+  language?: string
+}
+
+export interface MovieCreditsParams {
   movieId: number
   language?: string
 }

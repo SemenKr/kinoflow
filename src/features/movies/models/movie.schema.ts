@@ -74,7 +74,7 @@ const MovieCastMemberSchema = z.object({
   profile_path: z.string().nullable(),
 })
 
-const MovieCreditsSchema = z.object({
+export const MovieCreditsSchema = z.object({
   cast: z.array(MovieCastMemberSchema),
 })
 

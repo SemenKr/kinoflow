@@ -9,6 +9,8 @@ import type {
   PersonImagesParams,
   Movie,
   MovieDetailsParams,
+  MovieCredits,
+  MovieCreditsParams,
   MovieVideosParams,
   MovieVideosResponse,
   MoviesResponse,
@@ -22,6 +24,7 @@ import {
   GenresResponseSchema,
   MovieDetailsSchema,
   MovieVideosResponseSchema,
+  MovieCreditsSchema,
   MoviesResponseSchema,
   PersonCombinedCreditsSchema,
   PersonDetailsSchema,
@@ -36,6 +39,7 @@ import type { PaginationParams } from '@/types/types'
 const parseMoviesResponse = validateResponse(MoviesResponseSchema)
 const parseMovieDetailsResponse = validateResponse(MovieDetailsSchema)
 const parseMovieVideosResponse = validateResponse(MovieVideosResponseSchema)
+const parseMovieCreditsResponse = validateResponse(MovieCreditsSchema)
 const parsePersonDetailsResponse = validateResponse(PersonDetailsSchema)
 const parsePersonCombinedCreditsResponse = validateResponse(PersonCombinedCreditsSchema)
 const parsePersonExternalIdsResponse = validateResponse(PersonExternalIdsSchema)
@@ -73,12 +77,16 @@ export const moviesApi = baseApi.injectEndpoints({
     getMovieDetails: builder.query<MovieDetails, MovieDetailsParams>({
       query: ({ id, language = 'en-US' }) => ({
         url: `/movie/${id}`,
-        params: {
-          language,
-          append_to_response: 'credits',
-        },
+        params: { language },
       }),
       transformResponse: parseMovieDetailsResponse,
+    }),
+    getMovieCredits: builder.query<MovieCredits, MovieCreditsParams>({
+      query: ({ movieId, language = 'en-US' }) => ({
+        url: `/movie/${movieId}/credits`,
+        params: { language },
+      }),
+      transformResponse: parseMovieCreditsResponse,
     }),
     getMovieVideos: builder.query<MovieVideosResponse, MovieVideosParams>({
       query: ({ movieId, language = 'en-US' }) => ({
@@ -177,6 +185,7 @@ export const {
   useGetNowPlayingMoviesQuery,
   useGetSearchMoviesQuery,
   useGetMovieDetailsQuery,
+  useGetMovieCreditsQuery,
   useGetMovieVideosQuery,
   useGetPersonDetailsQuery,
   useGetPersonCombinedCreditsQuery,
