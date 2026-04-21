@@ -75,7 +75,11 @@ export const MovieCard = ({ movie, posterSize = 'default' }: Props) => {
         <IconButton
           className="movie-card-favorite"
           sx={theme => favoriteButtonStyles(theme, favorite)}
-          aria-label="favorite"
+          aria-label={
+            favorite
+              ? t('movie_card_remove_favorites', { title: movie.title })
+              : t('movie_card_add_favorites', { title: movie.title })
+          }
           onClick={event => {
             event.stopPropagation()
 

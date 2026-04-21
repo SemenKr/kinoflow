@@ -49,7 +49,7 @@ export const MovieDetailsPage = () => {
   const apiLanguage = useApiLanguage()
 
   const movieId = Number(id)
-  const isValidMovieId = !Number.isNaN(movieId)
+  const isValidMovieId = Number.isInteger(movieId) && movieId > 0
 
   const { data, error } = useGetMovieDetailsQuery(
     { id: movieId, language: apiLanguage },

@@ -13,6 +13,7 @@ import { usePageSync } from '@/shared/hooks/usePageSync'
 export const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const queryFromUrl = searchParams.get('q') || ''
+  const normalizedQueryFromUrl = queryFromUrl.trim()
   const pageParam = Number(searchParams.get('page') || '1')
   const { t } = useTranslation()
   const apiLanguage = useApiLanguage()
@@ -20,21 +21,24 @@ export const SearchPage = () => {
 
   const [query, setQuery] = useState(queryFromUrl)
   const debouncedQuery = useDebounceValue(query, 500)
+  const normalizedDebouncedQuery = debouncedQuery.trim()
   const currentPage = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1
 
   const { data, isLoading, isFetching } = useGetSearchMoviesQuery(
-    { query: debouncedQuery, page: currentPage, language: apiLanguage },
-    { skip: !debouncedQuery },
+    { query: normalizedDebouncedQuery, page: currentPage, language: apiLanguage },
+    { skip: !normalizedDebouncedQuery },
   )
-  const shouldShowResultsSkeleton = Boolean(debouncedQuery) && (isLoading || isFetching)
+  const shouldShowResultsSkeleton = Boolean(normalizedDebouncedQuery) && (isLoading || isFetching)
   const totalPages = Math.max(1, data?.total_pages ?? 1)
   const paginationPage = usePageSync({
     page: currentPage,
     totalPages,
-    enabled: Boolean(data) && Boolean(queryFromUrl),
+    enabled: Boolean(data) && Boolean(normalizedQueryFromUrl),
     onCorrectPage: nextPage => {
       setSearchParams(
-        nextPage > 1 ? { q: queryFromUrl, page: String(nextPage) } : { q: queryFromUrl },
+        nextPage > 1
+          ? { q: normalizedQueryFromUrl, page: String(nextPage) }
+          : { q: normalizedQueryFromUrl },
         { replace: true },
       )
     },
@@ -45,23 +49,24 @@ export const SearchPage = () => {
   }, [queryFromUrl])
 
   useEffect(() => {
-    const normalizedQuery = debouncedQuery.trim()
+    if (normalizedDebouncedQuery === normalizedQueryFromUrl) return
 
-    if (normalizedQuery === queryFromUrl) return
-
-    setSearchParams(normalizedQuery ? { q: normalizedQuery } : {}, { replace: true })
-  }, [debouncedQuery, queryFromUrl, setSearchParams])
+    setSearchParams(normalizedDebouncedQuery ? { q: normalizedDebouncedQuery } : {}, {
+      replace: true,
+    })
+  }, [normalizedDebouncedQuery, normalizedQueryFromUrl, setSearchParams])
 
   const handleClearSearch = () => {
     setQuery('')
   }
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, nextPage: number) => {
-    const normalizedQuery = debouncedQuery.trim()
-    if (!normalizedQuery) return
+    if (!normalizedDebouncedQuery) return
 
     setSearchParams(
-      nextPage > 1 ? { q: normalizedQuery, page: String(nextPage) } : { q: normalizedQuery },
+      nextPage > 1
+        ? { q: normalizedDebouncedQuery, page: String(nextPage) }
+        : { q: normalizedDebouncedQuery },
     )
     pageTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
@@ -145,9 +150,9 @@ export const SearchPage = () => {
         </Box>
       )}
 
-      {debouncedQuery && !shouldShowResultsSkeleton && data && data.results.length === 0 && (
+      {normalizedDebouncedQuery && !shouldShowResultsSkeleton && data && data.results.length === 0 && (
         <Typography sx={{ mt: 3 }}>
-          {t('search_page_no_results', { query: debouncedQuery })}
+          {t('search_page_no_results', { query: normalizedDebouncedQuery })}
         </Typography>
       )}
 

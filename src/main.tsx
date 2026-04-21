@@ -11,11 +11,11 @@ import '@/styles/globals.css'
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
-    <AppErrorBoundary>
-      <AppThemeProvider>
+    <AppThemeProvider>
+      <ToastViewport />
+      <AppErrorBoundary>
         <RouterProvider router={router} />
-        <ToastViewport />
-      </AppThemeProvider>
-    </AppErrorBoundary>
+      </AppErrorBoundary>
+    </AppThemeProvider>
   </Provider>,
 )

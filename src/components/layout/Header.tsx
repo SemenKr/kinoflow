@@ -26,7 +26,6 @@ import { ThemeToggle } from './ThemeToggle'
 import logoUrl from '@/assets/icons/tmdblogo.svg'
 
 const navItemPrefetchMap = {
-  main: 'home',
   categories: 'categories',
   filtered: 'filtered',
   search: 'search',
@@ -90,7 +89,7 @@ export const Header = () => {
               to={item.to}
               label={item.label}
               activePath={item.activePath}
-              prefetchKey={navItemPrefetchMap[item.key]}
+              prefetchKey={item.key === 'main' ? undefined : navItemPrefetchMap[item.key]}
             />
           ))}
         </Box>
@@ -158,8 +157,16 @@ export const Header = () => {
                 component={RouterLink}
                 to={item.to}
                 onClick={closeMenu}
-                onMouseEnter={() => prefetchRoute(navItemPrefetchMap[item.key])}
-                onFocus={() => prefetchRoute(navItemPrefetchMap[item.key])}
+                onMouseEnter={() => {
+                  if (item.key !== 'main') {
+                    prefetchRoute(navItemPrefetchMap[item.key])
+                  }
+                }}
+                onFocus={() => {
+                  if (item.key !== 'main') {
+                    prefetchRoute(navItemPrefetchMap[item.key])
+                  }
+                }}
                 sx={theme => ({
                   borderRadius: 10,
                   marginBottom: 0.5,

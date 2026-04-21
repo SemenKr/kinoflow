@@ -15,13 +15,13 @@ export const useFiltersUrlSync = () => {
 
   const filters = useMemo(() => parseFiltersFromSearchParams(searchParams), [searchParams])
 
-  const updateFilters = (updater: FiltersUpdater) => {
+  const updateFilters = (updater: FiltersUpdater, options?: { replace?: boolean }) => {
     setSearchParams(
       prev => {
         const nextFilters = updater(parseFiltersFromSearchParams(prev))
         return serializeFiltersToSearchParams(nextFilters)
       },
-      { replace: true },
+      { replace: options?.replace ?? true },
     )
   }
 
@@ -58,10 +58,13 @@ export const useFiltersUrlSync = () => {
   }
 
   const setPage = (nextPage: number) => {
-    updateFilters(prev => ({
-      ...prev,
-      page: nextPage,
-    }))
+    updateFilters(
+      prev => ({
+        ...prev,
+        page: nextPage,
+      }),
+      { replace: false },
+    )
   }
 
   return {

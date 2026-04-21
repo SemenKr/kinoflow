@@ -7,7 +7,7 @@ interface Props {
   to: string
   label: string
   activePath?: string
-  prefetchKey?: 'home' | 'categories' | 'filtered' | 'search' | 'favorites'
+  prefetchKey?: 'categories' | 'filtered' | 'search' | 'favorites'
 }
 
 export const NavItem = ({ to, label, activePath, prefetchKey }: Props) => {

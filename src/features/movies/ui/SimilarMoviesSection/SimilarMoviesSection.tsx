@@ -48,6 +48,7 @@ export const SimilarMoviesSection = ({ title, movieId, language }: Props) => {
   const totalPagesRef = useRef(1)
   const rowRef = useRef<HTMLDivElement | null>(null)
   const requestInFlightRef = useRef(false)
+  const requestIdRef = useRef(0)
   const visibleMovies = movies.slice(0, visibleCount)
 
   const loadPage = useCallback(
@@ -55,10 +56,13 @@ export const SimilarMoviesSection = ({ title, movieId, language }: Props) => {
       if (requestInFlightRef.current) return null
 
       requestInFlightRef.current = true
+      const requestId = ++requestIdRef.current
       setHasError(false)
 
       try {
         const response = await track(trigger({ movieId, page: pageToLoad, language }).unwrap())
+        if (requestId !== requestIdRef.current) return null
+
         let mergedLength = response.results.length
 
         setMovies(prev => {
@@ -73,10 +77,14 @@ export const SimilarMoviesSection = ({ title, movieId, language }: Props) => {
 
         return mergedLength
       } catch {
-        setHasError(true)
+        if (requestId === requestIdRef.current) {
+          setHasError(true)
+        }
         return null
       } finally {
-        requestInFlightRef.current = false
+        if (requestId === requestIdRef.current) {
+          requestInFlightRef.current = false
+        }
       }
     },
     [language, movieId, track, trigger],
@@ -113,6 +121,7 @@ export const SimilarMoviesSection = ({ title, movieId, language }: Props) => {
       pageRef.current = 0
       totalPagesRef.current = 1
       requestInFlightRef.current = false
+      requestIdRef.current += 1
 
       const initialLength = await loadPage(1)
       if (isActive && initialLength !== null) {

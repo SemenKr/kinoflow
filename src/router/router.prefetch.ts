@@ -1,10 +1,8 @@
 const routeImporters = {
-  home: () => import('@/pages/MainPage/MainPage'),
   categories: () => import('@/pages/CategoryMoviesPage/CategoryMoviesPage'),
   filtered: () => import('@/pages/FilteredMoviesPage/FilteredMoviesPage'),
   search: () => import('@/pages/SearchPage/SearchPage'),
   favorites: () => import('@/pages/FavoritesPage/FavoritesPage'),
-  movieDetails: () => import('@/pages/MovieDetailsPage/MovieDetailsPage'),
   personDetails: () => import('@/pages/PersonDetailsPage/PersonDetailsPage'),
   notFound: () => import('@/pages/NotFoundPage/NotFoundPage'),
 } as const
