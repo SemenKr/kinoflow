@@ -142,7 +142,11 @@ const captureSearchCatalog = async page => {
 }
 
 const captureFilters = async page => {
-  await goto(page, '/filtered?sort=vote_average.desc&rating=7-10&genres=28,12', 'article[role="button"]')
+  await goto(
+    page,
+    '/filtered?sort=vote_average.desc&rating=7-10&genres=28,12',
+    'article[role="button"]',
+  )
   await saveShot(page, 'filters-sort')
 }
 

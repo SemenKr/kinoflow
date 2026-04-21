@@ -10,6 +10,7 @@ description: Implement a feature or code change in this React + TypeScript + Vit
 ## Когда использовать
 
 Используй этот skill, если задача:
+
 - добавляет новую функциональность
 - добавляет или изменяет UI
 - изменяет пользовательский сценарий
@@ -17,6 +18,7 @@ description: Implement a feature or code change in this React + TypeScript + Vit
 - требует интеграции с API или routing
 
 Не используй для:
+
 - чистого рефакторинга (используй safe-refactor)
 - code review (используй reviewer)
 
@@ -33,15 +35,16 @@ description: Implement a feature or code change in this React + TypeScript + Vit
 - Если можно переиспользовать существующий код — переиспользуй.
 - Если что-то неясно — явно зафиксируй допущения.
 - При возможности предпочитай переиспользование существующих UI skeleton / empty / error компонентов.
+
 ---
 
 ## Перед реализацией
 
 1. Найди, где уже реализована похожая логика.
 2. Проверь существующие паттерны:
-    - UI (MUI, layout, компоненты)
-    - состояние (hooks)
-    - загрузка / ошибки / empty
+   - UI (MUI, layout, компоненты)
+   - состояние (hooks)
+   - загрузка / ошибки / empty
 3. Определи минимальный scope изменений.
 4. Убедись, что не требуется изменение API или архитектуры.
 
@@ -53,9 +56,9 @@ description: Implement a feature or code change in this React + TypeScript + Vit
 
 - не ломается существующий UX
 - сохраняются состояния:
-    - loading
-    - error
-    - empty
+  - loading
+  - error
+  - empty
 - не меняется поведение существующих веток
 - не нарушаются зависимости между состояниями
 
@@ -104,9 +107,9 @@ description: Implement a feature or code change in this React + TypeScript + Vit
 ### Проверка
 
 - Проверены ли состояния:
-    - loading
-    - error
-    - empty
+  - loading
+  - error
+  - empty
 - Линтер / typecheck:
 - Возможные риски:
 

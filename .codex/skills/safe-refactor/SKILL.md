@@ -8,12 +8,14 @@ description: Safe refactoring of existing code without changing behavior.
 ## Когда использовать
 
 Используй этот skill для:
+
 - уменьшения дублирования
 - упрощения логики
 - улучшения читаемости
 - выноса небольших helper / hook / util
 
 Не используй для:
+
 - новых фич
 - изменения UX
 - изменения API
@@ -39,13 +41,13 @@ description: Safe refactoring of existing code without changing behavior.
 
 1. Не меняется ли поведение компонента или функции.
 2. Не меняются ли:
-    - side effects (useEffect, запросы, навигация)
-    - порядок вызовов
-    - условия рендера
+   - side effects (useEffect, запросы, навигация)
+   - порядок вызовов
+   - условия рендера
 3. Сохраняются ли UI-состояния:
-    - loading
-    - error
-    - empty
+   - loading
+   - error
+   - empty
 4. Не ломаются ли зависимости между состояниями.
 
 Если есть риск — явно укажи его до изменений.
