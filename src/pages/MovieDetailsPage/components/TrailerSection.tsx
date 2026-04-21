@@ -44,7 +44,8 @@ export const TrailerSection = ({ isLoading, trailer, title, playLabel }: Trailer
   const [activatedTrailerKey, setActivatedTrailerKey] = useState<string | null>(null)
 
   const shouldShowSection = isLoading || Boolean(trailer)
-  const shouldShowTrailerIframe = !isLoading && Boolean(trailer) && activatedTrailerKey === trailer?.key
+  const shouldShowTrailerIframe =
+    !isLoading && Boolean(trailer) && activatedTrailerKey === trailer?.key
   const trailerEmbedUrl = useMemo(() => {
     if (!trailer) return ''
     return createTrailerEmbedUrl(trailer.key)

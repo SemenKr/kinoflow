@@ -19,7 +19,17 @@ import { useProgressiveReveal } from '@/pages/PersonDetailsPage/hooks/useProgres
 import { IMAGE_BASE } from '@/shared/constants'
 import { createImageFallbackUrl } from '@/shared/utils/imageFallback'
 import { PageLoader } from '@/shared/ui/loading/PageLoader'
-import { Box, Button, Container, IconButton, Link, Skeleton, Stack, Tooltip, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Link,
+  Skeleton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { alpha, type Theme } from '@mui/material/styles'
 import { type ReactElement, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -70,6 +80,7 @@ const personImagesGridSx = {
 const personImageSx = (theme: Theme) => ({
   width: '100%',
   aspectRatio: '2 / 3',
+  height: 'auto',
   borderRadius: 2,
   objectFit: 'cover',
   border: `1px solid ${alpha(theme.palette.text.primary, theme.palette.mode === 'dark' ? 0.18 : 0.12)}`,
@@ -393,7 +404,8 @@ export const PersonDetailsPage = () => {
   const isPersonImagesLoaded = !isPersonImagesLoading
   const showPersonImagesError = isPersonImagesLoaded && Boolean(personImagesError)
   const showPersonImagesGrid = isPersonImagesLoaded && !personImagesError && hasMultiplePersonImages
-  const shouldShowImagesSection = isPersonImagesLoading || showPersonImagesError || showPersonImagesGrid
+  const shouldShowImagesSection =
+    isPersonImagesLoading || showPersonImagesError || showPersonImagesGrid
   const filmographyControls: FilmographyControl[] = []
   if (canExpand) {
     filmographyControls.push({
@@ -448,7 +460,10 @@ export const PersonDetailsPage = () => {
               component="img"
               src={photo}
               alt={data.name}
-              loading="lazy"
+              width={400}
+              height={600}
+              loading="eager"
+              fetchPriority="high"
               onError={event => {
                 if (!event.currentTarget.src.includes('data:image')) {
                   event.currentTarget.src = PHOTO_FALLBACK
@@ -456,6 +471,8 @@ export const PersonDetailsPage = () => {
               }}
               sx={theme => ({
                 width: '100%',
+                aspectRatio: '2 / 3',
+                height: 'auto',
                 maxWidth: { xs: 320, md: '100%' },
                 mx: { xs: 'auto', md: 0 },
                 borderRadius: 3,
@@ -732,6 +749,8 @@ export const PersonDetailsPage = () => {
                           person: personName || labels.externalLinkUnknownPerson,
                           index: index + 1,
                         })}
+                        width={300}
+                        height={450}
                         loading="lazy"
                         onError={event => {
                           if (!event.currentTarget.src.includes('data:image')) {

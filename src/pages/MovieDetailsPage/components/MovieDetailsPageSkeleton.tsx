@@ -32,67 +32,7 @@ const carouselRowSx = {
 export const MovieDetailsPageSkeleton = () => {
   return (
     <Box>
-      <Box sx={heroSectionSx('')}>
-        <Box
-          sx={theme => ({
-            position: 'absolute',
-            inset: 0,
-            background: theme.palette.action.hover,
-            opacity: 0.35,
-          })}
-        />
-
-        <Container maxWidth="lg" sx={heroContainerSx}>
-          <Stack direction={heroStackDirection} spacing={heroStackSpacing}>
-            <Skeleton
-              variant="rectangular"
-              sx={theme => ({
-                ...posterSx(theme),
-                border: 'none',
-              })}
-            />
-
-            <Box sx={heroContentGridSx}>
-              <Box>
-                <Skeleton variant="text" width="58%" height={58} />
-                <Skeleton variant="text" width="42%" height={28} />
-
-                <Box sx={{ ...chipsRowSx, mt: 2 }}>
-                  <Skeleton variant="rounded" width={120} height={32} />
-                  <Skeleton variant="rounded" width={132} height={32} />
-                  <Skeleton variant="rounded" width={96} height={32} />
-                </Box>
-
-                <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2.5 }}>
-                  <Skeleton variant="circular" width={58} height={58} />
-                  <Box sx={{ minWidth: 0, flex: 1 }}>
-                    <Skeleton variant="text" width="34%" height={24} />
-                    <Skeleton variant="text" width="22%" height={20} />
-                  </Box>
-                </Stack>
-
-                <Box sx={{ ...chipsRowSx, mt: 2.5 }}>
-                  <Skeleton variant="rounded" width={84} height={28} />
-                  <Skeleton variant="rounded" width={96} height={28} />
-                  <Skeleton variant="rounded" width={76} height={28} />
-                </Box>
-              </Box>
-
-              <Box sx={theme => surfaceSx(0)(theme)}>
-                <Skeleton variant="text" width="36%" height={34} />
-                <Box sx={{ ...factsStackSx, mt: 1.25 }}>
-                  <Skeleton variant="text" width="72%" height={24} />
-                  <Skeleton variant="text" width="68%" height={24} />
-                  <Skeleton variant="text" width="64%" height={24} />
-                  <Skeleton variant="text" width="74%" height={24} />
-                  <Skeleton variant="text" width="56%" height={24} />
-                  <Skeleton variant="text" width="62%" height={24} />
-                </Box>
-              </Box>
-            </Box>
-          </Stack>
-        </Container>
-      </Box>
+      <MovieDetailsHeroSkeleton />
 
       <Container maxWidth="lg" sx={detailsContainerSx}>
         <Box sx={detailsGridSx}>
@@ -136,6 +76,72 @@ export const MovieDetailsPageSkeleton = () => {
             </Box>
           ))}
         </Box>
+      </Container>
+    </Box>
+  )
+}
+
+export const MovieDetailsHeroSkeleton = () => {
+  return (
+    <Box sx={heroSectionSx}>
+      <Box
+        sx={theme => ({
+          position: 'absolute',
+          inset: 0,
+          background: theme.palette.action.hover,
+          opacity: 0.35,
+        })}
+      />
+
+      <Container maxWidth="lg" sx={heroContainerSx}>
+        <Stack direction={heroStackDirection} spacing={heroStackSpacing}>
+          <Skeleton
+            variant="rectangular"
+            sx={theme => ({
+              ...posterSx(theme),
+              border: 'none',
+            })}
+          />
+
+          <Box sx={heroContentGridSx}>
+            <Box>
+              <Skeleton variant="text" width="58%" height={58} />
+              <Skeleton variant="text" width="42%" height={28} />
+
+              <Box sx={{ ...chipsRowSx, mt: 2 }}>
+                <Skeleton variant="rounded" width={120} height={32} />
+                <Skeleton variant="rounded" width={132} height={32} />
+                <Skeleton variant="rounded" width={96} height={32} />
+              </Box>
+
+              <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2.5 }}>
+                <Skeleton variant="circular" width={58} height={58} />
+                <Box sx={{ minWidth: 0, flex: 1 }}>
+                  <Skeleton variant="text" width="34%" height={24} />
+                  <Skeleton variant="text" width="22%" height={20} />
+                </Box>
+              </Stack>
+
+              <Box sx={{ ...chipsRowSx, mt: 2.5 }}>
+                <Skeleton variant="rounded" width={84} height={28} />
+                <Skeleton variant="rounded" width={96} height={28} />
+                <Skeleton variant="rounded" width={76} height={28} />
+              </Box>
+            </Box>
+
+            <Box sx={theme => surfaceSx(0)(theme)}>
+              <Skeleton variant="text" width="36%" height={34} />
+              <Box sx={{ ...factsStackSx, mt: 1.25 }}>
+                <Skeleton variant="text" width="72%" height={24} />
+                <Skeleton variant="text" width="68%" height={24} />
+                <Skeleton variant="text" width="64%" height={24} />
+                <Skeleton variant="text" width="74%" height={24} />
+                <Skeleton variant="text" width="56%" height={24} />
+                <Skeleton variant="text" width="62%" height={24} />
+              </Box>
+            </Box>
+          </Box>
+        </Stack>
       </Container>
     </Box>
   )

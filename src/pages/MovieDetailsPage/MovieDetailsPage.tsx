@@ -1,4 +1,8 @@
-import { useGetMovieDetailsQuery, useGetMovieVideosQuery } from '@/features/movies/api/moviesApi'
+import {
+  useGetMovieCreditsQuery,
+  useGetMovieDetailsQuery,
+  useGetMovieVideosQuery,
+} from '@/features/movies/api/moviesApi'
 import { ActorsSection } from '@/features/movies/ui/ActorsSection/ActorsSection'
 import { SimilarMoviesSection } from '@/features/movies/ui/SimilarMoviesSection/SimilarMoviesSection'
 import { useApiLanguage } from '@/hooks'
@@ -27,7 +31,7 @@ import {
   POSTER_FALLBACK_URL,
 } from './MovieDetailsPage.utils'
 import { HeroSection } from './components/HeroSection'
-import { MovieDetailsPageSkeleton } from './components/MovieDetailsPageSkeleton'
+import { MovieDetailsHeroSkeleton } from './components/MovieDetailsPageSkeleton'
 import { OverviewSection } from './components/OverviewSection'
 import { ProductionSection } from './components/ProductionSection'
 import { TrailerSection } from './components/TrailerSection'
@@ -47,8 +51,12 @@ export const MovieDetailsPage = () => {
   const movieId = Number(id)
   const isValidMovieId = !Number.isNaN(movieId)
 
-  const { data, isLoading, error } = useGetMovieDetailsQuery(
+  const { data, error } = useGetMovieDetailsQuery(
     { id: movieId, language: apiLanguage },
+    { skip: !isValidMovieId },
+  )
+  const { data: movieCreditsData } = useGetMovieCreditsQuery(
+    { movieId, language: apiLanguage },
     { skip: !isValidMovieId },
   )
   const { data: movieVideosData, isLoading: isVideosLoading } = useGetMovieVideosQuery(
@@ -136,32 +144,61 @@ export const MovieDetailsPage = () => {
 
     return officialTrailer ?? youtubeVideos[0] ?? null
   }, [movieVideosData?.results])
+  const heroImagePreloadUrl = data?.backdrop_path
+    ? `${IMAGE_BASE}/w780${data.backdrop_path}`
+    : data?.poster_path
+      ? `${IMAGE_BASE}/w500${data.poster_path}`
+      : null
+  const heroImagePreloadSrcSet = data?.backdrop_path
+    ? `${IMAGE_BASE}/w780${data.backdrop_path} 780w, ${IMAGE_BASE}/w1280${data.backdrop_path} 1280w`
+    : undefined
+  useEffect(() => {
+    if (!heroImagePreloadUrl || typeof document === 'undefined') return
+
+    const existingPreload = document.querySelector<HTMLLinkElement>(
+      'link[data-lcp-preload="movie-hero-image"]',
+    )
+    if (existingPreload?.href === heroImagePreloadUrl) return
+
+    if (existingPreload) {
+      existingPreload.remove()
+    }
+
+    const preloadLink = document.createElement('link')
+    preloadLink.rel = 'preload'
+    preloadLink.as = 'image'
+    preloadLink.href = heroImagePreloadUrl
+    if (heroImagePreloadSrcSet) {
+      preloadLink.setAttribute('imagesrcset', heroImagePreloadSrcSet)
+      preloadLink.setAttribute('imagesizes', '100vw')
+    }
+    preloadLink.setAttribute('data-lcp-preload', 'movie-hero-image')
+    document.head.appendChild(preloadLink)
+  }, [heroImagePreloadUrl, heroImagePreloadSrcSet])
   const handleBack = useCallback(() => navigate(-1), [navigate])
 
-  if (isLoading) {
-    return <MovieDetailsPageSkeleton />
-  }
-
-  if (error) {
+  if (error && !data) {
     return (
       <Container maxWidth="lg" sx={errorContainerSx}>
         <Typography>{labels.error}</Typography>
       </Container>
     )
   }
-  if (!data) return null
+  const movie = data ?? null
+  const poster = movie?.poster_path ? `${IMAGE_BASE}/w500${movie.poster_path}` : POSTER_FALLBACK_URL
 
-  const movie = data
-  const poster = movie.poster_path ? `${IMAGE_BASE}/w500${movie.poster_path}` : POSTER_FALLBACK_URL
+  const backdrop = movie?.backdrop_path ? `${IMAGE_BASE}/w780${movie.backdrop_path}` : poster
+  const backdropLarge = movie?.backdrop_path
+    ? `${IMAGE_BASE}/w1280${movie.backdrop_path}`
+    : undefined
+  const backdropSrcSet = backdropLarge ? `${backdrop} 780w, ${backdropLarge} 1280w` : undefined
 
-  const backdrop = movie.backdrop_path ? `${IMAGE_BASE}/original${movie.backdrop_path}` : poster
-
-  const runtimeLabel = formatRuntime(movie.runtime, labels.runtimeUnknown)
+  const runtimeLabel = formatRuntime(movie?.runtime ?? null, labels.runtimeUnknown)
   const popularityLabel = formatOneDecimal(normalizedData.popularity, locale)
-  const budgetLabel = formatMoney(movie.budget, locale, labels.unknown)
-  const revenueLabel = formatMoney(movie.revenue, locale, labels.unknown)
+  const budgetLabel = formatMoney(movie?.budget ?? null, locale, labels.unknown)
+  const revenueLabel = formatMoney(movie?.revenue ?? null, locale, labels.unknown)
 
-  const actors = movie.credits?.cast ?? []
+  const actors = movieCreditsData?.cast ?? []
 
   return (
     <Box sx={pageRootSx}>
@@ -177,85 +214,108 @@ export const MovieDetailsPage = () => {
         </Button>
       </Box>
 
-      <HeroSection
-        media={{ backdrop, poster, posterFallback: POSTER_FALLBACK_URL }}
-        title={movie.title}
-        tagline={movie.tagline}
-        meta={{
-          releaseDateLabel,
-          runtime: runtimeLabel,
-          status: movie.status,
-          adult: movie.adult,
-        }}
-        metaLabels={{
-          runtime: labels.runtime,
-          status: labels.status,
-          adult: labels.adult,
-          yes: labels.yes,
-          no: labels.no,
-        }}
-        rating={{
-          color: rating.color,
-          percent: rating.percent,
-          value: rating.value,
-          userScoreLabel: labels.userScore,
-        }}
-        stats={{
-          votesLabel,
-          votesText: labels.votes,
-        }}
-        genres={genres}
-        facts={{
-          factsTitle: labels.facts,
-          budgetLabelText: labels.budget,
-          revenueLabelText: labels.revenue,
-          languageLabelText: labels.language,
-          popularityLabelText: labels.popularity,
-          originalTitleLabelText: labels.originalTitle,
-          collectionLabelText: labels.collection,
-          budgetValue: budgetLabel,
-          revenueValue: revenueLabel,
-          languageValue: movie.original_language?.toUpperCase() || labels.unknown,
-          popularityValue: popularityLabel,
-          originalTitleValue: normalizedData.originalTitle || labels.unknown,
-          collectionValue: movie.belongs_to_collection?.name,
-          homepage: movie.homepage,
-          homepageLabel: labels.homepage,
-          imdbId: movie.imdb_id,
-        }}
-      />
+      {movie ? (
+        <HeroSection
+          media={{
+            backdrop,
+            backdropSrcSet,
+            backdropSizes: '100vw',
+            poster,
+            posterFallback: POSTER_FALLBACK_URL,
+          }}
+          title={movie.title}
+          tagline={movie.tagline}
+          meta={{
+            releaseDateLabel,
+            runtime: runtimeLabel,
+            status: movie.status,
+            adult: movie.adult,
+          }}
+          metaLabels={{
+            runtime: labels.runtime,
+            status: labels.status,
+            adult: labels.adult,
+            yes: labels.yes,
+            no: labels.no,
+          }}
+          rating={{
+            color: rating.color,
+            percent: rating.percent,
+            value: rating.value,
+            userScoreLabel: labels.userScore,
+          }}
+          stats={{
+            votesLabel,
+            votesText: labels.votes,
+          }}
+          genres={genres}
+          facts={{
+            factsTitle: labels.facts,
+            budgetLabelText: labels.budget,
+            revenueLabelText: labels.revenue,
+            languageLabelText: labels.language,
+            popularityLabelText: labels.popularity,
+            originalTitleLabelText: labels.originalTitle,
+            collectionLabelText: labels.collection,
+            budgetValue: budgetLabel,
+            revenueValue: revenueLabel,
+            languageValue: movie.original_language?.toUpperCase() || labels.unknown,
+            popularityValue: popularityLabel,
+            originalTitleValue: normalizedData.originalTitle || labels.unknown,
+            collectionValue: movie.belongs_to_collection?.name,
+            homepage: movie.homepage,
+            homepageLabel: labels.homepage,
+            imdbId: movie.imdb_id,
+          }}
+        />
+      ) : (
+        <MovieDetailsHeroSkeleton />
+      )}
 
       <Container maxWidth="lg" sx={detailsContainerSx}>
-        <Box sx={detailsGridSx}>
-          <OverviewSection title={labels.overview} overview={movie.overview || labels.unknown} />
+        {movie && (
+          <>
+            <Box sx={detailsGridSx}>
+              <OverviewSection
+                title={labels.overview}
+                overview={movie.overview || labels.unknown}
+              />
 
-          <ProductionSection
-            spokenLanguagesTitle={labels.spokenLanguages}
-            countriesTitle={labels.countries}
-            productionTitle={labels.production}
-            spokenLanguages={spokenLanguages}
-            productionCountries={productionCountries}
-            productionCompanies={productionCompanies}
-          />
-        </Box>
-        <TrailerSection
-          isLoading={isVideosLoading}
-          trailer={primaryTrailer ? { key: primaryTrailer.key, name: primaryTrailer.name } : null}
-          title={labels.trailer}
-          playLabel={labels.trailerPlay}
-        />
+              <ProductionSection
+                spokenLanguagesTitle={labels.spokenLanguages}
+                countriesTitle={labels.countries}
+                productionTitle={labels.production}
+                spokenLanguages={spokenLanguages}
+                productionCountries={productionCountries}
+                productionCompanies={productionCompanies}
+              />
+            </Box>
+            <TrailerSection
+              isLoading={isVideosLoading}
+              trailer={
+                primaryTrailer ? { key: primaryTrailer.key, name: primaryTrailer.name } : null
+              }
+              title={labels.trailer}
+              playLabel={labels.trailerPlay}
+            />
+          </>
+        )}
       </Container>
-      <Container maxWidth="lg">
-        <ActorsSection key={movie.id} title={t('movie_details_cast')} actors={actors} />
-      </Container>
-      <Container maxWidth="lg">
-        <SimilarMoviesSection
-          key={movie.id}
-          title={t('movie_details_similar')}
-          movieId={movie.id}
-          language={apiLanguage}
-        />
-      </Container>
+      {movie && (
+        <>
+          <Container maxWidth="lg">
+            <ActorsSection key={movie.id} title={t('movie_details_cast')} actors={actors} />
+          </Container>
+          <Container maxWidth="lg">
+            <SimilarMoviesSection
+              key={movie.id}
+              title={t('movie_details_similar')}
+              movieId={movie.id}
+              language={apiLanguage}
+            />
+          </Container>
+        </>
+      )}
     </Box>
   )
 }

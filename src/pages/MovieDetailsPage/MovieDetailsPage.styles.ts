@@ -10,6 +10,9 @@ export const pageRootSx = {
 
 export const fadeUpSx = (durationMs: number) => ({
   animation: `fadeUp ${durationMs}ms ease both`,
+  '@media (max-width: 899px)': {
+    animation: 'none',
+  },
 })
 
 export const loadingContainerSx = { py: 4 }
@@ -129,14 +132,19 @@ export const subtitleSx = { mb: 1 }
 export const dividerSx = { my: 1.8 }
 export const productionBoxSx = { mt: 2 }
 
-export const heroSectionSx = (backdrop: string) => ({
+export const heroSectionSx = {
   position: 'relative',
   minHeight: { xs: 520, md: 620 },
-  backgroundImage: backdrop ? `url(${backdrop})` : 'none',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
   overflow: 'hidden',
-})
+}
+
+export const heroBackdropImageSx = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+}
 
 export const heroOverlaySx = (theme: Theme) => ({
   position: 'absolute',

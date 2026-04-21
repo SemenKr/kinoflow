@@ -1,9 +1,7 @@
 import { PageLoader } from '@/shared/ui/loading/PageLoader'
+import { MainPage } from '@/pages/MainPage/MainPage'
+import { MovieDetailsPage } from '@/pages/MovieDetailsPage/MovieDetailsPage'
 import { Suspense, lazy } from 'react'
-
-const MainPage = lazy(async () => ({
-  default: (await import('@/pages/MainPage/MainPage')).MainPage,
-}))
 
 const CategoryMoviesPage = lazy(async () => ({
   default: (await import('@/pages/CategoryMoviesPage/CategoryMoviesPage')).CategoryMoviesPage,
@@ -19,10 +17,6 @@ const SearchPage = lazy(async () => ({
 
 const FavoritesPage = lazy(async () => ({
   default: (await import('@/pages/FavoritesPage/FavoritesPage')).FavoritesPage,
-}))
-
-const MovieDetailsPage = lazy(async () => ({
-  default: (await import('@/pages/MovieDetailsPage/MovieDetailsPage')).MovieDetailsPage,
 }))
 
 const PersonDetailsPage = lazy(async () => ({

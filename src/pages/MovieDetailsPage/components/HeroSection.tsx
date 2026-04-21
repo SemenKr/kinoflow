@@ -2,6 +2,7 @@ import { Box, Container, Stack } from '@mui/material'
 
 import {
   fadeUpSx,
+  heroBackdropImageSx,
   heroContainerSx,
   heroContentGridSx,
   heroOverlaySx,
@@ -17,6 +18,8 @@ import { QuickFacts } from './QuickFacts'
 interface HeroSectionProps {
   media: {
     backdrop: string
+    backdropSrcSet?: string
+    backdropSizes?: string
     poster: string
     posterFallback: string
   }
@@ -78,7 +81,19 @@ export const HeroSection = ({
   facts,
 }: HeroSectionProps) => {
   return (
-    <Box sx={heroSectionSx(media.backdrop)}>
+    <Box sx={heroSectionSx}>
+      <Box
+        component="img"
+        src={media.backdrop}
+        srcSet={media.backdropSrcSet}
+        sizes={media.backdropSizes}
+        alt=""
+        aria-hidden
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
+        sx={heroBackdropImageSx}
+      />
       <Box sx={heroOverlaySx} />
 
       <Container maxWidth="lg" sx={heroContainerSx}>
@@ -87,6 +102,7 @@ export const HeroSection = ({
             component="img"
             src={media.poster}
             alt={title}
+            loading="eager"
             onError={event => {
               if (event.currentTarget.src !== media.posterFallback) {
                 event.currentTarget.src = media.posterFallback

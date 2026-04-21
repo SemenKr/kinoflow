@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useGetPopularMoviesQuery } from '@/features/movies/api/moviesApi'
 import { useApiLanguage } from '@/hooks/useApiLanguage'
-import { IMAGE_BASE } from '@/shared/constants'
 
 export const useRandomBackdrop = () => {
   const apiLanguage = useApiLanguage()
@@ -10,10 +9,13 @@ export const useRandomBackdrop = () => {
   return useMemo(() => {
     if (!data?.results.length) return ''
 
-    // eslint-disable-next-line react-hooks/purity
-    const index = Math.floor(Math.random() * data.results.length)
-    const path = data.results[index]?.backdrop_path
+    const moviesWithBackdrop = data.results.filter(movie => Boolean(movie.backdrop_path))
+    if (!moviesWithBackdrop.length) return ''
 
-    return path ? `${IMAGE_BASE}/original${path}` : ''
+    // eslint-disable-next-line react-hooks/purity
+    const index = Math.floor(Math.random() * moviesWithBackdrop.length)
+    const path = moviesWithBackdrop[index]?.backdrop_path
+
+    return path ?? ''
   }, [data])
 }

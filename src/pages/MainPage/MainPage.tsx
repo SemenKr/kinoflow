@@ -11,7 +11,7 @@ import { useApiLanguage } from '@/hooks'
 import { prefetchRoute } from '@/router/router.prefetch'
 import { SectionLoader } from '@/shared/ui/loading/SectionLoader'
 import { Box, Button, Stack, Typography } from '@mui/material'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router-dom'
 
@@ -20,6 +20,11 @@ const PREVIEW_MOVIES_COUNT = 6
 const sectionShellStyles = {
   px: { xs: 2, sm: 3 },
   py: { xs: 4, sm: 5 },
+}
+
+const deferredSectionShellStyles = {
+  contentVisibility: 'auto',
+  containIntrinsicSize: '600px',
 }
 
 const previewRowStyles = {
@@ -46,14 +51,32 @@ const previewItemStyles = {
   scrollSnapAlign: 'start',
 }
 
+const previewStateWrapStyles = {
+  minHeight: { xs: 350, sm: 350 },
+}
+
 export const MainPage = () => {
   const { t } = useTranslation()
+  const [isDeferredCategoriesEnabled, setIsDeferredCategoriesEnabled] = useState(false)
   const apiLanguage = useApiLanguage()
   const queryArgs = useMemo(
     () => ({ page: 1, language: apiLanguage, ...DEFAULT_MOVIE_CATEGORY_QUERY }),
     [apiLanguage],
   )
-  const categoryQueries = useMovieCategoryQueries(queryArgs)
+  const categoryQueries = useMovieCategoryQueries(queryArgs, {
+    activeCategory: isDeferredCategoriesEnabled ? undefined : 'popular',
+  })
+
+  useEffect(() => {
+    const schedule = window.requestIdleCallback ?? (cb => window.setTimeout(cb, 1200))
+    const cancel = window.cancelIdleCallback ?? window.clearTimeout
+
+    const handle = schedule(() => {
+      setIsDeferredCategoriesEnabled(true)
+    })
+
+    return () => cancel(handle)
+  }, [])
 
   const sections = useMemo(
     () =>
@@ -71,8 +94,15 @@ export const MainPage = () => {
       <WelcomeSection />
 
       <Stack spacing={0}>
-        {sections.map(section => (
-          <Box key={section.key} sx={sectionShellStyles}>
+        {sections.map((section, index) => (
+          <Box
+            key={section.key}
+            sx={
+              index === 0
+                ? sectionShellStyles
+                : { ...sectionShellStyles, ...deferredSectionShellStyles }
+            }
+          >
             <Stack spacing={2.5}>
               <Stack
                 direction={{ xs: 'column', sm: 'row' }}
@@ -95,21 +125,29 @@ export const MainPage = () => {
                 </Button>
               </Stack>
 
-              {section.query.isLoading && <SectionLoader cards={6} titleWidth="18%" />}
+              <Box sx={previewStateWrapStyles}>
+                {!isDeferredCategoriesEnabled && section.key !== 'popular' && (
+                  <SectionLoader cards={6} titleWidth="18%" showTitle={false} />
+                )}
 
-              {section.query.isError && (
-                <Typography color="error">{t('categories_page_error')}</Typography>
-              )}
+                {section.query.isLoading && (
+                  <SectionLoader cards={6} titleWidth="18%" showTitle={false} />
+                )}
 
-              {section.query.data && (
-                <Box sx={previewRowStyles}>
-                  {section.query.data.results.slice(0, PREVIEW_MOVIES_COUNT).map(movie => (
-                    <Box key={movie.id} sx={previewItemStyles}>
-                      <MovieCard movie={movie} />
-                    </Box>
-                  ))}
-                </Box>
-              )}
+                {section.query.isError && (
+                  <Typography color="error">{t('categories_page_error')}</Typography>
+                )}
+
+                {section.query.data && (
+                  <Box sx={previewRowStyles}>
+                    {section.query.data.results.slice(0, PREVIEW_MOVIES_COUNT).map(movie => (
+                      <Box key={movie.id} sx={previewItemStyles}>
+                        <MovieCard movie={movie} posterSize="compact" />
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+              </Box>
             </Stack>
           </Box>
         ))}

@@ -67,11 +67,12 @@ export const Header = () => {
             },
           })}
         >
-          <Box
-            component="img"
+          <img
             src={logoUrl}
             alt="KinoFlow"
-            sx={{ height: 28, width: 'auto', display: 'block' }}
+            width={65}
+            height={28}
+            style={{ height: 28, width: 65, display: 'block' }}
           />
         </Box>
 
@@ -139,11 +140,12 @@ export const Header = () => {
               },
             })}
           >
-            <Box
-              component="img"
+            <img
               src={logoUrl}
               alt="KinoFlow"
-              sx={{ height: 28, width: 'auto', display: 'block' }}
+              width={65}
+              height={28}
+              style={{ height: 28, width: 65, display: 'block' }}
             />
           </Box>
 

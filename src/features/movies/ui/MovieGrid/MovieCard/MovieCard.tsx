@@ -8,11 +8,13 @@ import { useTranslation } from 'react-i18next'
 import type { Movie } from '@/features/movies/api/moviesApi.types'
 import {
   createPosterFallbackUrl,
+  getPosterSrcSet,
   getPosterUrl,
   getRatingColor,
   getRatingPercent,
   getRatingValue,
   getReleaseYear,
+  type MovieCardPosterSize,
 } from './MovieCard.utils'
 import {
   cardStyles,
@@ -27,15 +29,17 @@ import {
 
 interface Props {
   movie: Movie
+  posterSize?: MovieCardPosterSize
 }
 
-export const MovieCard = ({ movie }: Props) => {
+export const MovieCard = ({ movie, posterSize = 'default' }: Props) => {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const { isFavorite, toggle } = useFavorites()
 
   const favorite = isFavorite(movie.id)
   const poster = getPosterUrl(movie.poster_path, createPosterFallbackUrl(t('movie_card_no_poster')))
+  const posterSrcSet = getPosterSrcSet(movie.poster_path, posterSize)
   const ratingPercent = getRatingPercent(movie.vote_average)
   const ratingValue = getRatingValue(movie.vote_average)
   const ratingLabel = new Intl.NumberFormat(i18n.language, {
@@ -90,6 +94,10 @@ export const MovieCard = ({ movie }: Props) => {
         <CardMedia
           component="img"
           image={poster}
+          srcSet={posterSrcSet}
+          sizes={
+            posterSrcSet ? '(max-width: 600px) 160px, (max-width: 900px) 180px, 188px' : undefined
+          }
           alt={movie.title}
           loading="lazy"
           sx={posterStyles}

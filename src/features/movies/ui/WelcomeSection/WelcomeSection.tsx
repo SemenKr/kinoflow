@@ -1,9 +1,10 @@
-import { useRandomBackdrop } from '@/hooks'
+import { HOME_HERO_BACKDROP_PATH, IMAGE_BASE } from '@/shared/constants'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
+  backdropImageStyles,
   buttonStyles,
   containerStyles,
   contentWrapperStyles,
@@ -17,7 +18,11 @@ export const WelcomeSection = () => {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const { t } = useTranslation()
-  const backdrop = useRandomBackdrop()
+  const backdropPath = HOME_HERO_BACKDROP_PATH
+  const mobileBackdrop = backdropPath ? `${IMAGE_BASE}/w780${backdropPath}` : ''
+  const desktopBackdrop = backdropPath ? `${IMAGE_BASE}/w1280${backdropPath}` : ''
+  const backdropSrcSet =
+    mobileBackdrop && desktopBackdrop ? `${mobileBackdrop} 780w, ${desktopBackdrop} 1280w` : ''
 
   const handleSearch = useCallback(() => {
     const trimmedQuery = query.trim()
@@ -27,7 +32,20 @@ export const WelcomeSection = () => {
   }, [query, navigate])
 
   return (
-    <Box sx={containerStyles(backdrop)}>
+    <Box sx={containerStyles}>
+      {desktopBackdrop && (
+        <Box
+          component="img"
+          src={desktopBackdrop}
+          srcSet={backdropSrcSet}
+          sizes="100vw"
+          alt=""
+          aria-hidden
+          loading="eager"
+          fetchPriority="high"
+          sx={backdropImageStyles}
+        />
+      )}
       {/* overlay */}
       <Box sx={overlayStyles} />
 

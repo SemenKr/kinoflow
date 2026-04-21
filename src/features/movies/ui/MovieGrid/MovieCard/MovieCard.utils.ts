@@ -1,6 +1,9 @@
 import { IMAGE_BASE } from '@/shared/constants'
 
 const POSTER_BASE_URL = `${IMAGE_BASE}/w500`
+const POSTER_SMALL_BASE_URL = `${IMAGE_BASE}/w342`
+
+export type MovieCardPosterSize = 'default' | 'compact'
 
 export const createPosterFallbackUrl = (label: string) => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 750">
@@ -23,6 +26,17 @@ export const createPosterFallbackUrl = (label: string) => {
 
 export const getPosterUrl = (posterPath: string | null, fallbackUrl: string) =>
   posterPath ? `${POSTER_BASE_URL}${posterPath}` : fallbackUrl
+
+export const getPosterSrcSet = (
+  posterPath: string | null,
+  posterSize: MovieCardPosterSize,
+): string | undefined => {
+  if (!posterPath || posterSize !== 'compact') {
+    return undefined
+  }
+
+  return `${POSTER_SMALL_BASE_URL}${posterPath} 342w, ${POSTER_BASE_URL}${posterPath} 500w`
+}
 
 export const getRatingPercent = (voteAverage: number) => {
   const normalized = Math.round(voteAverage * 10)

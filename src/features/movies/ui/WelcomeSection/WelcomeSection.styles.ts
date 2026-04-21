@@ -1,6 +1,6 @@
 import { alpha, type Theme } from '@mui/material/styles'
 
-export const containerStyles = (backdrop: string) => ({
+export const containerStyles = {
   minHeight: 400,
   height: 'calc(100vh / 2.5)',
   maxHeight: 460,
@@ -10,14 +10,18 @@ export const containerStyles = (backdrop: string) => ({
   justifyContent: 'center',
   flexDirection: 'column',
 
-  backgroundImage: backdrop ? `url(${backdrop})` : 'none',
-  backgroundSize: 'cover',
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center',
-
   position: 'relative',
   color: '#fff',
-})
+  overflow: 'hidden',
+}
+
+export const backdropImageStyles = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+}
 
 export const overlayStyles = (theme: Theme) => ({
   position: 'absolute',

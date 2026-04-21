@@ -1,6 +1,7 @@
 import type { FiltersState } from '@/features/movies/model/filter.types'
 
 export const IMAGE_BASE = 'https://image.tmdb.org/t/p'
+export const HOME_HERO_BACKDROP_PATH = '/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg'
 
 export const ROUTES = {
   home: '/',
